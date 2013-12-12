@@ -1,0 +1,3 @@
+[submodule "stellaris"]
+	path = stellaris
+	url = https://github.com/yuvadm/stellaris.git
