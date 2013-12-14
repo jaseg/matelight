@@ -70,7 +70,7 @@ unsigned const char const CRATE_MAP[CRATES_PER_BUS] = {
 unsigned char framebuffer[BUS_COUNT*BUS_SIZE];
 /* Kick off DMA from RAM to SPI interfaces */
 void start_dma(void);
-unsigned long framebuffer_read(void *fb, unsigned long len);
+unsigned long framebuffer_read(void *data, unsigned long len);
 
 unsigned char ucControlTable[1024] __attribute__ ((aligned(1024)));
 
@@ -109,8 +109,8 @@ unsigned long RxHandler(void *pvCBData, unsigned long ulEvent, unsigned long ulM
             UARTprintf("Host disconnected.\n");
             break;
         case USB_EVENT_RX_AVAILABLE:
-			UARTprintf("Handling host data.\n\n");
-			return framebuffer_read(pvMsgData, ulMsgValue);
+			UARTprintf("Handling host data.\n");
+			USBBufferDataRemoved(&g_sRxBuffer, framebuffer_read(pvMsgData, ulMsgValue));
         case USB_EVENT_SUSPEND:
         case USB_EVENT_RESUME:
             break;
@@ -120,25 +120,31 @@ unsigned long RxHandler(void *pvCBData, unsigned long ulEvent, unsigned long ulM
     return 0;
 }
 
-unsigned long framebuffer_read(void *fb, unsigned long len){
-	if(len != BUS_COUNT*BUS_COLUMNS*BUS_ROWS)
-		return 0;
-	for(unsigned int bus=0; bus<BUS_COUNT; bus++){
-		for(unsigned int x=0; x<BUS_COLUMNS; x++){
-			for(unsigned int y=0; x<BUS_ROWS; y++){
-				unsigned int crate = CRATE_MAP[x/CRATE_WIDTH + (y/CRATE_HEIGHT)*CRATES_X];
-				unsigned int bottle = BOTTLE_MAP[x%CRATE_WIDTH + (y%CRATE_HEIGHT)*CRATE_WIDTH];
-				//Copy r, g and b data
-				framebuffer[(bus*BUS_SIZE + crate*CRATE_SIZE + bottle)*3]     =
-					((unsigned char *)fb)[(bus*BUS_SIZE + y*BUS_COLUMNS + x)*3];
-				framebuffer[(bus*BUS_SIZE + crate*CRATE_SIZE + bottle)*3 + 1] =
-					((unsigned char *)fb)[(bus*BUS_SIZE + y*BUS_COLUMNS + x)*3 + 1];
-				framebuffer[(bus*BUS_SIZE + crate*CRATE_SIZE + bottle)*3 + 2] =
-					((unsigned char *)fb)[(bus*BUS_SIZE + y*BUS_COLUMNS + x)*3 + 2];
-			}
+typedef struct {
+	unsigned char crate_x;
+	unsigned char crate_y;
+	unsigned char rgb_data[CRATE_SIZE*BYTES_PER_PIXEL];
+} FramebufferData;
+
+unsigned long framebuffer_read(void *data, unsigned long len){
+	if(len != sizeof(FramebufferData))
+		return len;
+	UARTprintf("Rearranging data.\n");
+	FramebufferData *fb = (FramebufferData *)data;
+	unsigned int bus = fb->crate_x/4;
+	for(unsigned int x=0; x<CRATE_WIDTH; x++){
+		for(unsigned int y=0; y<CRATE_HEIGHT; y++){
+			unsigned int crate 	= CRATE_MAP[fb->crate_x + fb->crate_y*CRATES_X];
+			unsigned int bottle	= BOTTLE_MAP[x%CRATE_WIDTH + (y%CRATE_HEIGHT)*CRATE_WIDTH];
+			unsigned int src 	= (bus*BUS_SIZE + crate*CRATE_SIZE + bottle)*3;
+			unsigned int dst	= (bus*BUS_SIZE + y*BUS_COLUMNS + x)*3;
+			//Copy r, g and b data
+			framebuffer[src]     = fb->rgb_data[dst];
+			framebuffer[src + 1] = fb->rgb_data[dst + 1];
+			framebuffer[src + 2] = fb->rgb_data[dst + 2];
 		}
 	}
-	UARTprintf("Starting DMA.\n\n");
+	UARTprintf("Starting DMA.\n");
 	start_dma();
 	return len;
 }
