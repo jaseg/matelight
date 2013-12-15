@@ -71,6 +71,7 @@ unsigned char framebuffer[BUS_COUNT*BUS_SIZE];
 /* Kick off DMA from RAM to SPI interfaces */
 void start_dma(void);
 unsigned long framebuffer_read(void *data, unsigned long len);
+void ssi_udma_channel_config(unsigned char channel, unsigned char offset);
 
 unsigned char ucControlTable[1024] __attribute__ ((aligned(1024)));
 
@@ -150,10 +151,18 @@ unsigned long framebuffer_read(void *data, unsigned long len){
 }
 
 void start_dma(void){
-	ROM_SSIDMAEnable(SSI0_BASE, SSI_DMA_TX);
-	ROM_SSIDMAEnable(SSI1_BASE, SSI_DMA_TX);
-	ROM_SSIDMAEnable(SSI2_BASE, SSI_DMA_TX);
-	ROM_SSIDMAEnable(SSI3_BASE, SSI_DMA_TX);
+}
+
+void ssi_udma_channel_config(unsigned char channel, unsigned char offset){
+	/* Set the USEBURST attribute for the uDMA SSI TX channel.  This will force the controller to always use a burst
+	 * when transferring data from the TX buffer to the SSI.  This is somewhat more effecient bus usage than the default
+	 * which allows single or burst transfers. */
+    ROM_uDMAChannelAttributeEnable(channel, UDMA_ATTR_USEBURST);
+	/* Configure the SSI Tx µDMA Channel to transfer from RAM to TX FIFO. The arbitration size is set to 4, which
+	 * matches the SSI TX FIFO µDMA trigger threshold. */
+	ROM_uDMAChannelControlSet(channel, UDMA_SIZE_8 | UDMA_SRC_INC_8 | UDMA_DST_INC_NONE | UDMA_ARB_4);
+    ROM_uDMAChannelTransferSet(channel | UDMA_PRI_SELECT, UDMA_MODE_BASIC, framebuffer+BUS_SIZE*offset, (void *)(SSI0_BASE + SSI_O_DR), BUS_SIZE);
+    ROM_uDMAChannelEnable(channel);
 }
 
 int main(void){
@@ -231,35 +240,21 @@ int main(void){
     ROM_IntEnable(INT_UDMAERR); // Enable µDMA error interrupt
     ROM_uDMAEnable();
     ROM_uDMAControlBaseSet(ucControlTable);
-    //Put the µDMA attributes in a known state. These should already be disabled by default.
-    ROM_uDMAChannelAttributeDisable(UDMA_CH11_SSI0TX, UDMA_ATTR_ALTSELECT | UDMA_ATTR_HIGH_PRIORITY | UDMA_ATTR_REQMASK);
-    ROM_uDMAChannelAttributeDisable(UDMA_CH11_SSI1TX, UDMA_ATTR_ALTSELECT | UDMA_ATTR_HIGH_PRIORITY | UDMA_ATTR_REQMASK);
-    ROM_uDMAChannelAttributeDisable(UDMA_CH13_SSI2TX, UDMA_ATTR_ALTSELECT | UDMA_ATTR_HIGH_PRIORITY | UDMA_ATTR_REQMASK);
-    ROM_uDMAChannelAttributeDisable(UDMA_CH15_SSI3TX, UDMA_ATTR_ALTSELECT | UDMA_ATTR_HIGH_PRIORITY | UDMA_ATTR_REQMASK);
-	/* Set the USEBURST attribute for the uDMA UART TX channel.  This will force the controller to always use a burst
-	 * when transferring data from the TX buffer to the UART.  This is somewhat more effecient bus usage than the
-	 * default which allows single or burst transfers. */
-    ROM_uDMAChannelAttributeEnable(UDMA_CH11_SSI0TX, UDMA_ATTR_USEBURST);
-    ROM_uDMAChannelAttributeEnable(UDMA_CH11_SSI1TX, UDMA_ATTR_USEBURST);
-    ROM_uDMAChannelAttributeEnable(UDMA_CH13_SSI2TX, UDMA_ATTR_USEBURST);
-    ROM_uDMAChannelAttributeEnable(UDMA_CH15_SSI3TX, UDMA_ATTR_USEBURST);
-	/* Configure the SSI Tx µDMA Channel to transfer from RAM to TX FIFO. The arbitration size is set to 4, which
-	 * matches the SSI TX FIFO µDMA trigger threshold. */
-	ROM_uDMAChannelControlSet(UDMA_CH11_SSI0TX, UDMA_SIZE_8 | UDMA_SRC_INC_8 | UDMA_DST_INC_NONE | UDMA_ARB_4);
-    ROM_uDMAChannelTransferSet(UDMA_CH11_SSI0TX | UDMA_PRI_SELECT, UDMA_MODE_BASIC, framebuffer, (void *)(SSI0_BASE + SSI_O_DR), BUS_SIZE);
-    ROM_uDMAChannelEnable(UDMA_CH11_SSI0TX);
+	
+	ROM_uDMAChannelAssign(UDMA_CH11_SSI0TX);
+	ROM_uDMAChannelAssign(UDMA_CH25_SSI1TX);
+	ROM_uDMAChannelAssign(UDMA_CH13_SSI2TX);
+	ROM_uDMAChannelAssign(UDMA_CH15_SSI3TX);
+	
+	ssi_udma_channel_config(11, 0);
+	ssi_udma_channel_config(25, 1);
+	ssi_udma_channel_config(13, 2);
+	ssi_udma_channel_config(15, 3);
 
-	ROM_uDMAChannelControlSet(UDMA_CH11_SSI1TX, UDMA_SIZE_8 | UDMA_SRC_INC_8 | UDMA_DST_INC_NONE | UDMA_ARB_4);
-    ROM_uDMAChannelTransferSet(UDMA_CH11_SSI1TX | UDMA_PRI_SELECT, UDMA_MODE_BASIC, framebuffer+BUS_SIZE, (void *)(SSI0_BASE + SSI_O_DR), BUS_SIZE);
-    ROM_uDMAChannelEnable(UDMA_CH11_SSI1TX);
-
-	ROM_uDMAChannelControlSet(UDMA_CH13_SSI2TX, UDMA_SIZE_8 | UDMA_SRC_INC_8 | UDMA_DST_INC_NONE | UDMA_ARB_4);
-    ROM_uDMAChannelTransferSet(UDMA_CH13_SSI2TX | UDMA_PRI_SELECT, UDMA_MODE_BASIC, framebuffer+BUS_SIZE*2, (void *)(SSI0_BASE + SSI_O_DR), BUS_SIZE);
-    ROM_uDMAChannelEnable(UDMA_CH13_SSI2TX);
-
-	ROM_uDMAChannelControlSet(UDMA_CH15_SSI3TX, UDMA_SIZE_8 | UDMA_SRC_INC_8 | UDMA_DST_INC_NONE | UDMA_ARB_4);
-    ROM_uDMAChannelTransferSet(UDMA_CH15_SSI3TX | UDMA_PRI_SELECT, UDMA_MODE_BASIC, framebuffer+BUS_SIZE*3, (void *)(SSI0_BASE + SSI_O_DR), BUS_SIZE);
-    ROM_uDMAChannelEnable(UDMA_CH15_SSI3TX);
+	ROM_SSIDMAEnable(SSI0_BASE, SSI_DMA_TX);
+	ROM_SSIDMAEnable(SSI1_BASE, SSI_DMA_TX);
+	ROM_SSIDMAEnable(SSI2_BASE, SSI_DMA_TX);
+	ROM_SSIDMAEnable(SSI3_BASE, SSI_DMA_TX);
 
 	//Enable the SSIs after configuring anything around them.
 	SSIEnable(SSI0_BASE);
