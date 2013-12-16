@@ -64,14 +64,15 @@ unsigned const char const CRATE_MAP[CRATES_PER_BUS] = {
 	7, 5, 3, 1
 };
 
-#define SYSTICKS_PER_SECOND     100
-#define SYSTICK_PERIOD_MS       (1000 / SYSTICKS_PER_SECOND)
+#define SYSTICKS_PER_SECOND		100
+#define SYSTICK_PERIOD_MS		(1000 / SYSTICKS_PER_SECOND)
 
 unsigned char framebuffer[BUS_COUNT*BUS_SIZE];
-/* Kick off DMA from RAM to SPI interfaces */
-void start_dma(void);
 unsigned long framebuffer_read(void *data, unsigned long len);
-void ssi_udma_channel_config(unsigned char channel, unsigned char offset);
+/* Kick off DMA transfer from RAM to SPI interfaces */
+void kickoff_transfers(void);
+void kickoff_transfer(unsigned int channel, unsigned int offset);
+void ssi_udma_channel_config(unsigned int channel);
 
 unsigned char ucControlTable[1024] __attribute__ ((aligned(1024)));
 
@@ -94,31 +95,39 @@ volatile unsigned long g_ulFlags = 0;
 char *g_pcStatus;
 static volatile tBoolean g_bUSBConfigured = false;
 
-void SysTickIntHandler(void){
-    g_ulSysTickCount++;
+void SysTickIntHandler(void) {
+	g_ulSysTickCount++;
+}
+
+/* Will be called when a DMA transfer is complete */
+void SSI0IntHandler(void) {
+    if(!ROM_uDMAChannelIsEnabled(11)){
+		/* A TX DMA transfer was completed */
+		/* FIXME */
+	}
 }
 
 unsigned long RxHandler(void *pvCBData, unsigned long ulEvent, unsigned long ulMsgValue, void *pvMsgData) {
-    switch(ulEvent) {
-        case USB_EVENT_CONNECTED:
-            g_bUSBConfigured = true;
-            UARTprintf("Host connected.\n");
-            USBBufferFlush(&g_sRxBuffer);
-            break;
-        case USB_EVENT_DISCONNECTED:
-            g_bUSBConfigured = false;
-            UARTprintf("Host disconnected.\n");
-            break;
-        case USB_EVENT_RX_AVAILABLE:
+	switch(ulEvent) {
+		case USB_EVENT_CONNECTED:
+			g_bUSBConfigured = true;
+			UARTprintf("Host connected.\n");
+			USBBufferFlush(&g_sRxBuffer);
+			break;
+		case USB_EVENT_DISCONNECTED:
+			g_bUSBConfigured = false;
+			UARTprintf("Host disconnected.\n");
+			break;
+		case USB_EVENT_RX_AVAILABLE:
 			UARTprintf("Handling host data.\n");
 			USBBufferDataRemoved(&g_sRxBuffer, framebuffer_read(pvMsgData, ulMsgValue));
-        case USB_EVENT_SUSPEND:
-        case USB_EVENT_RESUME:
-            break;
-        default:
-            break;
-    }
-    return 0;
+		case USB_EVENT_SUSPEND:
+		case USB_EVENT_RESUME:
+			break;
+		default:
+			break;
+	}
+	return 0;
 }
 
 typedef struct {
@@ -127,143 +136,163 @@ typedef struct {
 	unsigned char rgb_data[CRATE_SIZE*BYTES_PER_PIXEL];
 } FramebufferData;
 
-unsigned long framebuffer_read(void *data, unsigned long len){
+unsigned long framebuffer_read(void *data, unsigned long len) {
 	if(len != sizeof(FramebufferData))
 		return len;
 	UARTprintf("Rearranging data.\n");
 	FramebufferData *fb = (FramebufferData *)data;
-	unsigned int bus = fb->crate_x/4;
+
+	unsigned int bus = fb->crate_x/CRATES_X;
+	fb->crate_x %= CRATES_X;
+
+	if(bus > BUS_COUNT || fb->crate_y > CRATES_Y){
+		UARTprintf("Invalid frame index\n");
+		return len;
+	}
+
+	/* Mirror crate map for the display's right half */
+	if(bus >= BUS_COUNT/2)
+		fb->crate_x = CRATES_X - fb->crate_x - 1;
+
 	for(unsigned int x=0; x<CRATE_WIDTH; x++){
 		for(unsigned int y=0; y<CRATE_HEIGHT; y++){
-			unsigned int crate 	= CRATE_MAP[fb->crate_x + fb->crate_y*CRATES_X];
+			unsigned int crate	= CRATE_MAP[fb->crate_x + fb->crate_y*CRATES_X];
 			unsigned int bottle	= BOTTLE_MAP[x%CRATE_WIDTH + (y%CRATE_HEIGHT)*CRATE_WIDTH];
-			unsigned int src 	= (bus*BUS_SIZE + crate*CRATE_SIZE + bottle)*3;
+			unsigned int src	= (bus*BUS_SIZE + crate*CRATE_SIZE + bottle)*3;
 			unsigned int dst	= (bus*BUS_SIZE + y*BUS_COLUMNS + x)*3;
-			//Copy r, g and b data
-			framebuffer[src]     = fb->rgb_data[dst];
+			/* Copy r, g and b data */
+			framebuffer[src]	 = fb->rgb_data[dst];
 			framebuffer[src + 1] = fb->rgb_data[dst + 1];
 			framebuffer[src + 2] = fb->rgb_data[dst + 2];
 		}
 	}
+
 	UARTprintf("Starting DMA.\n");
-	start_dma();
+	kickoff_transfers();
 	return len;
 }
 
-void start_dma(void){
+void kickoff_transfers() {
+	kickoff_transfer(11, 0);
+/*	kickoff_transfer(25, 1);
+	kickoff_transfer(13, 2);
+	kickoff_transfer(15, 3); */
 }
 
-void ssi_udma_channel_config(unsigned char channel, unsigned char offset){
-	/* Set the USEBURST attribute for the uDMA SSI TX channel.  This will force the controller to always use a burst
+void kickoff_transfer(unsigned int channel, unsigned int offset) {
+	ROM_uDMAChannelTransferSet(channel | UDMA_PRI_SELECT, UDMA_MODE_BASIC, framebuffer+BUS_SIZE*offset, (void *)(SSI0_BASE + SSI_O_DR), BUS_SIZE);
+	ROM_uDMAChannelEnable(channel);
+}
+
+void ssi_udma_channel_config(unsigned int channel) {
+	/* Set the USEBURST attribute for the uDMA SSI TX channel.	This will force the controller to always use a burst
 	 * when transferring data from the TX buffer to the SSI.  This is somewhat more effecient bus usage than the default
 	 * which allows single or burst transfers. */
-    ROM_uDMAChannelAttributeEnable(channel, UDMA_ATTR_USEBURST);
+	ROM_uDMAChannelAttributeEnable(channel, UDMA_ATTR_USEBURST);
 	/* Configure the SSI Tx µDMA Channel to transfer from RAM to TX FIFO. The arbitration size is set to 4, which
 	 * matches the SSI TX FIFO µDMA trigger threshold. */
-	ROM_uDMAChannelControlSet(channel, UDMA_SIZE_8 | UDMA_SRC_INC_8 | UDMA_DST_INC_NONE | UDMA_ARB_4);
-    ROM_uDMAChannelTransferSet(channel | UDMA_PRI_SELECT, UDMA_MODE_BASIC, framebuffer+BUS_SIZE*offset, (void *)(SSI0_BASE + SSI_O_DR), BUS_SIZE);
-    ROM_uDMAChannelEnable(channel);
+	ROM_uDMAChannelControlSet(channel | UDMA_PRI_SELECT, UDMA_SIZE_8 | UDMA_SRC_INC_8 | UDMA_DST_INC_NONE | UDMA_ARB_4);
 }
 
-int main(void){
+int main(void) {
 	/* Enable lazy stacking for interrupt handlers.  This allows floating-point instructions to be used within interrupt
 	 * handlers, but at the expense of extra stack usage. */
-    ROM_FPULazyStackingEnable();
+	ROM_FPULazyStackingEnable();
 
-    //Set clock to PLL at 50MHz
-    ROM_SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
-                       SYSCTL_XTAL_16MHZ);
+	/* Set clock to PLL at 50MHz */
+	ROM_SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
+					   SYSCTL_XTAL_16MHZ);
 
-    //Configure UART0 pins
-    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
-    GPIOPinConfigure(GPIO_PA0_U0RX);
-    GPIOPinConfigure(GPIO_PA1_U0TX);
-    ROM_GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+	/* Configure UART0 pins */
+	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+	GPIOPinConfigure(GPIO_PA0_U0RX);
+	GPIOPinConfigure(GPIO_PA1_U0TX);
+	ROM_GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
 
-    //Enable the GPIO pins for the LED (PF2 & PF3).  
-    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
-    ROM_GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_3|GPIO_PIN_2);
+	/* Enable the GPIO pins for the LED (PF2 & PF3). */
+	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+	ROM_GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_3|GPIO_PIN_2);
 
-    UARTStdioInit(0);
-    UARTprintf("Booting...\n\n");
+	UARTStdioInit(0);
+	UARTprintf("Booting...\n\n");
 
-    g_bUSBConfigured = false;
+	g_bUSBConfigured = false;
 
-    //Enable the GPIO peripheral used for USB, and configure the USB pins.
-    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
-    ROM_GPIOPinTypeUSBAnalog(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5);
+	/* Enable the GPIO peripheral used for USB, and configure the USB pins. */
+	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
+	ROM_GPIOPinTypeUSBAnalog(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5);
 
-    //Enable the system tick.
-    ROM_SysTickPeriodSet(ROM_SysCtlClockGet() / SYSTICKS_PER_SECOND);
-    ROM_SysTickIntEnable();
-    ROM_SysTickEnable();
+	/* Enable the system tick. FIXME do we need this? */
+	ROM_SysTickPeriodSet(ROM_SysCtlClockGet() / SYSTICKS_PER_SECOND);
+	ROM_SysTickIntEnable();
+	ROM_SysTickEnable();
 
-	//Configure USB
-    USBBufferInit((tUSBBuffer *)&g_sRxBuffer);
-    USBStackModeSet(0, USB_MODE_FORCE_DEVICE, 0);
-    USBDBulkInit(0, (tUSBDBulkDevice *)&g_sBulkDevice);
+	/* Configure USB */
+	USBBufferInit((tUSBBuffer *)&g_sRxBuffer);
+	USBStackModeSet(0, USB_MODE_FORCE_DEVICE, 0);
+	USBDBulkInit(0, (tUSBDBulkDevice *)&g_sBulkDevice);
 
-	//Configure SSI0..3 for the ws2801's SPI-like protocol
-	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI0);
-	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI1);
-	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI2);
-	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI3);
-
-    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
-    GPIOPinConfigure(GPIO_PA2_SSI0CLK);
-    GPIOPinConfigure(GPIO_PA5_SSI0TX);
+	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+	GPIOPinConfigure(GPIO_PA2_SSI0CLK);
+	GPIOPinConfigure(GPIO_PA5_SSI0TX);
 	ROM_GPIOPinTypeSSI(GPIO_PORTA_BASE, GPIO_PIN_2 | GPIO_PIN_5);
 
-    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
-    GPIOPinConfigure(GPIO_PB4_SSI2CLK);
-    GPIOPinConfigure(GPIO_PB7_SSI2TX);
+	/* Configure SSI0..3 for the ws2801's SPI-like protocol */
+	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI0);
+/*	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI1);
+	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI2);
+	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI3); */
+
+/*	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
+	GPIOPinConfigure(GPIO_PB4_SSI2CLK);
+	GPIOPinConfigure(GPIO_PB7_SSI2TX);
 	ROM_GPIOPinTypeSSI(GPIO_PORTB_BASE, GPIO_PIN_4 | GPIO_PIN_7);
 
-    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
-    GPIOPinConfigure(GPIO_PD0_SSI3CLK);
-    GPIOPinConfigure(GPIO_PD3_SSI3TX);
+	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
+	GPIOPinConfigure(GPIO_PD0_SSI3CLK);
+	GPIOPinConfigure(GPIO_PD3_SSI3TX);
 	ROM_GPIOPinTypeSSI(GPIO_PORTD_BASE, GPIO_PIN_0 | GPIO_PIN_3);
 
-    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
-    GPIOPinConfigure(GPIO_PF2_SSI1CLK);
-    GPIOPinConfigure(GPIO_PF1_SSI1TX);
-	ROM_GPIOPinTypeSSI(GPIO_PORTF_BASE, GPIO_PIN_0 | GPIO_PIN_3);
+	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+	GPIOPinConfigure(GPIO_PF2_SSI1CLK);
+	GPIOPinConfigure(GPIO_PF1_SSI1TX);
+	ROM_GPIOPinTypeSSI(GPIO_PORTF_BASE, GPIO_PIN_0 | GPIO_PIN_3); */
 
-	SSIConfigSetExpClk(SSI0_BASE, SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 2000000, 8);
-	SSIConfigSetExpClk(SSI1_BASE, SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 2000000, 8);
-	SSIConfigSetExpClk(SSI2_BASE, SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 2000000, 8);
-	SSIConfigSetExpClk(SSI3_BASE, SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 2000000, 8);
+	/* 200kBd */
+	SSIConfigSetExpClk(SSI0_BASE, ROM_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 200000, 8);
+/*	SSIConfigSetExpClk(SSI1_BASE, ROM_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 200000, 8);
+	SSIConfigSetExpClk(SSI2_BASE, ROM_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 200000, 8);
+	SSIConfigSetExpClk(SSI3_BASE, ROM_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 200000, 8); */
 
-	//Configure the µDMA controller for use by the SPI interface
-    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_UDMA);
-    ROM_SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_UDMA);
-    ROM_IntEnable(INT_UDMAERR); // Enable µDMA error interrupt
-    ROM_uDMAEnable();
-    ROM_uDMAControlBaseSet(ucControlTable);
+	/* Configure the µDMA controller for use by the SPI interface */
+	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_UDMA);
+	ROM_SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_UDMA);
+	ROM_IntEnable(INT_UDMAERR); // Enable µDMA error interrupt
+	ROM_uDMAEnable();
+	ROM_uDMAControlBaseSet(ucControlTable);
 	
 	ROM_uDMAChannelAssign(UDMA_CH11_SSI0TX);
-	ROM_uDMAChannelAssign(UDMA_CH25_SSI1TX);
+/*	ROM_uDMAChannelAssign(UDMA_CH25_SSI1TX);
 	ROM_uDMAChannelAssign(UDMA_CH13_SSI2TX);
-	ROM_uDMAChannelAssign(UDMA_CH15_SSI3TX);
+	ROM_uDMAChannelAssign(UDMA_CH15_SSI3TX); */
 	
-	ssi_udma_channel_config(11, 0);
-	ssi_udma_channel_config(25, 1);
-	ssi_udma_channel_config(13, 2);
-	ssi_udma_channel_config(15, 3);
+	ssi_udma_channel_config(11);
+/*	ssi_udma_channel_config(25);
+	ssi_udma_channel_config(13);
+	ssi_udma_channel_config(15); */
 
 	ROM_SSIDMAEnable(SSI0_BASE, SSI_DMA_TX);
-	ROM_SSIDMAEnable(SSI1_BASE, SSI_DMA_TX);
+/*	ROM_SSIDMAEnable(SSI1_BASE, SSI_DMA_TX);
 	ROM_SSIDMAEnable(SSI2_BASE, SSI_DMA_TX);
-	ROM_SSIDMAEnable(SSI3_BASE, SSI_DMA_TX);
+	ROM_SSIDMAEnable(SSI3_BASE, SSI_DMA_TX); */
 
-	//Enable the SSIs after configuring anything around them.
-	SSIEnable(SSI0_BASE);
-	SSIEnable(SSI1_BASE);
-	SSIEnable(SSI2_BASE);
-	SSIEnable(SSI3_BASE);
+	/* Enable the SSIs after configuring anything around them. */
+	ROM_SSIEnable(SSI0_BASE);
+/*	ROM_SSIEnable(SSI1_BASE);
+	ROM_SSIEnable(SSI2_BASE);
+	ROM_SSIEnable(SSI3_BASE); */
 
 	UARTprintf("Booted.\n");
 
-    while(1){
-    }
+	while(1);
 }
