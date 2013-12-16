@@ -107,9 +107,9 @@ void SSI0IntHandler(void) {
 
     if(!ROM_uDMAChannelIsEnabled(11)){
 		/* A TX DMA transfer was completed */
-		/* FIXME */
+		/* FIXME actually, just set a flag here and kick off when all four controllers signal completion.*/
 		/* Wait 1.2ms for the WS2801s to latch (the datasheet specifies at least 500µs) */
-		SysCtlDelay(60000);
+		SysCtlDelay(20000);
 		kickoff_transfers();
 	}
 }
@@ -244,12 +244,6 @@ int main(void) {
 	GPIOPinConfigure(GPIO_PA5_SSI0TX);
 	ROM_GPIOPinTypeSSI(GPIO_PORTA_BASE, GPIO_PIN_2 | GPIO_PIN_5);
 
-	/* Configure SSI0..3 for the ws2801's SPI-like protocol */
-	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI0);
-	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI1);
-	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI2);
-	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI3);
-
 	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
 	GPIOPinConfigure(GPIO_PB4_SSI2CLK);
 	GPIOPinConfigure(GPIO_PB7_SSI2TX);
@@ -263,13 +257,19 @@ int main(void) {
 	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
 	GPIOPinConfigure(GPIO_PF2_SSI1CLK);
 	GPIOPinConfigure(GPIO_PF1_SSI1TX);
-	ROM_GPIOPinTypeSSI(GPIO_PORTF_BASE, GPIO_PIN_0 | GPIO_PIN_3);
+	ROM_GPIOPinTypeSSI(GPIO_PORTF_BASE, GPIO_PIN_2 | GPIO_PIN_1);
+
+	/* Configure SSI0..3 for the ws2801's SPI-like protocol */
+	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI0);
+	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI1);
+	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI2);
+	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI3);
 
 	/* 200kBd */
-	SSIConfigSetExpClk(SSI0_BASE, ROM_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 200000, 8);
-	SSIConfigSetExpClk(SSI1_BASE, ROM_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 200000, 8);
-	SSIConfigSetExpClk(SSI2_BASE, ROM_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 200000, 8);
-	SSIConfigSetExpClk(SSI3_BASE, ROM_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 200000, 8);
+	SSIConfigSetExpClk(SSI0_BASE, ROM_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 1000000, 8);
+	SSIConfigSetExpClk(SSI1_BASE, ROM_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 1000000, 8);
+	SSIConfigSetExpClk(SSI2_BASE, ROM_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 1000000, 8);
+	SSIConfigSetExpClk(SSI3_BASE, ROM_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 1000000, 8);
 
 	/* Configure the µDMA controller for use by the SPI interface */
 	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_UDMA);
