@@ -40,6 +40,7 @@
 #include "utils/uartstdio.h"
 #include "utils/ustdlib.h"
 #include "usb_bulk_structs.h"
+#include <string.h>
 
 #define CRATE_WIDTH		5
 #define CRATE_HEIGHT	4
@@ -48,7 +49,6 @@
 #define BUS_COUNT		4
 #define BYTES_PER_PIXEL	3
 #define BUS_ROWS		(CRATES_Y*CRATE_HEIGHT)
-#define BUS_COLUMNS		(CRATES_X*CRATE_WIDTH)
 #define CRATES_PER_BUS	(CRATES_X*CRATES_Y)
 #define CRATE_SIZE		(CRATE_WIDTH*CRATE_HEIGHT)
 #define BUS_SIZE		(CRATES_PER_BUS*CRATE_SIZE*BYTES_PER_PIXEL)
@@ -101,9 +101,16 @@ void SysTickIntHandler(void) {
 
 /* Will be called when a DMA transfer is complete */
 void SSI0IntHandler(void) {
+	/* FIXME is this necessary? */
+    unsigned long ssistatus = ROM_SSIIntStatus(SSI0_BASE, 1);
+    ROM_SSIIntClear(SSI0_BASE, ssistatus);
+
     if(!ROM_uDMAChannelIsEnabled(11)){
 		/* A TX DMA transfer was completed */
 		/* FIXME */
+		/* Wait 1.2ms for the WS2801s to latch (the datasheet specifies at least 500µs) */
+		SysCtlDelay(60000);
+		kickoff_transfers();
 	}
 }
 
@@ -150,20 +157,20 @@ unsigned long framebuffer_read(void *data, unsigned long len) {
 		return len;
 	}
 
-	/* Mirror crate map for the display's right half */
+	// Mirror crate map for the display's right half
 	if(bus >= BUS_COUNT/2)
 		fb->crate_x = CRATES_X - fb->crate_x - 1;
 
+	unsigned int crate	= CRATE_MAP[fb->crate_x + fb->crate_y*CRATES_X];
 	for(unsigned int x=0; x<CRATE_WIDTH; x++){
 		for(unsigned int y=0; y<CRATE_HEIGHT; y++){
-			unsigned int crate	= CRATE_MAP[fb->crate_x + fb->crate_y*CRATES_X];
-			unsigned int bottle	= BOTTLE_MAP[x%CRATE_WIDTH + (y%CRATE_HEIGHT)*CRATE_WIDTH];
-			unsigned int src	= (bus*BUS_SIZE + crate*CRATE_SIZE + bottle)*3;
-			unsigned int dst	= (bus*BUS_SIZE + y*BUS_COLUMNS + x)*3;
-			/* Copy r, g and b data */
-			framebuffer[src]	 = fb->rgb_data[dst];
-			framebuffer[src + 1] = fb->rgb_data[dst + 1];
-			framebuffer[src + 2] = fb->rgb_data[dst + 2];
+			unsigned int bottle	= BOTTLE_MAP[x + y*CRATE_WIDTH];
+			unsigned int dst	= bus*BUS_SIZE + (crate*CRATE_SIZE + bottle)*3;
+			unsigned int src	= (y*CRATE_WIDTH + x)*3;
+			// Copy r, g and b data
+			framebuffer[dst]	 = fb->rgb_data[src];
+			framebuffer[dst + 1] = fb->rgb_data[src + 1];
+			framebuffer[dst + 2] = fb->rgb_data[src + 2];
 		}
 	}
 
@@ -267,7 +274,7 @@ int main(void) {
 	/* Configure the µDMA controller for use by the SPI interface */
 	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_UDMA);
 	ROM_SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_UDMA);
-	ROM_IntEnable(INT_UDMAERR); // Enable µDMA error interrupt
+	// FIXME what do we need this for? ROM_IntEnable(INT_UDMAERR); // Enable µDMA error interrupt
 	ROM_uDMAEnable();
 	ROM_uDMAControlBaseSet(ucControlTable);
 	
@@ -285,6 +292,8 @@ int main(void) {
 /*	ROM_SSIDMAEnable(SSI1_BASE, SSI_DMA_TX);
 	ROM_SSIDMAEnable(SSI2_BASE, SSI_DMA_TX);
 	ROM_SSIDMAEnable(SSI3_BASE, SSI_DMA_TX); */
+
+    ROM_IntEnable(INT_SSI0);
 
 	/* Enable the SSIs after configuring anything around them. */
 	ROM_SSIEnable(SSI0_BASE);
