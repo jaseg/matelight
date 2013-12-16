@@ -71,7 +71,7 @@ unsigned char framebuffer[BUS_COUNT*BUS_SIZE];
 unsigned long framebuffer_read(void *data, unsigned long len);
 /* Kick off DMA transfer from RAM to SPI interfaces */
 void kickoff_transfers(void);
-void kickoff_transfer(unsigned int channel, unsigned int offset);
+void kickoff_transfer(unsigned int channel, unsigned int offset, int base);
 void ssi_udma_channel_config(unsigned int channel);
 
 unsigned char ucControlTable[1024] __attribute__ ((aligned(1024)));
@@ -157,7 +157,7 @@ unsigned long framebuffer_read(void *data, unsigned long len) {
 		return len;
 	}
 
-	// Mirror crate map for the display's right half
+	/* Mirror crate map for the display's right half */
 	if(bus >= BUS_COUNT/2)
 		fb->crate_x = CRATES_X - fb->crate_x - 1;
 
@@ -180,14 +180,14 @@ unsigned long framebuffer_read(void *data, unsigned long len) {
 }
 
 void kickoff_transfers() {
-	kickoff_transfer(11, 0);
-/*	kickoff_transfer(25, 1);
-	kickoff_transfer(13, 2);
-	kickoff_transfer(15, 3); */
+	kickoff_transfer(11, 0, SSI0_BASE);
+	kickoff_transfer(25, 1, SSI1_BASE);
+	kickoff_transfer(13, 2, SSI2_BASE);
+	kickoff_transfer(15, 3, SSI3_BASE);
 }
 
-void kickoff_transfer(unsigned int channel, unsigned int offset) {
-	ROM_uDMAChannelTransferSet(channel | UDMA_PRI_SELECT, UDMA_MODE_BASIC, framebuffer+BUS_SIZE*offset, (void *)(SSI0_BASE + SSI_O_DR), BUS_SIZE);
+void kickoff_transfer(unsigned int channel, unsigned int offset, int base) {
+	ROM_uDMAChannelTransferSet(channel | UDMA_PRI_SELECT, UDMA_MODE_BASIC, framebuffer+BUS_SIZE*offset, (void *)(base + SSI_O_DR), BUS_SIZE);
 	ROM_uDMAChannelEnable(channel);
 }
 
@@ -246,11 +246,11 @@ int main(void) {
 
 	/* Configure SSI0..3 for the ws2801's SPI-like protocol */
 	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI0);
-/*	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI1);
+	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI1);
 	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI2);
-	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI3); */
+	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI3);
 
-/*	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
+	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
 	GPIOPinConfigure(GPIO_PB4_SSI2CLK);
 	GPIOPinConfigure(GPIO_PB7_SSI2TX);
 	ROM_GPIOPinTypeSSI(GPIO_PORTB_BASE, GPIO_PIN_4 | GPIO_PIN_7);
@@ -263,13 +263,13 @@ int main(void) {
 	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
 	GPIOPinConfigure(GPIO_PF2_SSI1CLK);
 	GPIOPinConfigure(GPIO_PF1_SSI1TX);
-	ROM_GPIOPinTypeSSI(GPIO_PORTF_BASE, GPIO_PIN_0 | GPIO_PIN_3); */
+	ROM_GPIOPinTypeSSI(GPIO_PORTF_BASE, GPIO_PIN_0 | GPIO_PIN_3);
 
 	/* 200kBd */
 	SSIConfigSetExpClk(SSI0_BASE, ROM_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 200000, 8);
-/*	SSIConfigSetExpClk(SSI1_BASE, ROM_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 200000, 8);
+	SSIConfigSetExpClk(SSI1_BASE, ROM_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 200000, 8);
 	SSIConfigSetExpClk(SSI2_BASE, ROM_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 200000, 8);
-	SSIConfigSetExpClk(SSI3_BASE, ROM_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 200000, 8); */
+	SSIConfigSetExpClk(SSI3_BASE, ROM_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 200000, 8);
 
 	/* Configure the µDMA controller for use by the SPI interface */
 	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_UDMA);
@@ -279,27 +279,27 @@ int main(void) {
 	ROM_uDMAControlBaseSet(ucControlTable);
 	
 	ROM_uDMAChannelAssign(UDMA_CH11_SSI0TX);
-/*	ROM_uDMAChannelAssign(UDMA_CH25_SSI1TX);
+	ROM_uDMAChannelAssign(UDMA_CH25_SSI1TX);
 	ROM_uDMAChannelAssign(UDMA_CH13_SSI2TX);
-	ROM_uDMAChannelAssign(UDMA_CH15_SSI3TX); */
+	ROM_uDMAChannelAssign(UDMA_CH15_SSI3TX);
 	
 	ssi_udma_channel_config(11);
-/*	ssi_udma_channel_config(25);
+	ssi_udma_channel_config(25);
 	ssi_udma_channel_config(13);
-	ssi_udma_channel_config(15); */
+	ssi_udma_channel_config(15);
 
 	ROM_SSIDMAEnable(SSI0_BASE, SSI_DMA_TX);
-/*	ROM_SSIDMAEnable(SSI1_BASE, SSI_DMA_TX);
+	ROM_SSIDMAEnable(SSI1_BASE, SSI_DMA_TX);
 	ROM_SSIDMAEnable(SSI2_BASE, SSI_DMA_TX);
-	ROM_SSIDMAEnable(SSI3_BASE, SSI_DMA_TX); */
+	ROM_SSIDMAEnable(SSI3_BASE, SSI_DMA_TX);
 
     ROM_IntEnable(INT_SSI0);
 
 	/* Enable the SSIs after configuring anything around them. */
 	ROM_SSIEnable(SSI0_BASE);
-/*	ROM_SSIEnable(SSI1_BASE);
+	ROM_SSIEnable(SSI1_BASE);
 	ROM_SSIEnable(SSI2_BASE);
-	ROM_SSIEnable(SSI3_BASE); */
+	ROM_SSIEnable(SSI3_BASE);
 
 	UARTprintf("Booted.\n");
 
