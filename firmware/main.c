@@ -72,6 +72,7 @@ unsigned char framebuffer1[BUS_COUNT*BUS_SIZE];
 unsigned char framebuffer2[BUS_COUNT*BUS_SIZE];
 unsigned char *framebuffer_input = framebuffer1;
 unsigned char *framebuffer_output = framebuffer2;
+
 unsigned long framebuffer_read(void *data, unsigned long len);
 /* Kick off DMA transfer from RAM to SPI interfaces */
 void kickoff_transfers(void);
@@ -83,15 +84,8 @@ unsigned char ucControlTable[1024] __attribute__ ((aligned(1024)));
 volatile unsigned long g_ulSysTickCount = 0;
 
 #ifdef DEBUG
-unsigned long g_ulUARTRxErrors = 0;
-#endif
-
-//Debug output is available via UART0 if DEBUG is defined during build.
-#ifdef DEBUG
-//Map all debug print calls to UARTprintf in debug builds.
 #define DEBUG_PRINT UARTprintf
 #else
-//Compile out all debug print calls in release builds.
 #define DEBUG_PRINT while(0) ((int (*)(char *, ...))0)
 #endif
 
@@ -103,20 +97,22 @@ void SysTickIntHandler(void) {
 	g_ulSysTickCount++;
 }
 
-unsigned long RxHandler(void *pvCBData, unsigned long ulEvent, unsigned long ulMsgValue, void *pvMsgData) {
+unsigned long usb_rx_handler(void *pvCBData, unsigned long ulEvent, unsigned long ulMsgValue, void *pvMsgData) {
+	unsigned int read;
 	switch(ulEvent) {
 		case USB_EVENT_CONNECTED:
 			g_bUSBConfigured = true;
 			UARTprintf("Host connected.\n");
-			USBBufferFlush(&g_sRxBuffer);
 			break;
 		case USB_EVENT_DISCONNECTED:
 			g_bUSBConfigured = false;
 			UARTprintf("Host disconnected.\n");
 			break;
 		case USB_EVENT_RX_AVAILABLE:
-			UARTprintf("Handling host data.\n");
-			USBBufferDataRemoved(&g_sRxBuffer, framebuffer_read(pvMsgData, ulMsgValue));
+			//UARTprintf("Handling host data.\n");
+			/* Beware of the cast, it might bite. */
+			read = USBDBulkPacketRead((void *)&g_sBulkDevice, usb_rx_buffer, BULK_BUFFER_SIZE, 1);
+			return framebuffer_read(usb_rx_buffer, read);
 		case USB_EVENT_SUSPEND:
 		case USB_EVENT_RESUME:
 			break;
@@ -136,7 +132,7 @@ typedef struct {
 unsigned long framebuffer_read(void *data, unsigned long len) {
 	if(len < 1)
 		goto length_error;
-	UARTprintf("Rearranging data.\n");
+	//UARTprintf("Rearranging data.\n");
 	FramebufferData *fb = (FramebufferData *)data;
 	if(fb->command == 1){
 		if(len != 1)
@@ -146,6 +142,8 @@ unsigned long framebuffer_read(void *data, unsigned long len) {
 	}else{
 		if(len != sizeof(FramebufferData))
 			goto length_error;
+
+		UARTprintf("Buffer for (%d,%d): ", fb->crate_x, fb->crate_y);
 
 		unsigned int bus = fb->crate_x/CRATES_X;
 		fb->crate_x %= CRATES_X;
@@ -159,18 +157,33 @@ unsigned long framebuffer_read(void *data, unsigned long len) {
 		if(bus >= BUS_COUNT/2)
 			fb->crate_x = CRATES_X - fb->crate_x - 1;
 
+		unsigned int offset = BYTES_PER_PIXEL*(fb->crate_x * CRATE_SIZE + fb->crate_y * CRATES_X * CRATE_SIZE);
+		/*for(unsigned char *p=framebuffer_input+offset; p<framebuffer_input+sizeof(fb->rgb_data); p++){
+			*p = fb->rgb_data[0];
+		}*/
+		unsigned char *d = framebuffer_input+offset;
+		unsigned char *s = fb->rgb_data;
+		unsigned int count = sizeof(fb->rgb_data);
+		while(count--){
+			UARTprintf("%02x ", *s);
+			*d++ = *s++;
+		}
+		UARTprintf("\n");
+		//memcpy(framebuffer_input+offset, fb->rgb_data, sizeof(fb->rgb_data));
+		/*
 		unsigned int crate	= CRATE_MAP[fb->crate_x + fb->crate_y*CRATES_X];
 		for(unsigned int x=0; x<CRATE_WIDTH; x++){
 			for(unsigned int y=0; y<CRATE_HEIGHT; y++){
 				unsigned int bottle	= BOTTLE_MAP[x + y*CRATE_WIDTH];
 				unsigned int dst	= bus*BUS_SIZE + (crate*CRATE_SIZE + bottle)*3;
 				unsigned int src	= (y*CRATE_WIDTH + x)*3;
-				/* Copy r, g and b data */
+				// Copy r, g and b data
 				framebuffer_input[dst]	   = fb->rgb_data[src];
 				framebuffer_input[dst + 1] = fb->rgb_data[src + 1];
 				framebuffer_input[dst + 2] = fb->rgb_data[src + 2];
 			}
 		}
+		*/
 	}
 	return len;
 length_error:
@@ -195,9 +208,10 @@ void kickoff_transfers() {
 	framebuffer_input = tmp;
 	/* Re-schedule DMA transfers */
 	kickoff_transfer(11, 0, SSI0_BASE);
-	kickoff_transfer(25, 1, SSI1_BASE);
+	/*kickoff_transfer(25, 1, SSI1_BASE);
 	kickoff_transfer(13, 2, SSI2_BASE);
 	kickoff_transfer(15, 3, SSI3_BASE);
+	*/
 }
 
 inline void kickoff_transfer(unsigned int channel, unsigned int offset, int base) {
@@ -249,7 +263,6 @@ int main(void) {
 	MAP_SysTickEnable();
 
 	/* Configure USB */
-	USBBufferInit((tUSBBuffer *)&g_sRxBuffer);
 	USBStackModeSet(0, USB_MODE_FORCE_DEVICE, 0);
 	USBDBulkInit(0, (tUSBDBulkDevice *)&g_sBulkDevice);
 
@@ -258,7 +271,7 @@ int main(void) {
 	MAP_GPIOPinConfigure(GPIO_PA5_SSI0TX);
 	MAP_GPIOPinTypeSSI(GPIO_PORTA_BASE, GPIO_PIN_2 | GPIO_PIN_5);
 
-	MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
+	/*MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
 	MAP_GPIOPinConfigure(GPIO_PB4_SSI2CLK);
 	MAP_GPIOPinConfigure(GPIO_PB7_SSI2TX);
 	MAP_GPIOPinTypeSSI(GPIO_PORTB_BASE, GPIO_PIN_4 | GPIO_PIN_7);
@@ -272,18 +285,21 @@ int main(void) {
 	MAP_GPIOPinConfigure(GPIO_PF2_SSI1CLK);
 	MAP_GPIOPinConfigure(GPIO_PF1_SSI1TX);
 	MAP_GPIOPinTypeSSI(GPIO_PORTF_BASE, GPIO_PIN_2 | GPIO_PIN_1);
+	*/
 
 	/* Configure SSI0..3 for the ws2801's SPI-like protocol */
 	MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI0);
-	MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI1);
+	/*MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI1);
 	MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI2);
 	MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI3);
+	*/
 
 	/* 200kBd */
-	MAP_SSIConfigSetExpClk(SSI0_BASE, MAP_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 1000000, 8);
-	MAP_SSIConfigSetExpClk(SSI1_BASE, MAP_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 1000000, 8);
+	MAP_SSIConfigSetExpClk(SSI0_BASE, MAP_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 200000, 8);
+	/*MAP_SSIConfigSetExpClk(SSI1_BASE, MAP_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 1000000, 8);
 	MAP_SSIConfigSetExpClk(SSI2_BASE, MAP_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 1000000, 8);
 	MAP_SSIConfigSetExpClk(SSI3_BASE, MAP_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 1000000, 8);
+	*/
 
 	/* Configure the µDMA controller for use by the SPI interface */
 	MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_UDMA);
@@ -293,25 +309,29 @@ int main(void) {
 	MAP_uDMAControlBaseSet(ucControlTable);
 	
 	MAP_uDMAChannelAssign(UDMA_CH11_SSI0TX);
-	MAP_uDMAChannelAssign(UDMA_CH25_SSI1TX);
+	/*MAP_uDMAChannelAssign(UDMA_CH25_SSI1TX);
 	MAP_uDMAChannelAssign(UDMA_CH13_SSI2TX);
 	MAP_uDMAChannelAssign(UDMA_CH15_SSI3TX);
+	*/
 	
 	ssi_udma_channel_config(11);
-	ssi_udma_channel_config(25);
+	/*ssi_udma_channel_config(25);
 	ssi_udma_channel_config(13);
 	ssi_udma_channel_config(15);
+	*/
 
 	MAP_SSIDMAEnable(SSI0_BASE, SSI_DMA_TX);
-	MAP_SSIDMAEnable(SSI1_BASE, SSI_DMA_TX);
+	/*MAP_SSIDMAEnable(SSI1_BASE, SSI_DMA_TX);
 	MAP_SSIDMAEnable(SSI2_BASE, SSI_DMA_TX);
 	MAP_SSIDMAEnable(SSI3_BASE, SSI_DMA_TX);
+	*/
 
 	/* Enable the SSIs after configuring anything around them. */
 	MAP_SSIEnable(SSI0_BASE);
-	MAP_SSIEnable(SSI1_BASE);
+	/*MAP_SSIEnable(SSI1_BASE);
 	MAP_SSIEnable(SSI2_BASE);
 	MAP_SSIEnable(SSI3_BASE);
+	*/
 
 	UARTprintf("Booted.\n");
 

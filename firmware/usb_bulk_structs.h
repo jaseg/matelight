@@ -34,11 +34,12 @@
 //*****************************************************************************
 #define BULK_BUFFER_SIZE 256
 
-extern unsigned long RxHandler(void *pvCBData, unsigned long ulEvent,
-                               unsigned long ulMsgValue, void *pvMsgData);
+extern unsigned char usb_rx_buffer[];
+extern tBulkInstance bulk_instance;
 
-extern const tUSBBuffer g_sRxBuffer;
+extern unsigned long usb_rx_handler(void *pvCBData, unsigned long ulEvent,
+		unsigned long ulMsgValue, void *pvMsgData);
+
 extern const tUSBDBulkDevice g_sBulkDevice;
-extern unsigned char g_pucUSBRxBuffer[];
 
 #endif

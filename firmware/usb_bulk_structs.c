@@ -139,9 +139,9 @@ const unsigned char * const g_pStringDescriptors[] =
 // function and the callback data set to our bulk instance structure.
 //
 //*****************************************************************************
-tBulkInstance g_sBulkInstance;
 
-extern const tUSBBuffer g_sRxBuffer;
+tBulkInstance bulk_instance;
+unsigned char usb_rx_buffer[BULK_BUFFER_SIZE];
 
 const tUSBDBulkDevice g_sBulkDevice =
 {
@@ -149,31 +149,12 @@ const tUSBDBulkDevice g_sBulkDevice =
     USB_PID_BULK,
     500,
     USB_CONF_ATTR_SELF_PWR,
-    USBBufferEventCallback,
-    (void *)&g_sRxBuffer,
-    USBBufferEventCallback,
-    (void *)0,
+    usb_rx_handler,
+    0,
+    0,
+    0,
     g_pStringDescriptors,
     NUM_STRING_DESCRIPTORS,
-    &g_sBulkInstance
+	&bulk_instance
 };
 
-//*****************************************************************************
-//
-// Receive buffer (from the USB perspective).
-//
-//*****************************************************************************
-unsigned char g_pucUSBRxBuffer[BULK_BUFFER_SIZE];
-unsigned char g_pucRxBufferWorkspace[USB_BUFFER_WORKSPACE_SIZE];
-const tUSBBuffer g_sRxBuffer =
-{
-    false,                           // This is a receive buffer.
-    RxHandler,                       // pfnCallback
-    (void *)&g_sBulkDevice,          // Callback data is our device pointer.
-    USBDBulkPacketRead,              // pfnTransfer
-    USBDBulkRxPacketAvailable,       // pfnAvailable
-    (void *)&g_sBulkDevice,          // pvHandle
-    g_pucUSBRxBuffer,                // pcBuffer
-    BULK_BUFFER_SIZE,                // ulBufferSize
-    g_pucRxBufferWorkspace           // pvWorkspace
-};
