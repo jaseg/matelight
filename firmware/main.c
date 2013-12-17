@@ -103,21 +103,6 @@ void SysTickIntHandler(void) {
 	g_ulSysTickCount++;
 }
 
-/* Will be called when a DMA transfer is complete */
-void SSI0IntHandler(void) {
-	/* FIXME is this necessary? */
-    unsigned long ssistatus = SSIIntStatus(SSI0_BASE, 1);
-    MAP_SSIIntClear(SSI0_BASE, ssistatus);
-
-    if(!MAP_uDMAChannelIsEnabled(11)){
-		/* A TX DMA transfer was completed */
-		/* FIXME actually, just set a flag here and kick off when all four controllers signal completion.*/
-		/* Wait 1.2ms for the WS2801s to latch (the datasheet specifies at least 500µs) */
-		MAP_SysCtlDelay(20000);
-		kickoff_transfers();
-	}
-}
-
 unsigned long RxHandler(void *pvCBData, unsigned long ulEvent, unsigned long ulMsgValue, void *pvMsgData) {
 	switch(ulEvent) {
 		case USB_EVENT_CONNECTED:
@@ -142,48 +127,68 @@ unsigned long RxHandler(void *pvCBData, unsigned long ulEvent, unsigned long ulM
 }
 
 typedef struct {
+	unsigned char command; /* 0x00 for frame data, 0x01 to initiate latch */
 	unsigned char crate_x;
 	unsigned char crate_y;
 	unsigned char rgb_data[CRATE_SIZE*BYTES_PER_PIXEL];
 } FramebufferData;
 
 unsigned long framebuffer_read(void *data, unsigned long len) {
-	if(len != sizeof(FramebufferData))
-		return len;
+	if(len < 1)
+		goto length_error;
 	UARTprintf("Rearranging data.\n");
 	FramebufferData *fb = (FramebufferData *)data;
+	if(fb->command == 1){
+		if(len != 1)
+			goto length_error;
+		UARTprintf("Starting DMA.\n");
+		kickoff_transfers();
+	}else{
+		if(len != sizeof(FramebufferData))
+			goto length_error;
 
-	unsigned int bus = fb->crate_x/CRATES_X;
-	fb->crate_x %= CRATES_X;
+		unsigned int bus = fb->crate_x/CRATES_X;
+		fb->crate_x %= CRATES_X;
 
-	if(bus > BUS_COUNT || fb->crate_y > CRATES_Y){
-		UARTprintf("Invalid frame index\n");
-		return len;
-	}
+		if(bus > BUS_COUNT || fb->crate_y > CRATES_Y){
+			UARTprintf("Invalid frame index\n");
+			return len;
+		}
 
-	/* Mirror crate map for the display's right half */
-	if(bus >= BUS_COUNT/2)
-		fb->crate_x = CRATES_X - fb->crate_x - 1;
+		/* Mirror crate map for the display's right half */
+		if(bus >= BUS_COUNT/2)
+			fb->crate_x = CRATES_X - fb->crate_x - 1;
 
-	unsigned int crate	= CRATE_MAP[fb->crate_x + fb->crate_y*CRATES_X];
-	for(unsigned int x=0; x<CRATE_WIDTH; x++){
-		for(unsigned int y=0; y<CRATE_HEIGHT; y++){
-			unsigned int bottle	= BOTTLE_MAP[x + y*CRATE_WIDTH];
-			unsigned int dst	= bus*BUS_SIZE + (crate*CRATE_SIZE + bottle)*3;
-			unsigned int src	= (y*CRATE_WIDTH + x)*3;
-			/* Copy r, g and b data */
-			framebuffer_input[dst]	 = fb->rgb_data[src];
-			framebuffer_input[dst + 1] = fb->rgb_data[src + 1];
-			framebuffer_input[dst + 2] = fb->rgb_data[src + 2];
+		unsigned int crate	= CRATE_MAP[fb->crate_x + fb->crate_y*CRATES_X];
+		for(unsigned int x=0; x<CRATE_WIDTH; x++){
+			for(unsigned int y=0; y<CRATE_HEIGHT; y++){
+				unsigned int bottle	= BOTTLE_MAP[x + y*CRATE_WIDTH];
+				unsigned int dst	= bus*BUS_SIZE + (crate*CRATE_SIZE + bottle)*3;
+				unsigned int src	= (y*CRATE_WIDTH + x)*3;
+				/* Copy r, g and b data */
+				framebuffer_input[dst]	   = fb->rgb_data[src];
+				framebuffer_input[dst + 1] = fb->rgb_data[src + 1];
+				framebuffer_input[dst + 2] = fb->rgb_data[src + 2];
+			}
 		}
 	}
-
-	UARTprintf("Starting DMA.\n");
-	kickoff_transfers();
+	return len;
+length_error:
+	UARTprintf("Invalid packet length\n");
 	return len;
 }
 
 void kickoff_transfers() {
+    while(MAP_uDMAChannelIsEnabled(11)
+		|| MAP_uDMAChannelIsEnabled(25)
+		|| MAP_uDMAChannelIsEnabled(13)
+		|| MAP_uDMAChannelIsEnabled(15)){
+		UARTprintf("A DMA tranfer is still running\n");
+		/* Idle for some time to give the µDMA controller a chance to complete its job */
+		SysCtlDelay(5000);
+	}
+	/* Wait 1.2ms (20kCy @ 50MHz) to ensure the WS2801 latch this frame's data */
+	SysCtlDelay(20000);
 	/* Swap buffers */
 	unsigned char *tmp = framebuffer_output;
 	framebuffer_output = framebuffer_input;
@@ -195,7 +200,7 @@ void kickoff_transfers() {
 	kickoff_transfer(15, 3, SSI3_BASE);
 }
 
-void kickoff_transfer(unsigned int channel, unsigned int offset, int base) {
+inline void kickoff_transfer(unsigned int channel, unsigned int offset, int base) {
 	MAP_uDMAChannelTransferSet(channel | UDMA_PRI_SELECT, UDMA_MODE_BASIC, framebuffer_output+BUS_SIZE*offset, (void *)(base + SSI_O_DR), BUS_SIZE);
 	MAP_uDMAChannelEnable(channel);
 }
@@ -301,8 +306,6 @@ int main(void) {
 	MAP_SSIDMAEnable(SSI1_BASE, SSI_DMA_TX);
 	MAP_SSIDMAEnable(SSI2_BASE, SSI_DMA_TX);
 	MAP_SSIDMAEnable(SSI3_BASE, SSI_DMA_TX);
-
-    MAP_IntEnable(INT_SSI0);
 
 	/* Enable the SSIs after configuring anything around them. */
 	MAP_SSIEnable(SSI0_BASE);
