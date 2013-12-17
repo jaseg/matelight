@@ -105,10 +105,10 @@ void SysTickIntHandler(void) {
 /* Will be called when a DMA transfer is complete */
 void SSI0IntHandler(void) {
 	/* FIXME is this necessary? */
-    unsigned long ssistatus = ROM_SSIIntStatus(SSI0_BASE, 1);
-    ROM_SSIIntClear(SSI0_BASE, ssistatus);
+    unsigned long ssistatus = SSIIntStatus(SSI0_BASE, 1);
+    SSIIntClear(SSI0_BASE, ssistatus);
 
-    if(!ROM_uDMAChannelIsEnabled(11)){
+    if(!uDMAChannelIsEnabled(11)){
 		/* A TX DMA transfer was completed */
 		/* FIXME actually, just set a flag here and kick off when all four controllers signal completion.*/
 		/* Wait 1.2ms for the WS2801s to latch (the datasheet specifies at least 500µs) */
@@ -195,38 +195,38 @@ void kickoff_transfers() {
 }
 
 void kickoff_transfer(unsigned int channel, unsigned int offset, int base) {
-	ROM_uDMAChannelTransferSet(channel | UDMA_PRI_SELECT, UDMA_MODE_BASIC, framebuffer_output+BUS_SIZE*offset, (void *)(base + SSI_O_DR), BUS_SIZE);
-	ROM_uDMAChannelEnable(channel);
+	uDMAChannelTransferSet(channel | UDMA_PRI_SELECT, UDMA_MODE_BASIC, framebuffer_output+BUS_SIZE*offset, (void *)(base + SSI_O_DR), BUS_SIZE);
+	uDMAChannelEnable(channel);
 }
 
 void ssi_udma_channel_config(unsigned int channel) {
 	/* Set the USEBURST attribute for the uDMA SSI TX channel.	This will force the controller to always use a burst
 	 * when transferring data from the TX buffer to the SSI.  This is somewhat more effecient bus usage than the default
 	 * which allows single or burst transfers. */
-	ROM_uDMAChannelAttributeEnable(channel, UDMA_ATTR_USEBURST);
+	uDMAChannelAttributeEnable(channel, UDMA_ATTR_USEBURST);
 	/* Configure the SSI Tx µDMA Channel to transfer from RAM to TX FIFO. The arbitration size is set to 4, which
 	 * matches the SSI TX FIFO µDMA trigger threshold. */
-	ROM_uDMAChannelControlSet(channel | UDMA_PRI_SELECT, UDMA_SIZE_8 | UDMA_SRC_INC_8 | UDMA_DST_INC_NONE | UDMA_ARB_4);
+	uDMAChannelControlSet(channel | UDMA_PRI_SELECT, UDMA_SIZE_8 | UDMA_SRC_INC_8 | UDMA_DST_INC_NONE | UDMA_ARB_4);
 }
 
 int main(void) {
 	/* Enable lazy stacking for interrupt handlers.  This allows floating-point instructions to be used within interrupt
 	 * handlers, but at the expense of extra stack usage. */
-	ROM_FPULazyStackingEnable();
+	FPULazyStackingEnable();
 
 	/* Set clock to PLL at 50MHz */
-	ROM_SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
+	SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
 					   SYSCTL_XTAL_16MHZ);
 
 	/* Configure UART0 pins */
-	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
 	GPIOPinConfigure(GPIO_PA0_U0RX);
 	GPIOPinConfigure(GPIO_PA1_U0TX);
-	ROM_GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+	GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
 
 	/* Enable the GPIO pins for the LED (PF2 & PF3). */
-	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
-	ROM_GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_3|GPIO_PIN_2);
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+	GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_3|GPIO_PIN_2);
 
 	UARTStdioInit(0);
 	UARTprintf("Booting...\n\n");
@@ -234,80 +234,80 @@ int main(void) {
 	g_bUSBConfigured = false;
 
 	/* Enable the GPIO peripheral used for USB, and configure the USB pins. */
-	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
-	ROM_GPIOPinTypeUSBAnalog(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5);
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
+	GPIOPinTypeUSBAnalog(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5);
 
 	/* Enable the system tick. FIXME do we need this? */
-	ROM_SysTickPeriodSet(ROM_SysCtlClockGet() / SYSTICKS_PER_SECOND);
-	ROM_SysTickIntEnable();
-	ROM_SysTickEnable();
+	SysTickPeriodSet(SysCtlClockGet() / SYSTICKS_PER_SECOND);
+	SysTickIntEnable();
+	SysTickEnable();
 
 	/* Configure USB */
 	USBBufferInit((tUSBBuffer *)&g_sRxBuffer);
 	USBStackModeSet(0, USB_MODE_FORCE_DEVICE, 0);
 	USBDBulkInit(0, (tUSBDBulkDevice *)&g_sBulkDevice);
 
-	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
 	GPIOPinConfigure(GPIO_PA2_SSI0CLK);
 	GPIOPinConfigure(GPIO_PA5_SSI0TX);
-	ROM_GPIOPinTypeSSI(GPIO_PORTA_BASE, GPIO_PIN_2 | GPIO_PIN_5);
+	GPIOPinTypeSSI(GPIO_PORTA_BASE, GPIO_PIN_2 | GPIO_PIN_5);
 
-	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
 	GPIOPinConfigure(GPIO_PB4_SSI2CLK);
 	GPIOPinConfigure(GPIO_PB7_SSI2TX);
-	ROM_GPIOPinTypeSSI(GPIO_PORTB_BASE, GPIO_PIN_4 | GPIO_PIN_7);
+	GPIOPinTypeSSI(GPIO_PORTB_BASE, GPIO_PIN_4 | GPIO_PIN_7);
 
-	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
 	GPIOPinConfigure(GPIO_PD0_SSI3CLK);
 	GPIOPinConfigure(GPIO_PD3_SSI3TX);
-	ROM_GPIOPinTypeSSI(GPIO_PORTD_BASE, GPIO_PIN_0 | GPIO_PIN_3);
+	GPIOPinTypeSSI(GPIO_PORTD_BASE, GPIO_PIN_0 | GPIO_PIN_3);
 
-	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
 	GPIOPinConfigure(GPIO_PF2_SSI1CLK);
 	GPIOPinConfigure(GPIO_PF1_SSI1TX);
-	ROM_GPIOPinTypeSSI(GPIO_PORTF_BASE, GPIO_PIN_2 | GPIO_PIN_1);
+	GPIOPinTypeSSI(GPIO_PORTF_BASE, GPIO_PIN_2 | GPIO_PIN_1);
 
 	/* Configure SSI0..3 for the ws2801's SPI-like protocol */
-	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI0);
-	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI1);
-	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI2);
-	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI3);
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI0);
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI1);
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI2);
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI3);
 
 	/* 200kBd */
-	SSIConfigSetExpClk(SSI0_BASE, ROM_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 1000000, 8);
-	SSIConfigSetExpClk(SSI1_BASE, ROM_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 1000000, 8);
-	SSIConfigSetExpClk(SSI2_BASE, ROM_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 1000000, 8);
-	SSIConfigSetExpClk(SSI3_BASE, ROM_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 1000000, 8);
+	SSIConfigSetExpClk(SSI0_BASE, SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 1000000, 8);
+	SSIConfigSetExpClk(SSI1_BASE, SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 1000000, 8);
+	SSIConfigSetExpClk(SSI2_BASE, SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 1000000, 8);
+	SSIConfigSetExpClk(SSI3_BASE, SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 1000000, 8);
 
 	/* Configure the µDMA controller for use by the SPI interface */
-	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_UDMA);
-	ROM_SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_UDMA);
-	// FIXME what do we need this for? ROM_IntEnable(INT_UDMAERR); // Enable µDMA error interrupt
-	ROM_uDMAEnable();
-	ROM_uDMAControlBaseSet(ucControlTable);
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_UDMA);
+	SysCtlPeripheralSleepEnable(SYSCTL_PERIPH_UDMA);
+	// FIXME what do we need this for? IntEnable(INT_UDMAERR); // Enable µDMA error interrupt
+	uDMAEnable();
+	uDMAControlBaseSet(ucControlTable);
 	
-	ROM_uDMAChannelAssign(UDMA_CH11_SSI0TX);
-	ROM_uDMAChannelAssign(UDMA_CH25_SSI1TX);
-	ROM_uDMAChannelAssign(UDMA_CH13_SSI2TX);
-	ROM_uDMAChannelAssign(UDMA_CH15_SSI3TX);
+	uDMAChannelAssign(UDMA_CH11_SSI0TX);
+	uDMAChannelAssign(UDMA_CH25_SSI1TX);
+	uDMAChannelAssign(UDMA_CH13_SSI2TX);
+	uDMAChannelAssign(UDMA_CH15_SSI3TX);
 	
 	ssi_udma_channel_config(11);
 	ssi_udma_channel_config(25);
 	ssi_udma_channel_config(13);
 	ssi_udma_channel_config(15);
 
-	ROM_SSIDMAEnable(SSI0_BASE, SSI_DMA_TX);
-	ROM_SSIDMAEnable(SSI1_BASE, SSI_DMA_TX);
-	ROM_SSIDMAEnable(SSI2_BASE, SSI_DMA_TX);
-	ROM_SSIDMAEnable(SSI3_BASE, SSI_DMA_TX);
+	SSIDMAEnable(SSI0_BASE, SSI_DMA_TX);
+	SSIDMAEnable(SSI1_BASE, SSI_DMA_TX);
+	SSIDMAEnable(SSI2_BASE, SSI_DMA_TX);
+	SSIDMAEnable(SSI3_BASE, SSI_DMA_TX);
 
-    ROM_IntEnable(INT_SSI0);
+    IntEnable(INT_SSI0);
 
 	/* Enable the SSIs after configuring anything around them. */
-	ROM_SSIEnable(SSI0_BASE);
-	ROM_SSIEnable(SSI1_BASE);
-	ROM_SSIEnable(SSI2_BASE);
-	ROM_SSIEnable(SSI3_BASE);
+	SSIEnable(SSI0_BASE);
+	SSIEnable(SSI1_BASE);
+	SSIEnable(SSI2_BASE);
+	SSIEnable(SSI3_BASE);
 
 	UARTprintf("Booted.\n");
 
