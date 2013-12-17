@@ -67,7 +67,10 @@ unsigned const char const CRATE_MAP[CRATES_PER_BUS] = {
 #define SYSTICKS_PER_SECOND		100
 #define SYSTICK_PERIOD_MS		(1000 / SYSTICKS_PER_SECOND)
 
-unsigned char framebuffer[BUS_COUNT*BUS_SIZE];
+unsigned char framebuffer1[BUS_COUNT*BUS_SIZE];
+unsigned char framebuffer2[BUS_COUNT*BUS_SIZE];
+unsigned char *framebuffer_input = framebuffer1;
+unsigned char *framebuffer_output = framebuffer2;
 unsigned long framebuffer_read(void *data, unsigned long len);
 /* Kick off DMA transfer from RAM to SPI interfaces */
 void kickoff_transfers(void);
@@ -167,10 +170,10 @@ unsigned long framebuffer_read(void *data, unsigned long len) {
 			unsigned int bottle	= BOTTLE_MAP[x + y*CRATE_WIDTH];
 			unsigned int dst	= bus*BUS_SIZE + (crate*CRATE_SIZE + bottle)*3;
 			unsigned int src	= (y*CRATE_WIDTH + x)*3;
-			// Copy r, g and b data
-			framebuffer[dst]	 = fb->rgb_data[src];
-			framebuffer[dst + 1] = fb->rgb_data[src + 1];
-			framebuffer[dst + 2] = fb->rgb_data[src + 2];
+			/* Copy r, g and b data */
+			framebuffer_input[dst]	 = fb->rgb_data[src];
+			framebuffer_input[dst + 1] = fb->rgb_data[src + 1];
+			framebuffer_input[dst + 2] = fb->rgb_data[src + 2];
 		}
 	}
 
@@ -180,6 +183,11 @@ unsigned long framebuffer_read(void *data, unsigned long len) {
 }
 
 void kickoff_transfers() {
+	/* Swap buffers */
+	unsigned char *tmp = framebuffer_output;
+	framebuffer_output = framebuffer_input;
+	framebuffer_input = tmp;
+	/* Re-schedule DMA transfers */
 	kickoff_transfer(11, 0, SSI0_BASE);
 	kickoff_transfer(25, 1, SSI1_BASE);
 	kickoff_transfer(13, 2, SSI2_BASE);
@@ -187,7 +195,7 @@ void kickoff_transfers() {
 }
 
 void kickoff_transfer(unsigned int channel, unsigned int offset, int base) {
-	ROM_uDMAChannelTransferSet(channel | UDMA_PRI_SELECT, UDMA_MODE_BASIC, framebuffer+BUS_SIZE*offset, (void *)(base + SSI_O_DR), BUS_SIZE);
+	ROM_uDMAChannelTransferSet(channel | UDMA_PRI_SELECT, UDMA_MODE_BASIC, framebuffer_output+BUS_SIZE*offset, (void *)(base + SSI_O_DR), BUS_SIZE);
 	ROM_uDMAChannelEnable(channel);
 }
 
