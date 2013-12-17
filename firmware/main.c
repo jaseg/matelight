@@ -102,14 +102,14 @@ unsigned long usb_rx_handler(void *pvCBData, unsigned long ulEvent, unsigned lon
 	switch(ulEvent) {
 		case USB_EVENT_CONNECTED:
 			g_bUSBConfigured = true;
-			UARTprintf("Host connected.\n");
+			DEBUG_PRINT("Host connected.\n");
 			break;
 		case USB_EVENT_DISCONNECTED:
 			g_bUSBConfigured = false;
-			UARTprintf("Host disconnected.\n");
+			DEBUG_PRINT("Host disconnected.\n");
 			break;
 		case USB_EVENT_RX_AVAILABLE:
-			//UARTprintf("Handling host data.\n");
+			DEBUG_PRINT("Handling host data.\n");
 			/* Beware of the cast, it might bite. */
 			read = USBDBulkPacketRead((void *)&g_sBulkDevice, usb_rx_buffer, BULK_BUFFER_SIZE, 1);
 			return framebuffer_read(usb_rx_buffer, read);
@@ -132,12 +132,12 @@ typedef struct {
 unsigned long framebuffer_read(void *data, unsigned long len) {
 	if(len < 1)
 		goto length_error;
-	//UARTprintf("Rearranging data.\n");
+	DEBUG_PRINT("Rearranging data.\n");
 	FramebufferData *fb = (FramebufferData *)data;
 	if(fb->command == 1){
 		if(len != 1)
 			goto length_error;
-		UARTprintf("Starting DMA.\n");
+		DEBUG_PRINT("Starting DMA.\n");
 		kickoff_transfers();
 	}else{
 		if(len != sizeof(FramebufferData))
@@ -191,10 +191,9 @@ void kickoff_transfers() {
 	framebuffer_input = tmp;
 	/* Re-schedule DMA transfers */
 	kickoff_transfer(11, 0, SSI0_BASE);
-	/*kickoff_transfer(25, 1, SSI1_BASE);
+	kickoff_transfer(25, 1, SSI1_BASE);
 	kickoff_transfer(13, 2, SSI2_BASE);
 	kickoff_transfer(15, 3, SSI3_BASE);
-	*/
 }
 
 inline void kickoff_transfer(unsigned int channel, unsigned int offset, int base) {
@@ -254,7 +253,7 @@ int main(void) {
 	MAP_GPIOPinConfigure(GPIO_PA5_SSI0TX);
 	MAP_GPIOPinTypeSSI(GPIO_PORTA_BASE, GPIO_PIN_2 | GPIO_PIN_5);
 
-	/*MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
+	MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
 	MAP_GPIOPinConfigure(GPIO_PB4_SSI2CLK);
 	MAP_GPIOPinConfigure(GPIO_PB7_SSI2TX);
 	MAP_GPIOPinTypeSSI(GPIO_PORTB_BASE, GPIO_PIN_4 | GPIO_PIN_7);
@@ -268,21 +267,18 @@ int main(void) {
 	MAP_GPIOPinConfigure(GPIO_PF2_SSI1CLK);
 	MAP_GPIOPinConfigure(GPIO_PF1_SSI1TX);
 	MAP_GPIOPinTypeSSI(GPIO_PORTF_BASE, GPIO_PIN_2 | GPIO_PIN_1);
-	*/
 
 	/* Configure SSI0..3 for the ws2801's SPI-like protocol */
 	MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI0);
-	/*MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI1);
+	MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI1);
 	MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI2);
 	MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI3);
-	*/
 
 	/* 200kBd */
-	MAP_SSIConfigSetExpClk(SSI0_BASE, MAP_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 200000, 8);
-	/*MAP_SSIConfigSetExpClk(SSI1_BASE, MAP_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 1000000, 8);
+	MAP_SSIConfigSetExpClk(SSI0_BASE, MAP_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 1000000, 8);
+	MAP_SSIConfigSetExpClk(SSI1_BASE, MAP_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 1000000, 8);
 	MAP_SSIConfigSetExpClk(SSI2_BASE, MAP_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 1000000, 8);
 	MAP_SSIConfigSetExpClk(SSI3_BASE, MAP_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 1000000, 8);
-	*/
 
 	/* Configure the µDMA controller for use by the SPI interface */
 	MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_UDMA);
@@ -292,29 +288,25 @@ int main(void) {
 	MAP_uDMAControlBaseSet(ucControlTable);
 	
 	MAP_uDMAChannelAssign(UDMA_CH11_SSI0TX);
-	/*MAP_uDMAChannelAssign(UDMA_CH25_SSI1TX);
+	MAP_uDMAChannelAssign(UDMA_CH25_SSI1TX);
 	MAP_uDMAChannelAssign(UDMA_CH13_SSI2TX);
 	MAP_uDMAChannelAssign(UDMA_CH15_SSI3TX);
-	*/
 	
 	ssi_udma_channel_config(11);
-	/*ssi_udma_channel_config(25);
+	ssi_udma_channel_config(25);
 	ssi_udma_channel_config(13);
 	ssi_udma_channel_config(15);
-	*/
 
 	MAP_SSIDMAEnable(SSI0_BASE, SSI_DMA_TX);
-	/*MAP_SSIDMAEnable(SSI1_BASE, SSI_DMA_TX);
+	MAP_SSIDMAEnable(SSI1_BASE, SSI_DMA_TX);
 	MAP_SSIDMAEnable(SSI2_BASE, SSI_DMA_TX);
 	MAP_SSIDMAEnable(SSI3_BASE, SSI_DMA_TX);
-	*/
 
 	/* Enable the SSIs after configuring anything around them. */
 	MAP_SSIEnable(SSI0_BASE);
-	/*MAP_SSIEnable(SSI1_BASE);
+	MAP_SSIEnable(SSI1_BASE);
 	MAP_SSIEnable(SSI2_BASE);
 	MAP_SSIEnable(SSI3_BASE);
-	*/
 
 	UARTprintf("Booted.\n");
 
