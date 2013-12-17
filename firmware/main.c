@@ -143,8 +143,6 @@ unsigned long framebuffer_read(void *data, unsigned long len) {
 		if(len != sizeof(FramebufferData))
 			goto length_error;
 
-		UARTprintf("Buffer for (%d,%d): ", fb->crate_x, fb->crate_y);
-
 		unsigned int bus = fb->crate_x/CRATES_X;
 		fb->crate_x %= CRATES_X;
 
@@ -157,20 +155,6 @@ unsigned long framebuffer_read(void *data, unsigned long len) {
 		if(bus >= BUS_COUNT/2)
 			fb->crate_x = CRATES_X - fb->crate_x - 1;
 
-		unsigned int offset = BYTES_PER_PIXEL*(fb->crate_x * CRATE_SIZE + fb->crate_y * CRATES_X * CRATE_SIZE);
-		/*for(unsigned char *p=framebuffer_input+offset; p<framebuffer_input+sizeof(fb->rgb_data); p++){
-			*p = fb->rgb_data[0];
-		}*/
-		unsigned char *d = framebuffer_input+offset;
-		unsigned char *s = fb->rgb_data;
-		unsigned int count = sizeof(fb->rgb_data);
-		while(count--){
-			UARTprintf("%02x ", *s);
-			*d++ = *s++;
-		}
-		UARTprintf("\n");
-		//memcpy(framebuffer_input+offset, fb->rgb_data, sizeof(fb->rgb_data));
-		/*
 		unsigned int crate	= CRATE_MAP[fb->crate_x + fb->crate_y*CRATES_X];
 		for(unsigned int x=0; x<CRATE_WIDTH; x++){
 			for(unsigned int y=0; y<CRATE_HEIGHT; y++){
@@ -183,7 +167,6 @@ unsigned long framebuffer_read(void *data, unsigned long len) {
 				framebuffer_input[dst + 2] = fb->rgb_data[src + 2];
 			}
 		}
-		*/
 	}
 	return len;
 length_error:
