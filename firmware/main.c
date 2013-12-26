@@ -45,12 +45,13 @@
 
 #define CRATE_WIDTH		5
 #define CRATE_HEIGHT	4
-#define CRATES_X		4
-#define CRATES_Y		2
+#define CRATES_X		8
+#define CRATES_Y		4
 #define BUS_COUNT		4
 #define BYTES_PER_PIXEL	3
+#define CRATES_PER_BUS	8
 #define BUS_ROWS		(CRATES_Y*CRATE_HEIGHT)
-#define CRATES_PER_BUS	(CRATES_X*CRATES_Y)
+#define CRATE_COUNT		(CRATES_X*CRATES_Y)
 #define CRATE_SIZE		(CRATE_WIDTH*CRATE_HEIGHT)
 #define BUS_SIZE		(CRATES_PER_BUS*CRATE_SIZE*BYTES_PER_PIXEL)
 unsigned const char const BOTTLE_MAP[CRATE_SIZE] = {
@@ -60,9 +61,11 @@ unsigned const char const BOTTLE_MAP[CRATE_SIZE] = {
 	17, 16, 15, 14, 13
 };
 
-unsigned const char const CRATE_MAP[CRATES_PER_BUS] = {
-	6, 4, 2, 0,
-	7, 5, 3, 1
+unsigned const char const CRATE_MAP[CRATE_COUNT] = {
+	0x37, 0x35, 0x33, 0x31, 0x21, 0x23, 0x25, 0x27,
+	0x36, 0x34, 0x32, 0x30, 0x20, 0x22, 0x24, 0x26,
+	0x16, 0x14, 0x12, 0x10, 0x00, 0x02, 0x04, 0x06,
+	0x17, 0x15, 0x13, 0x11, 0x01, 0x03, 0x05, 0x07
 };
 
 #define SYSTICKS_PER_SECOND		100
@@ -143,19 +146,14 @@ unsigned long framebuffer_read(void *data, unsigned long len) {
 		if(len != sizeof(FramebufferData))
 			goto length_error;
 
-		unsigned int bus = fb->crate_x/CRATES_X;
-		fb->crate_x %= CRATES_X;
-
-		if(bus > BUS_COUNT || fb->crate_y > CRATES_Y){
+		if(fb->crate_x > CRATES_X || fb->crate_y > CRATES_Y){
 			UARTprintf("Invalid frame index\n");
 			return len;
 		}
 
-		/* Mirror crate map for the display's right half */
-		if(bus >= BUS_COUNT/2)
-			fb->crate_x = CRATES_X - fb->crate_x - 1;
-
-		unsigned int crate	= CRATE_MAP[fb->crate_x + fb->crate_y*CRATES_X];
+		unsigned int idx = CRATE_MAP[fb->crate_x + fb->crate_y*CRATES_X];
+		unsigned int bus = idx>>4;
+		unsigned int crate = idx & 0x0F;
 		for(unsigned int x=0; x<CRATE_WIDTH; x++){
 			for(unsigned int y=0; y<CRATE_HEIGHT; y++){
 				unsigned int bottle	= BOTTLE_MAP[x + y*CRATE_WIDTH];
