@@ -55,10 +55,10 @@
 #define CRATE_SIZE		(CRATE_WIDTH*CRATE_HEIGHT)
 #define BUS_SIZE		(CRATES_PER_BUS*CRATE_SIZE*BYTES_PER_PIXEL)
 unsigned const char const BOTTLE_MAP[CRATE_SIZE] = {
-	 0,  1,  2,  3,  4,
-	19,  8,  7,  6,  5,
+	17, 16, 15, 14, 13,
 	18,  9, 10, 11, 12,
-	17, 16, 15, 14, 13
+	19,  8,  7,  6,  5,
+	 0,  1,  2,  3,  4
 };
 
 unsigned const char const CRATE_MAP[CRATE_COUNT] = {
