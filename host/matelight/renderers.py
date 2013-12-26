@@ -5,6 +5,7 @@ except ImportError:
 	import re
 from PIL import Image
 from pixelterm import xtermcolors
+from config import *
 
 default_palette = [
 		(0x00, 0x00, 0x00), # 0 normal colors
@@ -72,7 +73,10 @@ class CharGenerator:
 
 	def generate_char(self, c, now):
 		fg, bg = self.bg, self.bg if self.blink and now%1.0 < 0.3 else self.fg, self.bg
-		...
+		glyph = font.glyphs_by_codepoint[c]
+		# Please forgive the string manipulation below.
+		lookup = {'0': bg, '1': fg}
+		return [ list(map(lookup.get, FONT_PADDED_BINARY(int(row, 16)))) for row in glyph.get_data() ]
 
 	def generate(self, now):
 		chars = [self.generate_char(c, now) for c in self.text]
