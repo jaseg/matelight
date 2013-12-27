@@ -9,23 +9,27 @@ DEFAULT_SCROLL_SPEED = 4
 # Pixels to leave blank between two letters
 LETTER_SPACING = 1
 
-FONT = bdflib.reader.read_bdf(open('fonts/5x8.bdf').readlines())
-FONT_WIDTH = 5
+#FONT = bdflib.reader.read_bdf(open('fonts/5x8.bdf').readlines())
+#FONT_WIDTH = 5
 
 # Computed value
-FONT_PADDED_BINARY = ('{:0'+str(FONT_WIDTH+'b}').format
+#FONT_PADDED_BINARY = ('{:0'+str(FONT_WIDTH+'b}').format
 
 # Display geometry
 # ┌─────────┐ ┌───┬───┬  ⋯  ┬───┬───┐
-# │1 o o o 5│ │ 1 │   │     │   │16 │
+# │1 o o o 5│ │ 1 │   │     │   │ 8│
 # │6 o o o o│ ├───┼───┼  ⋯  ┼───┼───┤
-# │o o o o o│ │17 │   │     │   │32 │
-# │o o o o20│ └───┴───┴  ⋯  ┴───┴───┘
-# └─────────┘
+# │o o o o o│ │ 9 │   │     │   │16 │
+# │o o o o20│ ├───┼───┼  ⋯  ┼───┼───┤
+# └─────────┘ │17 │   │     │   │24 │
+#             ├───┼───┼  ⋯  ┼───┼───┤
+#             │25 │   │     │   │32 │
+#             └───┴───┴  ⋯  ┴───┴───┘
+
 CRATE_WIDTH = 5
 CRATE_HEIGHT = 4
-CRATES_X = 16
-CRATES_Y = 2
+CRATES_X = 8
+CRATES_Y = 4
 
 # Computed values
 DISPLAY_WIDTH = CRATES_X * CRATE_WIDTH
