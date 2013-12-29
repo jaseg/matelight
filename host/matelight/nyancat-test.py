@@ -20,7 +20,7 @@ bar = np.array(im.getdata(), dtype=np.uint8)
 foo = bar.reshape((DISPLAY_HEIGHT, 300, 3))
 
 while True:
-	for i in range(20):
+	for i in range(60):
 		for data in datas:
 			host.sendframe(data)
 			time.sleep(0.1)

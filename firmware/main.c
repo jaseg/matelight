@@ -61,6 +61,13 @@ unsigned const char const BOTTLE_MAP[CRATE_SIZE] = {
 	 0,  1,  2,  3,  4
 };
 
+unsigned const char const FUCKED_UP_BOTTLE_MAP[CRATE_SIZE] = {
+	3,  4,  5,  6,  7,
+	2, 11, 10,  9,  8,
+	1, 12, 13, 14, 15,
+	0, 19, 18, 17, 16
+};
+
 unsigned const char const CRATE_MAP[CRATE_COUNT] = {
 	0x37, 0x35, 0x33, 0x31, 0x21, 0x23, 0x25, 0x27,
 	0x36, 0x34, 0x32, 0x30, 0x20, 0x22, 0x24, 0x26,
@@ -157,6 +164,8 @@ unsigned long framebuffer_read(void *data, unsigned long len) {
 		for(unsigned int x=0; x<CRATE_WIDTH; x++){
 			for(unsigned int y=0; y<CRATE_HEIGHT; y++){
 				unsigned int bottle	= BOTTLE_MAP[x + y*CRATE_WIDTH];
+				if(idx == 0x07)
+					bottle = FUCKED_UP_BOTTLE_MAP[x + y*CRATE_WIDTH];
 				unsigned int dst	= bus*BUS_SIZE + (crate*CRATE_SIZE + bottle)*3;
 				unsigned int src	= (y*CRATE_WIDTH + x)*3;
 				// Copy r, g and b data
