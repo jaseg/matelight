@@ -1,0 +1,51 @@
+Consonants (Pulmonic)
+
+                  Bilabial Labiodental Dental Alveolar Postalveolar Retroflex Palatal Velar Uvular Pharyngeal Glottal
+Plosive             p  b                        t  d                  ʈ  ɖ      c  ɟ    k ɡ   q ɢ                 ʔ
+Nasal                  m         ɱ                 n                     ɳ         ɲ    ŋ       ɴ
+Trill                  ʙ                           r                                           ʀ
+Tap/Flap                                           ɾ                     ɽ
+Fricative           ɸ  β       f v      θ ð      s z      ʃ ʒ         ʂ  ʐ      ç  ʝ    x ɣ   χ ʁ     ħ ʕ        h ɦ
+Lat. fricative                                   ɬ ɮ
+Approximant                      ʋ                 ɹ                     ɻ         j            ɰ
+Lateral approximant                                l                     ɭ         ʎ            ʟ
+   
+Consonants (non-pulmonic)
+
+   Clicks                          Voiced implosives            Ejectives
+   ʘ Bilabial                      ɓ Bilabial                   ʼ as in:
+   ǀ Dental                        ɗ Dental/alveolar            pʼ Bilabial
+   ǃ Alveolar (retroflex)          ʄ Palatal                    tʼ Dental/aveolar
+   ǂ Palatoaveolar (alveolar)      ɠ Velar                      kʼ Velar
+   ǁ Aveolar lateral (lateral)     ʛ Uvular                     sʼ Alveolar fricative
+   
+Suprasegmantals
+
+   ˈ Primary stress
+   ˌ Secondary stress
+   ː Long
+   ˑ Half-long
+   ˘ Extra-short
+   . Syllable break
+   
+Vowels
+
+                     Front  Central Back
+   Close              i y    ɨ ʉ    ɯ u
+                         ɪ ʏ      ʊ
+   Close-mid            e ø   ɘ ɵ   ɤ o
+   Mid                         ə
+   Open-mid               ɛ œ  ɜ ɞ  ʌ ɔ
+                           æ     ɐ
+   Open                     a ɶ     ɑ ɒ
+
+Other Symbols
+
+ʍ    Voiceless labial-velar fricative
+w    Voiced labial-velar fricative
+ɥ    Voiced labial-platal approximant
+ʢ    Voiceless epiglottal fricative
+ʡ    Voiced epiglottal fricative
+ɕ, ʑ Alveolo-palatal fricatives
+ɺ    Alveolar lateral flap
+ɧ    Simeltaneous ʃ and x

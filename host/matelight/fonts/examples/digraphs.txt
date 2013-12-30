@@ -1,0 +1,35 @@
+Latin Digraphs and Ligatures in ISO10646-1
+
+A short table of ligatures and digraphs follows. Some of these may not be
+ligatures/digraphs in the technical sense, (for example, æ is a seperate
+letter in English), but visually they behave that way.
+
+AÆE : U+00C6
+aæe : U+00E6
+ſßs : U+00DF
+IĲJ : U+0132
+iĳj : U+0133
+ʼŉn : U+0149
+OŒE : U+0152
+oœe : U+0153
+DǱZ : U+01F1
+Dǲz : U+01F2
+dǳz : U+01F3
+DǄŽ : U+01C4
+Dǅž : U+01C5
+dǆž : U+01C6
+LǇJ : U+01C7
+Lǈj : U+01C8
+lǉj : U+01C9
+NǊJ : U+01CA
+Nǋj : U+01CB
+nǌj : U+01CC
+dʣz : U+02A3
+dʤʒ : U+02A4
+dʥʑ : U+02A5
+tʦs : U+02A6
+tʧʃ : U+02A7
+tʨɕ : U+02A8
+fʩŋ : U+02A9
+lʪs : U+02AA
+lʫz : U+02AB

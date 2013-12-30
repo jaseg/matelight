@@ -1,0 +1,521 @@
+
+Design issued related to the -misc-fixed-*-iso10646-1 fonts
+-----------------------------------------------------------
+
+$Id: issues.txt,v 1.11 2006-01-05 20:31:45+00 mgk25 Rel $
+
+This file contains various technical notes from people who have
+contributed glyphs.
+
+---------------------------------------------------------------------------
+Here are some short notes on certain problematic glyphs that people
+easily make wrong:
+
+  U+0027 (APOSTROPHE)
+    This should be a neutral (vertical) glyph, usually a single
+    stroke version of U+0022 (QUOTATION MARK).
+
+  U+0030 - U+0039
+    Please make these the same height as capital letters, and make
+    <zero> different from <capital-o> usually by making it narrower,
+    or, perhaps by adding a diagonal stroke inside it.
+
+  U+0042, U+0044, U+0045, U+0046 (B, D, E, F)
+    Please lose the bogus pseudo-serifs in fonts that aren't otherwise
+    serifed, especially in small fonts.
+
+  U+004A (J)
+    The top should look like :  ### , not ###
+                                 #          #
+
+  U+0060, U+00B4 (GRAVE ACCENT and ACUTE ACCENT)
+    These should be mirrored versions of each other.
+
+  U+0061 (a)
+    Be careful if you make this is cursive a. See notes on U+0251.
+
+  (accented capitals)
+    You may have to make the capitals smaller for this to work. Do so.
+    Leave a gap between the accent and the capital, unless this would
+    make the capital the same height as regular small letters, which must
+    be avoided if all possible.
+
+  U+00DF (sharp s)
+    This is NOT a <beta>. It is not supposed to look like one. It looks
+    more like a ligature of a <long-s> (U+017f) followed by a
+    <round-s> (U+0073) with a line linking the tops of them.
+
+  U+010f (lowercase d with caron)
+    This is potentially ugly. Feel free to reduce the height of the <d> if
+    needed.
+
+  U+0123 (lowercase g with cedilla)
+    Don't bother drawing a cedilla below, as the tail of the g would
+    interfere. Instead, follow the <lithuanian?> convention, and place a
+    turned comma above (U+0312).
+
+  U+0145, U+0146 (n with cedilla)
+    It is OK for the cedilla not to be attached to the letter!
+
+  U+018D (small turned delta)
+    ?What should this look like?
+
+  U+0194 (capital gamma)
+    ?What should this look like?
+
+  U+01A2 (oi)
+    ?What should this look like?
+
+  U+01A5 (oi)
+    ?What should this look like?
+
+  U+01A9 (capital esh)
+    Yes, this is a <Sigma>.
+
+  U+01C3 (retroflex click)
+   Try and differentiate from punctuation, by making the stroke
+   thicker at the top.
+
+  U+01C4, U+01C5 (dz with caron)
+    If you need to shrink the capital, it is probably best to shrink all
+    the capitals in both these glyphs.
+  
+  U+01BF (small wynn)
+    Like a p, but with a diagonal line at the bottom of the loop?
+    This used to be used to represent /w/ in English, but got abandoned
+    due to confusion with <p> and <thorn>, so don't worry if it looks too
+    much like p : history agrees with you. ;)  
+
+  U+01E2, U+01E3 (ae with macron)
+    The line should be above both the A and the E components.
+
+  U+0222, U+0223 (ou)
+    Like an 8, but with a broken top. In reality, it is a ligature of
+    <Omicron> and <Upsilon>, so if you have enough pixels, try making 
+    it look like that.
+
+  U+0251, U+0252 (script a, turned script a)
+    If the default <a> in your font has is a <script-a>, try to make this
+    an exaggerated <script-a>. If <alpha> is not the same as <a>, try
+    using the same glyph as that.
+
+  U+0253 (b with hook)
+    This should look like a regular b, but with a hook from the left stroke,
+    extending for maybe 80% of the width of the letter.
+
+  U+025F (small letter turned f)
+    The hook of the inverted-f should be below the base-line, and the
+    highpart of the glyph should be at x-height.
+    
+    Note : this is listed in "Phonetic Symbol Guide", as being a barred
+    dotless j.
+
+  U+0260 (g with hook)
+    This should be a modified U+0261, not a modified <g>, which might have
+    a loop below.
+
+  U+0264 (rams horn)
+    This needs to be graphically distinct from <gamma>, and <ipa-gamma>.
+    Emphasize the horns. It is normal character height.
+  
+  U+0265 (small letter turned h)
+    ! This needs investigating !
+  
+  U+0278 (small letter phi)
+    No superflous serfis, please.
+
+  U+027[ABCD], Where, wrt baseline?
+  
+         (turned r with long leg,
+	  turned r with hook,
+	  r with long leg,
+	  r with tail)
+
+    Follow 9x18. It is right.
+
+  U+0284 (small letter dotless j with stroke and hook?)
+    See 9x18. Yes, it's an esh with a line across near the bottom of the
+    vertical.
+
+  U+0288 (t with retroflex hook)
+    Extends below baseline.
+
+  U+028B (v with hook)
+    The closest leter to this is called "SCRIPT V" in PHONETIC SYMBOL GUIDE.
+    See 9x18.
+
+  U+0299 (small capital b)
+    Lose the serifs.
+  
+  U+0283 (turned y)
+    Above x-line.
+  
+  U+029E (small letter turned k)
+    Goes below the baseline.
+
+  U+03C6, U+03D5 (GREEK SMALL LETTER PHI and GREEK PHI SYMBOL)
+    Note that the example glyphs for these two were accidentally
+    swapped in Unicode 2.0 and ISO 10646-1:1993.
+
+  U+22C0 .. U+22C3 (n-ary and/or/intersection/union)
+    These should just be larger versions of U+2227 .. U+222B,
+    same size as n-ary sum (U+2211) and product (U+220F). The
+    bold glyphs in Unicode 2.0 are bad, the glyphs in
+    ISO 10646-1:1993 are fine.
+
+  U+2308 ..U+2305 (floor and ceiling)
+    These should be like square brackets with the top or bottom
+    bar missing. (Rounding operators, invented by Iversion for APL)
+
+  U+2400 .. U+2424 (ASCII control code pictures)
+    The letters should be arranged diagonally falling like in
+    ISO 10646-1:1993 and not on a horizontal line like in Unicode 2.0.
+
+---------------------------------------------------------------------------
+A note by Markus Kuhn on quotation marks and grave/acute accents
+(1999-07-16):
+
+The old misc-fixed-* fonts had the characters
+
+  U+0027  '  APOSTROPHE
+
+and
+
+  U+0060  `  GRAVE ACCENT
+
+shaped as mirror images of each other, such that they could also be
+(ab)used as single opening and closing quotation marks. This was
+probably influenced by how TeX uses these characters and sanctioned by
+very early versions of ASCII, but it conflicts with many other
+well-established conventions, namely
+
+  - the requirement that U+0060 GRAVE ACCENT and U+00B4 ACUTE ACCENT
+    logically have to be mirrored versions of each other and that they
+    both should look like accents (straight lines) and not like curly
+    quotation marks
+  - how these characters appear in the ISO 646, 8859, 10646, etc. standards
+  - the Unicode 2.1 requirement that U+0027 be a "neutral (vertical) glyph
+    having mixed usage"
+  - the way these characters are commonly depicted on keyboards
+  - the way these characters appear in many other commercial Unicode fonts
+  - the fact that Unicode provides two other characters, namely
+
+      U+2018  LEFT SINGLE QUOTATION MARK
+      U+2019  RIGHT SINGLE QUOTATION MARK
+
+    in order to provide the directional curly quotation marks and also
+    the curly apostrophe that TeX users are used to enter with ` and '
+  - the fact that U+2018 and U+2019 are in practice already very
+    widely used for these purposes (e.g., by Microsoft Word)
+  - the fact that the semantics of U+0027 corresponds to the
+    vertical apostrophe and undirected quotation mark found on
+    old typewriters
+  - the fact that Adobe officially maps Unicode to Postscript's accent,
+    apostrophe and quotation characters as follows:
+
+      U+0022 = quotedbl             QUOTATION MARK
+      U+0027 = quotesingle          APOSTROPHE
+      U+0060 = grave                GRAVE ACCENT
+      U+00B4 = acute                ACUTE ACCENT
+      U+2018 = quoteleft            LEFT SINGLE QUOTATION MARK
+      U+2019 = quoteright           RIGHT SINGLE QUOTATION MARK
+      U+201A = quotesinglbase       SINGLE LOW-9 QUOTATION MARK
+      U+201B = quotereversed        SINGLE HIGH-REVERSED-9 QUOTATION MARK
+      U+201C = quotedblleft         LEFT DOUBLE QUOTATION MARK
+      U+201D = quotedblright        RIGHT DOUBLE QUOTATION MARK
+      U+201E = quotedblbase         DOUBLE LOW-9 QUOTATION MARK
+
+
+Therefore, the shapes of the U+0027 and U+0060 characters have been
+fixed in the X11 *-iso10646-1 font versions and differ from those of
+the old Latin-1 versions of the same fonts. This will discourage
+people from continued abuse of the GRAVE ACCENT character as a single
+left quotation mark, which looks really horrible with many non-X11
+fonts in use today. Please fix software that writes text such as
+`quote' and better let it write 'quote' instead (or even use U+2018
+and U+2019 if Unicode output is feasible).
+
+References:
+
+  - Michael Everson: On the apostrophe and quotation mark, with a note on
+    Egyptian transliteration characters, Working Group Document
+    ISO/IEC JTC1/SC2/WG2 N2043, 1999-07-24,
+    <http://www.dkuug.dk/JTC1/SC2/WG2/docs/n2043.pdf>
+
+  - http://partners.adobe.com/asn/developer/typeforum/unicodegn.html
+
+---------------------------------------------------------------------------
+From: Birger Langkjer <birger.langkjer@image.dk>
+Date: Fri, 6 Aug 1999 15:21:55 +0200
+
+About accents: We discussed it before and decided we didn't have to be
+overly respectfull of the original font. I went down to the library and
+borrowed some books in Polish and Turkish to look at accented
+characters in their natural setting so to speak. As a result I moved
+all the accents on lower case letters down a pixel so that they are
+relative to the letter rather than on the same height. It really
+looks a lot better now that I look at it again.
+
+---------------------------------------------------------------------------
+
+It is a good idea to have some references for various scripts.
+
+International Phonetic Alphabet (IPA):
+
+  http://www.arts.gla.ac.uk/IPA/fullchart.html
+
+  A good book to read is :
+  
+   "Phonetic Symbol Guide", 2nd edition, by Geoffrey K. Pullum, and
+   William A. Ladusaw, ISBN 0-226-68536-5. Much of the advice on IPA
+   characters is derived from this.
+
+Armenian:
+
+  http://moon.yerphi.am/~hovik/Armenian/
+
+Others?
+
+New Unicode 3.0 characters are described in the various ISO 10646-1
+(draft) amendments available on
+
+  http://www.indigo.ie/egt/standards/iso10646/pdf/
+
+Many people agree that the glyphs found in ISO 10646-1:1993 are better
+and more typical for the represented scripts than thoise found in the
+Unicode 2.0 book. If you have a change to get access to ISO
+10646-1:1993, then use it.
+---------------------------------------------------------------------------
+Comments by Constantine Stathopoulos <cstath@irismedia.gr>
+(1998-10-19):
+
+I have made some changes from what would be considered as strictly
+correct:
+
+1) Capital combinations with psili+oxia, psili+varia, dasia+oxia and
+dasia+varia (e.g. U+1F0A to U+1F0E) are definitely incorrect compared
+to the uncombined/spacing diacritics (U+1FCD, U+1FCE, U+1FDD and
+U+1FDE). That was necessary due to the 6x12 cell limitation, but is of
+no consequence, since in such fonts accented capitals are typed as two
+characters: spacing diacritic + unaccented capital letter.
+
+2) Ypogegrammeni in combined small letters (e.g. U+1F87) is also
+different from the uncombined/spacing ypogegrammeni (U+037A) due to
+the matrix limitations. The resulting characters are not incorrect;
+they are just different in style, but completely recognizable.
+
+3) Combined capital letters with the so-called "prosgegrammeni" (e.g.
+U+1F88 to U+1F8F) have been designed as capitals with "ypogegrammeni",
+just like in the charts of the Unicode Consortium. There is a major
+issue here, but I had no choice anyway due to the matrix limitations.
+Those who are familiar with those characters will know what to do; the
+rest will not care.
+
+4) For the Coptic letters I have used the charts of the Unicode
+Consortium as a model.
+
+---------------------------------------------------------------------------
+From: "Constantine Stathopoulos" <cstath@irismedia.gr>
+Date: Mon, 16 Aug 1999 19:41:26 +0300
+Subject: Greek phi mixup
+
+Markus Kuhn wrote: 
+> What troubles me a bit is that you have U+03C6
+> and U+03d5 exchanged compared to how they are shown in both the ISO
+> 10646 and Unicode standards. This might confuse some people, especially
+> TeX users. How do other Unicode fonts (e.g., Microsoft) handle this?
+
+ELOT's opinion (mine and other Greeks', too) has always been that
+characters U+03D0 to U+03D6 and U+03F0 to U+03F3 are just glyph
+variations and should NOT have been included in the standard. As it
+is, however, one should put the basic (most used) glyph in U+03C6 (or
+U+03B2, U+03B8, etc.) and the alternative (less used) glyph in U+03D5
+(or U+03D0, U+03D1, etc.). In the case of PHI the open glyph is used
+in 95% of fonts, so my choice reflects the way the Greeks print their
+texts. Monotype's WGL4 fonts (MS Windows Times, Arial, Courier) also
+use the open PHI glyph, since they have been designed after old Greek
+Monotype fonts. On the other hand, Monotype's Arial MS Unicode
+(distributed with Office 2000) treats PHI the other way round;
+however, Arial MS Unicode is a test Unicode font, not a real practice
+font and has been designed by copying the images in the Unicode
+charts. Its designers were probably not well familiar with the
+Greek script.
+
+[...]
+
+I sent a paper to Asmus Freytag some time ago on his request. It is
+possible that the images/glyphs will be switched in Unicode 3.0.
+Anyway, feel free to bring the matter to the Unicode list, if you
+wish.
+
+For these and other issues, I would highly recommend Dr. Haralambous'
+"From Unicode to Typography, a Case Study: the Greek Script,
+Proceedings of the 11th Unicode Conference, Boston, 1999" available at
+<http://genepi.louis-jean.com/omega/boston99.pdf>. (Caveat: the file
+is 4 MB big!)
+
+Dr. Haralambous is a Doctor of Mathematics and a TeX expert (co-author
+of Omega). A significant part of his paper is dedicated to Greek in
+Mathematics.
+
+---------------------------------------------------------------------------
+Date: Wed, 18 Aug 1999 20:15:26 -0700
+From: Asmus Freytag <asmusf@ix.netcom.com>
+Subject: Re: Greek phi mixup
+
+This has been reported before, and we have independently verified that
+other implementations from different and competing major vendors also 'fix'
+this one quietly. Therefore these glyphs will be swapped Unicode 3.0 and
+the next printing of ISO 10646.
+
+This is an editorial correction of misplaced glyphs, not a change in
+character assignment. The fact that so many organizations and individuals
+independently concluded that what was there must be wrong and fixed it the
+same way underscores that the nature of the charaters themselves was
+sufficiently obvious from context and character name.
+---------------------------------------------------------------------------
+From: Birger Langkjer <birger.langkjer@image.dk>
+Date: Tue, 21 Sep 1999 16:17:11 +0200
+
+After experiencing some critism of the Unicode charts, I decided to
+redesign the armenian glyphs for helvR12 based on a chart I found on
+http://moon.yerphi.am/~hovik/Armenian/ArmSCII-7.gif
+
+Unless someone finds a better chart or finds some faults with it,
+these glyphs should be canonical, and the other fonts should be made
+to reflect them IMHO.
+---------------------------------------------------------------------------
+From: Theppitak Karoonboonyanan <thep@links.nectec.or.th>
+
+The Unicode 2.0 book is not quite good a reference for Thai glyphs. I
+found the ones in ISO/IEC 10646-1:1993 (first edition) much more
+perfect.
+---------------------------------------------------------------------------
+From: Serge Winitzki <S.Winitzki@damtp.cam.ac.uk>
+Date: Fri, 15 Oct 1999 21:20:05 +0100 (BST)
+Subject: Cyrillic issues
+
+Cyrillic letters occupy 0400 to 04FF.
+
+About the "historic" Cyrillic characters: The following characters are
+very, very historic and obsolete (i.e. basically only used in research
+on pre-1700 texts): 0460, 0461, 0464--046F, 0476--0486.
+
+The characters 0462, 0463, 0470--0475 were still in use in 1900 and
+some books used 0462, 0463, 0472, 0473 actually as late as 1940
+(outside of the USSR). I would consider the latter four characters as
+still marginally useful (e.g. for quotations) although the
+contemporary Russian does not use them.
+
+About shapes of individual letters:
+
+U+0431 Cyrillic small be: make sure it's either a small version of
+U+0411 Cyrillic capital Be, or an alternative shape that must be
+distinct from the digit 6.
+
+U+0414, U+0434 Cyrillic De: although it's of Greek "delta" origin, it
+does not need to be triangular at all; in fact it is not triangular in
+most contemporary fonts. It should look more like U+041B, U+043B
+Cyrillic EL on top of a clockwise rotated '[' character.
+
+U+0417, U+0437 Cyrillic Ze: make sure it's distinct from Cyrillic E
+and from digit 3 (although it should rather resemble the latter).
+
+U+043A Cyrillic small Ka: must have "x height" (unlike Latin "k") but
+otherwise is very similar.
+
+U+041B, U+043B Cyrillic EL: make sure it's distinct from U+041F,
+U+043F Cyrillic Pe, either by the ascender at left, or by a slightly
+smoother shape of its top.
+
+U+041F, U+043F Cyrillic Pe: both capital and lowercase versions must
+be of the same shape as U+03A0 Greek Capital Pi.
+
+U+0444 Cyrillic small Ef: the lowercase Ef must have a stem that
+extends below the line, and above to "cap height".
+
+U+0426, U+0429, U+0446, U+0449 Cyrillic Tse and Shcha: the descender
+should, if possible, be attached to the right of the letter. If not
+possible (small fonts, letter Shcha), it's ok to have it below the
+rightmost vertical line.
+
+U+042A, U+044A Cyrillic hard sign: if possible, make the top line
+larger, since it's the only distinction from U+042C, U+044C Cyrillic
+soft sign.
+
+U+042B, U+044B Cyrillic Yeru: if font size is small, it is permissible
+for the two disjoint pieces to touch.
+
+U+0409, U+0459 Cyrillic LJE: since it's a combination of Cyrillic EL
+and Cyrillic soft sign, its left portion should not look like Cyrillic
+Pe but rather like Cyrillic El (when possible).
+
+U+0462, U+0463 Cyrillic Yat: the lower portion of the letter should be
+exactly like Cyrillic soft sign, the height of the dash should be the
+same as the "x height", and the stem should extend to "cap height"
+above it.
+
+U+0472 U+0473 Cyrillic small fita: it should have "x height" (unlike
+its parent, the lowercase Greek "theta", which is of "cap height"),
+essentially it is an "o" with a dash inside. It is not really
+necessary to have a broken dash line there either.
+---------------------------------------------------------------------------
+From: Markus Kuhn <Markus.Kuhn@cl.cam.ac.uk>
+Date: 2000-12-07
+Subject: Terminal characters
+
+Background information on the new terminal emulator characters
+in Unicode 3.2 can be found in
+
+  ftp://kermit.columbia.edu/kermit/ucsterminal/ucsterminal.txt
+  ftp://kermit.columbia.edu/kermit/ucsterminal/terminal-exhibits.pdf
+  http://www.columbia.edu/kermit/standards.html
+---------------------------------------------------------------------------
+From: jg@pa.dec.com (Jim Gettys)
+Date: Tue, 29 May 2001 10:05:24 -0700
+Subject: Re: history of -misc-fixed-* fonts
+
+> Do you have any recollection where 6x13 and the other -misc-fixed-*
+> fonts came from originally? Who made them or who might know who did?
+
+I don't honestly remember, for sure...  They may have come off of the VS100's
+that X first run on.  They may have been freely available fonts from that
+era.
+
+I'd be surprised if Bob's memory was any better than mine on the topic.
+
+--
+Jim Gettys
+Technology and Corporate Development
+Compaq Computer Corporation
+jg@pa.dec.com
+---------------------------------------------------------------------------
+Subject: Re: history of -misc-fixed-* fonts
+From: Bob Scheifler - SMI Software Development <rws@east.sun.com>
+Date: Fri, 1 Jun 2001 15:26:25 -0400
+
+> Do you have any recollection where 6x13 and the other -misc-fixed-*
+> fonts came from originally? Who made them or who might know who did?
+
+My memory of who did what fonts is gone, but here's what
+Stephen Gildea has to say:
+
+I think I did once know who wrote the fonts, but I've forgotten now.
+
+The classics 6x10, 8x13 and 9x15 may have come from DEC.
+They have DEC VT100 drawing characters in the 1-31 range.
+
+I remember 6x13 was added in R4.
+
+I myself wrote 5x7 and the ASCII portions of 7x13 and 7x13B.
+
+Thomas Bagli of Germany did the Latin 1 extension for 6x13, 7x13,
+8x13, 9x15, and their bold counterparts.
+I wrote the Latin 1 for nil2, 6x10, and 10x20.
+
+NCD contributed the ASCII part of 10x20.  I think Jim Fulton wrote it.
+
+Don Knuth (!) contributed tweaks to 9x15B.
+
+- Bob
+---------------------------------------------------------------------------

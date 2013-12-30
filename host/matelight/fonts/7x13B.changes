@@ -1,0 +1,126 @@
+
+RCS file: RCS/7x13B.bdf,v
+Working file: 7x13B.bdf
+head: 1.27
+branch:
+locks: strict
+access list:
+symbolic names:
+keyword substitution: kv
+total revisions: 27;	selected revisions: 27
+description:
+ISO 10646 ext. of -Misc-Fixed-Bold-R-Normal--13-120-75-75-C-70-ISO8859-1
+----------------------------
+revision 1.27
+date: 2002-11-08 20:42:37+00;  author: mgk25;  state: Rel;  lines: +1743 -3
+Thai added by Theppitak Karoonboonyanan <thep@linux.thai.net>
+----------------------------
+revision 1.26
+date: 2002-08-26 18:05:49+01;  author: mgk25;  state: Exp;  lines: +2 -2
+Replaced email with URL
+----------------------------
+revision 1.25
+date: 2001-04-03 13:22:08+01;  author: mgk25;  state: Exp;  lines: +43 -4
+removed UNDERLINE_POSITION property because of dubious value and because
+of dubious specification in XLFD spec (caused trouble with Emacs 21)
+added U+03F4 GREEK CAPITAL THETA SYMBOL and U+03F5 GREEK LUNATE EPSILON
+SYMBOL (Unicode 3.1)
+----------------------------
+revision 1.24
+date: 2001-02-17 17:32:57+00;  author: mgk25;  state: Exp;  lines: +82 -2
+Added DEC VT100 horizontal scan lines U+23BA..U+23BD
+----------------------------
+revision 1.23
+date: 2000-09-03 02:48:54+01;  author: mgk25;  state: Exp;  lines: +2 -2
+soft hyphen (U+00AD) now has same glyph as HYPHEN (U+2010)
+----------------------------
+revision 1.22
+date: 1999-12-13 10:50:31+00;  author: mgk25;  state: Rel;  lines: +84 -4
+ISO/IEC CD 8859-16 repertoire completed (U+0218-021B added)
+----------------------------
+revision 1.21
+date: 1999-11-20 17:59:07+00;  author: mgk25;  state: Rel;  lines: +544 -4
+CP1258 completed (Vietnamese)
+----------------------------
+revision 1.20
+date: 1999-11-07 15:51:24+00;  author: mgk25;  state: Exp;  lines: +62 -42
+various fixes after TARGET1 proofreading
+----------------------------
+revision 1.19
+date: 1999-11-06 18:15:38+00;  author: mgk25;  state: Exp;  lines: +28 -26
+left-adjustment checked (minor fixes)
+----------------------------
+revision 1.18
+date: 1999-10-30 19:52:15+01;  author: mgk25;  state: Exp;  lines: +3 -23
+DEL (0x7f) removed and DEFAULT_CHAR fixed
+----------------------------
+revision 1.17
+date: 1999-10-30 19:06:44+01;  author: mgk25;  state: Exp;  lines: +11 -694
+Removed characters that are not in Unicode 3.0
+----------------------------
+revision 1.16
+date: 1999-10-11 12:21:36+01;  author: mgk25;  state: Exp;  lines: +32 -31
+Various fixes to collections 1-3
+----------------------------
+revision 1.15
+date: 1999-08-28 15:06:27+01;  author: mgk25;  state: Rel;  lines: +163 -3
+minor fixes
+----------------------------
+revision 1.14
+date: 1999-08-23 08:58:49+01;  author: mgk25;  state: Exp;  lines: +58 -58
+Accents on lowercase letters lowered by
+Birger Langkjer <birger.langkjer@image.dk>
+----------------------------
+revision 1.13
+date: 1999-08-16 17:21:37+01;  author: mgk25;  state: Exp;  lines: +106 -6
+TARGET1 completed by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.12
+date: 1999-08-16 15:34:55+01;  author: mgk25;  state: Exp;  lines: +6579 -1378
+Revision of all Greek characters by
+Constantine Stathopoulos <cstath@irismedia.gr>
+----------------------------
+revision 1.11
+date: 1999-08-15 21:34:42+01;  author: mgk25;  state: Exp;  lines: +1010 -90
+More glyphs by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.10
+date: 1999-08-07 00:33:28+01;  author: mgk25;  state: Exp;  lines: +179 -179
+stylistic changes and fixes by Birger Langkjer <birger.langkjer@image.dk>
+----------------------------
+revision 1.9
+date: 1999-08-04 08:22:26+01;  author: mgk25;  state: Exp;  lines: +5184 -1764
+More glyphs by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.8
+date: 1999-08-02 23:00:14+01;  author: mgk25;  state: Exp;  lines: +1884 -4
+Cyrillic by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.7
+date: 1999-07-23 12:19:07+01;  author: mgk25;  state: Exp;  lines: +361 -360
+fixed apostrophe and quotes
+----------------------------
+revision 1.6
+date: 1999-06-21 19:10:56+01;  author: mgk25;  state: Exp;  lines: +46 -6
+fixed DEFAULT_CHAR
+----------------------------
+revision 1.5
+date: 1999-06-08 09:38:12+01;  author: mgk25;  state: Exp;  lines: +383 -3
+CP1252 repertoire completed by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.4
+date: 1998-12-05 20:30:03+00;  author: mgk25;  state: Exp;  lines: +162 -2
+merged with 7x13Beuro.bdf to cover ISO 8859-15
+----------------------------
+revision 1.3
+date: 1998-12-05 19:10:13+00;  author: mgk25;  state: Exp;  lines: +1727 -227
+8859-7 characters by Constantine Stathopoulos <cstath@irismedia.gr>
+----------------------------
+revision 1.2
+date: 1998-12-05 17:54:46+00;  author: mgk25;  state: Exp;  lines: +1250 -1235
+converted to ISO 10646-1.
+----------------------------
+revision 1.1
+date: 1998-12-05 11:36:43+00;  author: mgk25;  state: Exp;
+Initial revision
+=============================================================================

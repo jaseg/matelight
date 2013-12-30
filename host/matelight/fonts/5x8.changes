@@ -1,0 +1,148 @@
+
+RCS file: RCS/5x8.bdf,v
+Working file: 5x8.bdf
+head: 1.32
+branch:
+locks: strict
+access list:
+symbolic names:
+keyword substitution: kv
+total revisions: 32;	selected revisions: 32
+description:
+ISO 10646-1 version of -misc-fixed-medium-r-normal--8-80-75-75-c-50-iso646.1991-irv
+----------------------------
+revision 1.32
+date: 2006-01-05 20:03:17+00;  author: mgk25;  state: Rel;  lines: +31 -31
+moved wide angle brackets U+2329/232A to mathematical angle brackets
+U+27E8/27E9
+----------------------------
+revision 1.31
+date: 2004-11-28 20:04:01+00;  author: mgk25;  state: Rel;  lines: +17 -2
+U+20AF Drachma sign
+----------------------------
+revision 1.30
+date: 2002-11-10 19:12:30+00;  author: mgk25;  state: Rel;  lines: +168 -3
+Completed TARGET2 (Unicode 3.2)
+----------------------------
+revision 1.29
+date: 2002-08-26 18:05:49+01;  author: mgk25;  state: Exp;  lines: +2 -2
+Replaced email with URL
+----------------------------
+revision 1.28
+date: 2001-04-03 13:37:48+01;  author: mgk25;  state: Exp;  lines: +32 -2
+added U+03F4 GREEK CAPITAL THETA SYMBOL and U+03F5 GREEK LUNATE EPSILON
+SYMBOL (Unicode 3.1)
+----------------------------
+revision 1.27
+date: 2001-03-25 00:11:49+00;  author: mgk25;  state: Exp;  lines: +77 -2
+added DEC VT100 horizontal scan lines U+23BA..U+23BD (Unicode 3.2)
+----------------------------
+revision 1.26
+date: 2000-09-03 02:48:54+01;  author: mgk25;  state: Exp;  lines: +2 -2
+soft hyphen (U+00AD) now has same glyph as HYPHEN (U+2010)
+----------------------------
+revision 1.25
+date: 2000-09-02 18:25:06+01;  author: mgk25;  state: Exp;  lines: +422 -2
+Robert Brady <robert@susu.org.uk> added a number of glyphs that Pablo
+Saratxaga requested. In particular -
+
+  01 A0-A1 AF-B0 B5-B6 D1-D2 E6-E7
+  04 92-93 96-97 9A-9B A2-A3 AE-B3 B6-B7 BA-BB D8-D9 E2-E3 E8-E9 EE-EF
+----------------------------
+revision 1.24
+date: 1999-12-13 10:32:58+00;  author: mgk25;  state: Rel;  lines: +62 -2
+ISO/IEC CD 8859-16 repertoire completed (U+0218-021B added)
+----------------------------
+revision 1.23
+date: 1999-11-20 17:59:07+00;  author: mgk25;  state: Rel;  lines: +137 -2
+CP1258 completed (Vietnamese)
+----------------------------
+revision 1.22
+date: 1999-11-20 12:37:38+00;  author: mgk25;  state: Exp;  lines: +6 -6
+TARGET2 proofreading completed
+----------------------------
+revision 1.21
+date: 1999-11-20 11:53:04+00;  author: mgk25;  state: Exp;  lines: +4 -4
+minor fixes
+----------------------------
+revision 1.20
+date: 1999-11-20 10:00:25+00;  author: mgk25;  state: Exp;  lines: +2 -2
+XLFD fixed
+----------------------------
+revision 1.19
+date: 1999-11-20 09:03:00+00;  author: mgk25;  state: Exp;  lines: +637 -67
+TARGET2 completed by M. Kuhn
+----------------------------
+revision 1.18
+date: 1999-11-20 08:17:49+00;  author: mgk25;  state: Exp;  lines: +1161 -36
+More glyphs by Birger Langkjer <birger.langkjer@image.dk>
+----------------------------
+revision 1.17
+date: 1999-11-17 00:29:16+00;  author: mgk25;  state: Exp;  lines: +1434 -159
+WGL4 completed by M. Kuhn
+----------------------------
+revision 1.16
+date: 1999-11-16 23:43:19+00;  author: mgk25;  state: Exp;  lines: +3533 -128
+various characters towards TARGET2 added by
+Birger Langkjer <birger.langkjer@image.dk>
+----------------------------
+revision 1.15
+date: 1999-11-07 18:03:32+00;  author: mgk25;  state: Exp;  lines: +2 -2
+various corrections during TARGET2 proofreading
+----------------------------
+revision 1.14
+date: 1999-11-07 15:51:24+00;  author: mgk25;  state: Exp;  lines: +8 -8
+various fixes after TARGET1 proofreading
+----------------------------
+revision 1.13
+date: 1999-11-06 18:50:42+00;  author: mgk25;  state: Exp;  lines: +2004 -2002
+left adjustment
+----------------------------
+revision 1.12
+date: 1999-10-30 19:44:13+01;  author: mgk25;  state: Exp;  lines: +2 -483
+comments fixed
+----------------------------
+revision 1.11
+date: 1999-10-22 11:44:47+01;  author: mgk25;  state: Exp;  lines: +1222 -129
+a few more CP437 characters added
+----------------------------
+revision 1.10
+date: 1999-10-16 12:42:10+01;  author: mgk25;  state: Exp;  lines: +79 -4
+completed U+037x and TARGET1
+----------------------------
+revision 1.9
+date: 1999-10-11 12:21:36+01;  author: mgk25;  state: Exp;  lines: +424 -363
+Various fixes to collections 1-3
+----------------------------
+revision 1.8
+date: 1999-10-07 09:11:27+01;  author: mgk25;  state: Exp;  lines: +3843 -3
+Braille by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.7
+date: 1999-09-27 18:38:46+01;  author: mgk25;  state: Exp;  lines: +3 -3
+Some Latin consistency changes by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.6
+date: 1999-09-27 09:58:57+01;  author: mgk25;  state: Exp;  lines: +2423 -953
+TARGET1 completed by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.5
+date: 1999-09-17 19:51:07+01;  author: mgk25;  state: Exp;  lines: +3744 -204
+more glyphs by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.4
+date: 1999-09-17 18:16:52+01;  author: mgk25;  state: Exp;  lines: +4 -4
+U+201F fixed
+----------------------------
+revision 1.3
+date: 1999-09-17 15:20:28+01;  author: mgk25;  state: Exp;  lines: +2149 -34
+CP1252 added by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.2
+date: 1999-09-17 00:17:46+01;  author: mgk25;  state: Exp;  lines: +774 -309
+numerous characters revised
+----------------------------
+revision 1.1
+date: 1999-09-16 23:43:22+01;  author: mgk25;  state: Exp;
+Initial revision
+=============================================================================

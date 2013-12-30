@@ -1,0 +1,21 @@
+# Characters available so far in 8x13O
+
+# Plane 00
+# Rows	Positions (Cells)
+
+  00	20-7E A0-FF
+  01	00-FF
+  02	00-1F 22-33 50-AD B0-EE
+  03	74-75 7A 7E 84-8A 8C 8E-A1 A3-CE D0-D7 DA-DD F0-F5
+  04	00-7F 90-91
+  0E	01-3A 3F-5B
+  1E	00-9B F2-F3
+  20	00-0A 10-27 2F-46 48-4D A0 A7-AF
+  21	02-04 09 0D-0F 13-1A 1D 22 26-27 53-83 90-95
+  22	12 60 64-65
+  24	09-0F 1B 24
+  26	6A
+  FB	00-06
+  FF	FD
+
+# Number of characters in above table: 1294

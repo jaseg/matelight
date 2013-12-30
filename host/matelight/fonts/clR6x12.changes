@@ -1,0 +1,132 @@
+
+RCS file: RCS/clR6x12.bdf,v
+Working file: clR6x12.bdf
+head: 1.29
+branch:
+locks: strict
+access list:
+symbolic names:
+keyword substitution: kv
+total revisions: 29;	selected revisions: 29
+description:
+ISO10646-1 extension of
+-Schumacher-Clean-Medium-R-Normal--12-120-75-75-C-60-ISO646.1991-IRV
+----------------------------
+revision 1.29
+date: 2006-01-05 20:24:11+00;  author: mgk25;  state: Rel;  lines: +1 -77
+removed East Asian "wide" characters
+----------------------------
+revision 1.28
+date: 2006-01-05 20:03:17+00;  author: mgk25;  state: Exp;  lines: +38 -38
+moved wide angle brackets U+2329/232A to mathematical angle brackets
+U+27E8/27E9
+----------------------------
+revision 1.27
+date: 2004-11-28 20:04:01+00;  author: mgk25;  state: Exp;  lines: +20 -1
+U+20AF Drachma sign
+----------------------------
+revision 1.26
+date: 2002-11-10 19:20:07+00;  author: mgk25;  state: Rel;  lines: +211 -2
+Completed TARGET2 (Unicode 3.2)
+----------------------------
+revision 1.25
+date: 2001-03-25 00:37:58+00;  author: mgk25;  state: Exp;  lines: +77 -1
+added DEC VT100 horizontal scan lines U+23BA..U+23BD (Unicode 3.2)
+----------------------------
+revision 1.24
+date: 1999-12-13 10:50:31+00;  author: mgk25;  state: Rel;  lines: +77 -1
+ISO/IEC CD 8859-16 repertoire completed (U+0218-021B added)
+----------------------------
+revision 1.23
+date: 1999-11-20 12:37:38+00;  author: mgk25;  state: Exp;  lines: +2 -2
+TARGET2 proofreading completed
+----------------------------
+revision 1.22
+date: 1999-11-20 11:51:49+00;  author: mgk25;  state: Exp;  lines: +158 -25
+a few more math characters
+----------------------------
+revision 1.21
+date: 1999-11-08 15:35:58+00;  author: mgk25;  state: Exp;  lines: +39 -1
+added characters missing from recently extended TARGET
+----------------------------
+revision 1.20
+date: 1999-11-07 18:03:32+00;  author: mgk25;  state: Exp;  lines: +78 -78
+various corrections during TARGET2 proofreading
+----------------------------
+revision 1.19
+date: 1999-11-07 15:51:24+00;  author: mgk25;  state: Exp;  lines: +12 -12
+various fixes after TARGET1 proofreading
+----------------------------
+revision 1.18
+date: 1999-11-06 21:34:16+00;  author: mgk25;  state: Exp;  lines: +5084 -5082
+left adjusted
+----------------------------
+revision 1.17
+date: 1999-10-30 19:38:14+01;  author: mgk25;  state: Exp;  lines: +10 -675
+Removed characters that are not in Unicode 3.0
+----------------------------
+revision 1.16
+date: 1999-10-30 14:30:55+01;  author: mgk25;  state: Exp;  lines: +100 -105
+changes by Birger Langkjer <birger.langkjer@image.dk>
+----------------------------
+revision 1.15
+date: 1999-10-16 12:40:05+01;  author: mgk25;  state: Exp;  lines: +65 -5
+completed U+037x
+----------------------------
+revision 1.14
+date: 1999-10-15 23:16:45+01;  author: mgk25;  state: Exp;  lines: +12 -12
+Cyrillic revised by Serge Winitzki <S.Winitzki@damtp.cam.ac.uk>
+----------------------------
+revision 1.13
+date: 1999-09-24 11:04:28+01;  author: mgk25;  state: Exp;  lines: +222 -32
+Russian characters cleaned up and extended by
+Serge Winitzki <S.Winitzki@damtp.cam.ac.uk>
+----------------------------
+revision 1.12
+date: 1999-08-02 17:47:26+01;  author: mgk25;  state: Exp;  lines: +765 -81
+TARGET2 completed by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.11
+date: 1999-07-19 18:18:53+01;  author: mgk25;  state: Exp;  lines: +1492 -124
+More characters by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.10
+date: 1999-07-13 12:56:43+01;  author: mgk25;  state: Exp;  lines: +2590 -1145
+WGL4+MATH completed by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.9
+date: 1999-07-05 15:55:14+01;  author: mgk25;  state: Exp;  lines: +5246 -2548
+Cyrillic and miscellaneous other by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.8
+date: 1999-06-24 20:47:26+01;  author: mgk25;  state: Exp;  lines: +1043 -130
+Glyphs added by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.7
+date: 1999-06-21 18:06:50+01;  author: mgk25;  state: Exp;  lines: +1409 -3
+basic Greek characters by Robert Brady
+----------------------------
+revision 1.6
+date: 1999-06-08 23:09:12+01;  author: mgk25;  state: Exp;  lines: +739 -226
+block graphics fixed by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.5
+date: 1999-06-08 21:23:00+01;  author: mgk25;  state: Exp;  lines: +1703 -107
+block graphics added by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.4
+date: 1999-06-05 16:58:52+01;  author: mgk25;  state: Exp;  lines: +2203 -132
+various fixes and extensions by M. Kuhn, extended to MES-1
+----------------------------
+revision 1.3
+date: 1999-06-05 15:52:18+01;  author: mgk25;  state: Exp;  lines: +5684 -3
+Latin Extended A and B by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.2
+date: 1999-05-26 21:51:23+01;  author: mgk25;  state: Exp;  lines: +2218 -390
+Latin-1 added by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.1
+date: 1999-05-26 21:50:10+01;  author: mgk25;  state: Exp;
+Initial revision
+=============================================================================

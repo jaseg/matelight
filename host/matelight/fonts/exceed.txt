@@ -1,0 +1,63 @@
+
+Using 16-bit BDF fonts with Exceed
+----------------------------------
+
+Markus Kuhn <Markus.Kuhn@cl.cam.ac.uk> -- 1999-08-17
+
+Here are some notes for using ISO 10646-1 BDF fonts with the Exceed
+X11 Server for MS-Windows from Hummingbird Communications Ltd. Exceed
+requires fonts to be installed in the Microsoft FON format and not in
+the BDF or PCF formats that are used by Unix X11 servers.
+
+The original Microsoft FON format was only designed for 8-bit fonts.
+Exceed uses customized FON format which is compatible with Microsoft's
+FON format but contains additional information for X clients such as
+font properties and character metrics. This format supports 16-bit X
+fonts (for Microsoft Windows a 16-bit X font in HCL FON format looks
+like a set of 8-bit fonts). BDF and PCF fonts must be converted into
+HCL FON format and included in the font database before they can be
+used with Exceed.
+
+Xconfig provides all necessary tools for this operation (just open
+Xconfig->Font->Compile Fonts dialog box, click Help and follow the
+instructions).
+
+In more detail, installing a BDF font under Exceed works roughly as
+follows:
+
+ 1. Create a directory in your exceed_directory/font and call it anything
+    you want (in this example we call it "extra"). So we created the
+    directory exceed/font/extra.
+ 2. Transfer the uncompressed BDF file into the directory we just
+    created, so that we have a file exceed/font/extra/6x13.bdf.
+ 3. Open xconfig and go to Font.
+ 4. Click on Compile Fonts.
+ 5. Find your exceed/font/extra directory in the directory tree and
+    select List Files of Type: as *.BDF.
+    You will see your 6x13.bdf file and will be able to select it.
+ 6. Click on compile.
+ 7. Now if you go to the directory where the file is, you can move it
+    to your extra directory and remove .bdf file.
+ 8. Go to xconfig and double click on the fonts icon.
+ 9. Click on the ADD button.
+10. Click on browse and find your extra directory.
+11. Give it a name that you would like to be shown in the font database.
+12. Make sure that Directory selected and Status set to Keep.
+13. Click on OK.
+14. Click on Rebuild Database and click on Done.
+
+Special thanks to Joyce Kam <joyce@hcl.com> and George Halpert
+<george@hcl.com> from Hummingbird Communications Ltd.
+<support@hcl.com> for providing the above information.
+
+I am not an Exceed user myself, so if you have specific problems with
+following the above instructions you might want to contact
+<support@hcl.com> directly. Please let me know if you have any
+suggestion for making this description more useful.
+
+Update [2005-01-14]: Arnaud Desitter <arnaud.desitter@ouce.ox.ac.uk>
+reported that Exceed 9.0 now comes preinstalled with the 6x13 font
+
+  -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso10646-1
+
+in the file misc/6x13u.fon.
