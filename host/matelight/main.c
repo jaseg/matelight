@@ -1,5 +1,6 @@
 
 #include "font.h"
+#include "color.h"
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -7,6 +8,7 @@
 #include <string.h>
 #include <wchar.h>
 #include <locale.h>
+#include <sys/timeb.h>
 
 /* CAUTION: REQUIRES INPUT TO BE \0-TERMINATED */
 int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size){
@@ -53,7 +55,8 @@ int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size
 	// For easier rendering on the terminal, round up to multiples of two
 	gbufheight += gbufheight&1;
 
-	unsigned int gbufsize = gbufwidth*gbufheight;
+	// gbuf uses 3 bytes per color for r, g and b
+	unsigned int gbufsize = gbufwidth*3*gbufheight;
 	gbuf = malloc(gbufsize);
 	if(gbuf == 0){
 		fprintf(stderr, "Cannot malloc() %d bytes.\n", gbufsize);
@@ -64,31 +67,260 @@ int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size
 	unsigned int x = 0;
 	p = s;
 	memset(&ps, 0, sizeof(mbstate_t));
+	struct {
+		color_t fg;
+		color_t bg;
+		int blink:4;
+		int bold:1; // TODO
+		int underline:1;
+		int strikethrough:1;
+		int fraktur:1; // TODO See: Flat10 Fraktur font
+		int invert:1;
+	} style = {
+		colortable[DEFAULT_FG_COLOR], colortable[DEFAULT_BG_COLOR], 0, 0, 0, 0, 0, 0
+	};
 	for(;;){
+		// NOTE: This nested escape sequence parsing does not contain any unicode-awareness whatsoever
+		if(*p == '\033'){ // Escape sequence YAY
+			char *sequence_start = p++;
+			if(*p == '['){ // This was a CSI!
+				long elems[MAX_CSI_ELEMENTS];
+				int nelems;
+				for(nelems = 0; nelems<MAX_CSI_ELEMENTS; nelems++){
+					p++;
+					char *endptr;
+					elems[nelems] = strtol(p, &endptr, 10);
+					if(p == endptr){
+						fprintf(stderr, "Invalid ANSI escape code: \"\\e%s\"\n", sequence_start);
+						goto error;
+					}
+					if(*endptr == 'm')
+						break;
+					if(*endptr != ';'){
+						fprintf(stderr, "Invalid ANSI escape code: \"\\e%s\"\n", sequence_start);
+						goto error;
+					}
+				}
+				// By now we know it's a SGR since we error'ed out on anything else
+				if(nelems < 1){
+					fprintf(stderr, "Unsupported escape sequence: \"\\e%s\"\n", sequence_start);
+					goto error;
+				}
+				for(int i=0; i<nelems; i++){
+					switch(elems[i]){
+						case 0: // reset style
+							style.fg = colortable[DEFAULT_FG_COLOR];
+							style.bg = colortable[DEFAULT_BG_COLOR];
+							style.bold = 0;
+							style.underline = 0;
+							style.blink = 0;
+							style.strikethrough = 0;
+							style.fraktur = 0;
+							style.invert = 0;
+							break;
+						case 1: // bold
+							style.bold = 1;
+							break;
+						case 4: // underline
+							style.underline = 1;
+							break;
+						case 5: // slow blink
+							style.blink = 1;
+							break;
+						case 6: // rapid blink
+							style.blink = 8;
+							break;
+						case 7: // color invert on
+							style.invert = 1;
+							break;
+						case 9: // strike-through
+							style.strikethrough = 1;
+							break;
+						case 20:// Fraktur
+							style.fraktur = 1;
+							break;
+						case 22:// Bold off
+							style.bold = 0;
+							break;
+						case 24:// Underline off
+							style.underline = 0;
+							break;
+						case 25:// Blink off
+							style.blink = 0;
+							break;
+						case 27:// color invert off
+							style.invert = 0;
+							break;
+						case 29:// strike-through off
+							style.strikethrough = 0;
+							break;
+						case 30: // Set foreground color, "dim" colors
+						case 31:
+						case 32:
+						case 33:
+						case 34:
+						case 35:
+						case 36:
+						case 37:
+							style.fg = colortable[elems[i]-30];
+							break;
+						case 38: // Set xterm-256 foreground color
+							i++;
+							if(nelems-i < 2 || elems[i] != 5){
+								fprintf(stderr, "Invalid ANSI escape code: \"\\e%s\"\n", sequence_start);
+								goto error;
+							}
+							style.fg = colortable[elems[i++]];
+							break;
+						case 39: // Reset foreground color to default
+							style.bg = colortable[DEFAULT_FG_COLOR];
+							break;
+						case 40: // Set background color, "dim" colors
+						case 41:
+						case 42:
+						case 43:
+						case 44:
+						case 45:
+						case 46:
+						case 47:
+							style.bg = colortable[elems[i]-40];
+							break;
+						case 48: // Set xterm-256 background color
+							i++;
+							if(nelems-i < 2 || elems[i] != 5){
+								fprintf(stderr, "Invalid ANSI escape code: \"\\e%s\"\n", sequence_start);
+								goto error;
+							}
+							style.bg = colortable[elems[i++]];
+							break;
+						case 49: // Reset background color to default
+							style.bg = colortable[DEFAULT_BG_COLOR];
+							break;
+						case 90: // Set foreground color, "bright" colors
+						case 91:
+						case 92:
+						case 93:
+						case 94:
+						case 95:
+						case 96:
+						case 97:
+							style.fg = colortable[elems[i]-90+8];
+							break;
+						case 100: // Set background color, "bright" colors
+						case 101:
+						case 102:
+						case 103:
+						case 104:
+						case 105:
+						case 106:
+						case 107:
+							style.bg = colortable[elems[i]-100+8];
+							break;
+						default:
+							fprintf(stderr, "Unsupported escape sequence: \"\\e%s\"\n", sequence_start);
+							goto error;
+					}
+				}
+
+			}else{
+				fprintf(stderr, "Unsupported escape sequence: \"\\e%s\"\n", sequence_start);
+				goto error;
+			}
+
+			continue;
+		}
+
 		size_t inc = mbrtowc(&c, p, (s+len+1)-p, NULL);
 		// If p contained
 		if(inc == 0) // Reached end of string
 			break;
 		p += inc;
 
+		struct timeb time = {0};
+		ftime(&time);
+		unsigned long int t = time.time*1000 + time.millitm;
+		int blink = style.blink && (t % (1000/style.blink) < (333/style.blink));
+		int inv = style.invert ^ blink;
+		color_t fg = inv ? style.fg : style.bg;
+		color_t bg = inv ? style.bg : style.fg;
+
+		printf("Rendering glyph %lc: Strikethrough %d Underline %d Blink %d Inverted %d Bold %d Fraktur %d FG (%d, %d, %d) BG (%d, %d, %d)\n",
+				c,
+				style.strikethrough,
+				style.underline,
+				style.blink,
+				style.invert,
+				style.bold,
+				style.fraktur,
+				style.fg.r,
+				style.fg.g,
+				style.fg.b,
+				style.bg.r,
+				style.bg.g,
+				style.bg.b);
 		glyph_t *g = glyph_table[c];
-		render_glyph(g, gbuf, gbufwidth, x, 0);
+		render_glyph(g, gbuf, gbufwidth, x, 0, fg, bg);
+		if(style.strikethrough || style.underline){
+			int sty = gbufheight/2;
+			// g->y usually is a negative index of the glyph's baseline measured from the glyph's bottom
+			int uly = gbufheight + g->y;
+			for(int i=0; i<g->width; i++){
+				if(style.strikethrough)
+					*((color_t *)(gbuf + (sty*gbufwidth + i)*3)) = fg;
+				if(style.underline)
+					*((color_t *)(gbuf + (uly*gbufwidth + i)*3)) = fg;
+			}
+		}
 		x += g->width;
 	}
 
+	for(unsigned int y=0; y < gbufheight; y++){
+		for(unsigned int x=0; x < gbufwidth; x++){
+			color_t c = *((color_t *)(gbuf + (y*gbufwidth + x)*3));
+			//printf("\033[0m%02x,%02x,%02x-%02x\033[38;5;%dm█", c.r, c.g, c.b, xterm_color_index(c), xterm_color_index(c));
+			printf("\033[38;5;%dm█", xterm_color_index(c));
+		}
+		printf("\n");
+	}
+	return 0;
+	color_t lastfg = {0, 0, 0}, lastbg = {0, 0, 0};
+	printf("\e[38;5;0;48;5;0m");
 	for(unsigned int y=0; y < gbufheight; y+=2){
 		for(unsigned int x=0; x < gbufwidth; x++){
 			//Da magicks: ▀█▄
-			char c1 = gbuf[y*gbufwidth + x];
-			char c2 = gbuf[(y+1)*gbufwidth + x];
-			if(c1 && c2)
-				printf("█");
-			else if(c1 && !c2)
-				printf("▀");
-			else if(!c1 && c2)
-				printf("▄");
-			else
-				printf(" ");
+			color_t ct = *((color_t *)(gbuf + (y*gbufwidth + x)*3)); // Top pixel
+			color_t cb = *((color_t *)(gbuf + ((y+1)*gbufwidth + x)*3)); // Bottom pixel
+			if(!memcmp(&ct, &lastfg, sizeof(color_t))){
+				if(!memcmp(&cb, &lastbg, sizeof(color_t))){
+					printf("▀");
+				}else if(!memcmp(&cb, &lastfg, sizeof(color_t))){
+					printf("█");
+				}else{
+					printf("\033[48;5;%dm▀", xterm_color_index(cb));
+					lastbg = cb;
+				}
+			}else if(!memcmp(&ct, &lastbg, sizeof(color_t))){
+				if(!memcmp(&cb, &lastfg, sizeof(color_t))){
+					printf("▄");
+				}else if(!memcmp(&cb, &lastbg, sizeof(color_t))){
+					printf(" ");
+				}else{
+					printf("\033[38;5;%dm▄", xterm_color_index(cb));
+					lastfg = cb;
+				}
+			}else{ // No matches for the upper pixel
+				if(!memcmp(&cb, &lastfg, sizeof(color_t))){
+					printf("\033[48;5;%dm▄", xterm_color_index(ct));
+					lastbg = ct;
+				}else if(!memcmp(&cb, &lastbg, sizeof(color_t))){
+					printf("\033[38;5;%dm▀", xterm_color_index(ct));
+					lastfg = ct;
+				}else{
+					printf("\033[38;5;%d;48;5;%dm▀", xterm_color_index(ct), xterm_color_index(cb));
+					lastfg = ct;
+					lastbg = cb;
+				}
+			}
 		}
 		printf("\n");
 	}

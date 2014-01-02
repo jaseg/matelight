@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void render_glyph(glyph_t *g, uint8_t *buf, unsigned int bufwidth, unsigned int offx, unsigned int offy){
+void render_glyph(glyph_t *g, uint8_t *buf, unsigned int bufwidth, unsigned int offx, unsigned int offy, color_t fg, color_t bg){
 	unsigned int bitmap_row_width = g->width/8;
 	uint8_t *bitmap = ((uint8_t *)g) + sizeof(glyph_t);
 	for(unsigned int y=0; y < g->height; y++){
@@ -16,7 +16,8 @@ void render_glyph(glyph_t *g, uint8_t *buf, unsigned int bufwidth, unsigned int 
 		}
 		uint8_t *p = buf + (offy+y)*bufwidth + offx;
 		for(unsigned int x=0; x < g->width; x++){
-			*p++ = (data&(1<<(g->width-1))) ? 1 : 0;
+			color_t c = (data&(1<<(g->width-1))) ? fg : bg;
+			*((color_t *)(p++)) = c;
 			data <<= 1;
 		}
 	}
