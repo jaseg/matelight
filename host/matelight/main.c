@@ -76,7 +76,7 @@ int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size
 		x += g->width;
 	}
 
-	for(unsigned int y=0; y < gbufheight; y++){
+	for(unsigned int y=0; y < gbufheight; y+=2){
 		for(unsigned int x=0; x < gbufwidth; x++){
 			//Da magicks: ▀█▄
 			char c1 = gbuf[y*gbufwidth + x];
