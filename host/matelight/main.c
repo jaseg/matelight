@@ -6,6 +6,7 @@
 #include <errno.h>
 #include <string.h>
 #include <wchar.h>
+#include <locale.h>
 
 /* CAUTION: REQUIRES INPUT TO BE \0-TERMINATED */
 int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size){
@@ -23,8 +24,14 @@ int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size
 	printf(" (%s)\n", s);
 
 	wchar_t c;
+	mbstate_t ps = {0};
+	memset(&ps, 0, sizeof(mbstate_t));
+	if(!setlocale(LC_CTYPE, "en_US.utf8")){
+		fprintf(stderr, "Cannot set locale\n");
+		goto error;
+	}
 	for(;;){
-		size_t inc = mbrtowc(&c, p, (s+len+1)-p, NULL);
+		size_t inc = mbrtowc(&c, p, MB_CUR_MAX, &ps); // MB_CUR_MAX is safe since p is \0-terminated
 		printf("Converted %lx (%x) remaining length %d to %lc rv %d\n", p, (unsigned char)*p, (s+len+1)-p, c, inc);
 		if(inc == -1 || inc == -2){
 			fprintf(stderr, "Error rendering string: No valid UTF-8 input.\n");
@@ -63,6 +70,7 @@ int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size
 
 	unsigned int x = 0;
 	p = s;
+	memset(&ps, 0, sizeof(mbstate_t));
 	for(;;){
 		size_t inc = mbrtowc(&c, p, (s+len+1)-p, NULL);
 		// If p contained

@@ -1,4 +1,7 @@
 
+#ifndef __FONT_H__
+#define __FONT_H__
+
 #include <stdint.h>
 #include <stdio.h>
 
@@ -19,3 +22,4 @@ int read_bdf(FILE *f, glyph_t **glyph_table, unsigned int glyph_table_size);
 // Requires buf to point to a buffer at least of size glyph->width*glyph->height.
 void render_glyph(glyph_t *glyph, uint8_t *buf, unsigned int bufwidth, unsigned int offx, unsigned int offy);
 
+#endif//__FONT_H__
