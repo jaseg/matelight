@@ -10,24 +10,36 @@
 /* CAUTION: REQUIRES INPUT TO BE \0-TERMINATED */
 int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size){
 	unsigned int len = strlen(s);
-	char *t = s;
-	wchar_t *buf = calloc(len, sizeof(wchar_t));
-	if(buf == 0){
-		fprintf(stderr, "Cannot calloc() %ld bytes.\n", len*sizeof(wchar_t));
-		goto error;
-	}
-	mbsrtowcs(buf, &t, len, NULL);
 
-	char *gbuf = NULL;
+	uint8_t *gbuf = NULL;
 	unsigned int gbufwidth = 0;
 	unsigned int gbufheight = 0;
-	for(wchar_t *c=buf; *c; c++){
-		if(*c > glyph_table_size){
+	char *p = s;
+
+	printf("Input: ");
+	for(int i=0; i<=len; i++){
+		printf("%02x ", (unsigned char)s[i]);
+	}
+	printf(" (%s)\n", s);
+
+	wchar_t c;
+	for(;;){
+		size_t inc = mbrtowc(&c, p, (s+len+1)-p, NULL);
+		printf("Converted %lx (%x) remaining length %d to %lc rv %d\n", p, (unsigned char)*p, (s+len+1)-p, c, inc);
+		if(inc == -1 || inc == -2){
+			fprintf(stderr, "Error rendering string: No valid UTF-8 input.\n");
+			goto error;
+		}
+		if(inc == 0) // Reached end of string
+			break;
+		p += inc;
+
+		if(c > glyph_table_size){
 			fprintf(stderr, "Error rendering string: Codepoint 0x%lx out of valid range (0-%d).\n", (long int)c, glyph_table_size);
 			goto error;
 		}
 
-		glyph_t *g = glyph_table[*c];
+		glyph_t *g = glyph_table[c];
 		if(!g){
 			fprintf(stderr, "Error rendering string: Codepoint 0x%lx not in font.\n", (long int)c);
 			goto error;
@@ -47,10 +59,18 @@ int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size
 		fprintf(stderr, "Cannot malloc() %d bytes.\n", gbufsize);
 		goto error;
 	}
+	memset(gbuf, 0, gbufsize);
 
 	unsigned int x = 0;
-	for(wchar_t *c=buf; *c; c++){
-		glyph_t *g = glyph_table[*c];
+	p = s;
+	for(;;){
+		size_t inc = mbrtowc(&c, p, (s+len+1)-p, NULL);
+		// If p contained
+		if(inc == 0) // Reached end of string
+			break;
+		p += inc;
+
+		glyph_t *g = glyph_table[c];
 		render_glyph(g, gbuf, gbufwidth, x, 0);
 		x += g->width;
 	}
@@ -58,11 +78,6 @@ int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size
 	for(unsigned int y=0; y < gbufheight; y++){
 		for(unsigned int x=0; x < gbufwidth; x++){
 			//Da magicks: ▀█▄
-			if(gbuf[y*gbufwidth + x])
-				printf("█");
-			else
-				printf(" ");
-			/*
 			char c1 = gbuf[y*gbufwidth + x];
 			char c2 = gbuf[(y+1)*gbufwidth + x];
 			if(c1 && c2)
@@ -73,14 +88,12 @@ int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size
 				printf("▄");
 			else
 				printf(" ");
-			*/
 		}
 		printf("\n");
 	}
 	return 0;
 error:
 	free(gbuf);
-	free(buf);
 	return 1;
 }
 

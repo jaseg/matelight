@@ -5,15 +5,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-void render_glyph(glyph_t *g, char *buf, unsigned int bufwidth, unsigned int offx, unsigned int offy){
+void render_glyph(glyph_t *g, uint8_t *buf, unsigned int bufwidth, unsigned int offx, unsigned int offy){
 	unsigned int bitmap_row_width = g->width/8;
 	uint8_t *bitmap = ((uint8_t *)g) + sizeof(glyph_t);
-	printf("READING GLYPH FROM %016lx (BITMAP %016lx) SIZE %d ROW WIDTH %d\n", g, bitmap, sizeof(glyph_t), bitmap_row_width);
-	char *p = bitmap;
-	for(int i=0; i<bitmap_row_width*g->height; i++){
-		printf("%02x ", *p++);
-	}
-	printf("\n");
 	for(unsigned int y=0; y < g->height; y++){
 		long int data = 0;
 		for(unsigned int i=0; i<bitmap_row_width; i++){
@@ -21,16 +15,10 @@ void render_glyph(glyph_t *g, char *buf, unsigned int bufwidth, unsigned int off
 			data |= bitmap[y*bitmap_row_width+i];
 		}
 		uint8_t *p = buf + (offy+y)*bufwidth + offx;
-		printf("R %02d %04lx ", y, data);
 		for(unsigned int x=0; x < g->width; x++){
-			if(data&1)
-				printf("█");
-			else
-				printf(" ");
-			*p++ = (data&1) ? 1 : 0;
-			data >>= 1;
+			*p++ = (data&(1<<(g->width-1))) ? 1 : 0;
+			data <<= 1;
 		}
-		printf("\n");
 	}
 }
 
@@ -175,30 +163,11 @@ int read_bdf(FILE *f, glyph_t **glyph_table, unsigned int glyph_table_size){
 				// Right-align data
 				data >>= ((read-1)*4 - dwidth);
 				// Copy rightmost bytes of data to destination buffer
-				if(encoding == 'A')
-				printf("%02d %04lx ", i, data);
 				for(unsigned int j=0; j<row_bytes; j++){
-					if(encoding == 'A')
-					for(unsigned int bit=0; bit<8; bit++){
-						if(data&(1<<bit))
-							printf("█");
-						else
-							printf(" ");
-					}
 					bitmap[(i+1)*row_bytes-j-1] = data&0xFF;
 					data >>= 8;
 				}
-				if(encoding == 'A')
-					printf("\n");
 				i++;
-			}
-			if(encoding == 'A'){
-				printf("WRITING GLYPH %d TO %016lx (BITMAP %016lx) SIZE %d ROW WIDTH %d\n", encoding, glyph_data, bitmap, sizeof(glyph_t), row_bytes);
-				char *p = bitmap;
-				for(int i=0; i<row_bytes*current_glyph.height; i++){
-					printf("%02x ", *p++);
-				}
-				printf("\n");
 			}
 			memcpy(glyph_data, &current_glyph, sizeof(glyph_t));
 			glyph_table[encoding] = glyph_data;
