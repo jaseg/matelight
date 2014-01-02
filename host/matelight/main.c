@@ -17,12 +17,6 @@ int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size
 	unsigned int gbufheight = 0;
 	char *p = s;
 
-	printf("Input: ");
-	for(int i=0; i<=len; i++){
-		printf("%02x ", (unsigned char)s[i]);
-	}
-	printf(" (%s)\n", s);
-
 	wchar_t c;
 	mbstate_t ps = {0};
 	memset(&ps, 0, sizeof(mbstate_t));
@@ -32,7 +26,6 @@ int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size
 	}
 	for(;;){
 		size_t inc = mbrtowc(&c, p, MB_CUR_MAX, &ps); // MB_CUR_MAX is safe since p is \0-terminated
-		printf("Converted %lx (%x) remaining length %d to %lc rv %d\n", p, (unsigned char)*p, (s+len+1)-p, c, inc);
 		if(inc == -1 || inc == -2){
 			fprintf(stderr, "Error rendering string: No valid UTF-8 input.\n");
 			goto error;
