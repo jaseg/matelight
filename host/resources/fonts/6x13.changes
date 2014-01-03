@@ -1,0 +1,537 @@
+
+RCS file: RCS/6x13.bdf,v
+Working file: 6x13.bdf
+head: 1.115
+branch:
+locks: strict
+access list:
+symbolic names:
+keyword substitution: kv
+total revisions: 115;	selected revisions: 115
+description:
+-misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-1
+extended to ISO 10646-1
+----------------------------
+revision 1.115
+date: 2009-04-06 18:50:15+01;  author: mgk25;  state: Rel;  lines: +2 -3
+removing _XMBDFED_INFO
+----------------------------
+revision 1.114
+date: 2009-04-06 18:25:51+01;  author: mgk25;  state: Exp;  lines: +284 -3
+completed Latin Extended Additional
+added some Supplemental Punctuation
+----------------------------
+revision 1.113
+date: 2006-01-05 19:26:07+00;  author: mgk25;  state: Rel;  lines: +1529 -7989
+removed all wide and full-width characters
+----------------------------
+revision 1.112
+date: 2002-11-10 18:33:16+00;  author: mgk25;  state: Rel;  lines: +13 -13
+Some Thai fixes by Theppitak Karoonboonyanan <thep@linux.thai.net>
+----------------------------
+revision 1.111
+date: 2002-08-26 18:05:49+01;  author: mgk25;  state: Exp;  lines: +2 -2
+Replaced email with URL
+----------------------------
+revision 1.110
+date: 2002-07-24 00:56:10+01;  author: mgk25;  state: Exp;  lines: +703 -3
+TARGET3 Unicode 3.2 completed
+----------------------------
+revision 1.109
+date: 2002-07-23 00:17:11+01;  author: mgk25;  state: Exp;  lines: +2024 -164
+more Unicode 3.2 characters added
+----------------------------
+revision 1.108
+date: 2002-04-06 19:15:21+01;  author: mgk25;  state: Exp;  lines: +2219 -179
+added various Unicode 3.2 characters
+----------------------------
+revision 1.107
+date: 2001-04-03 13:26:32+01;  author: mgk25;  state: Exp;  lines: +42 -2
+added U+03F4 GREEK CAPITAL THETA SYMBOL and U+03F5 GREEK LUNATE EPSILON
+SYMBOL (Unicode 3.1)
+----------------------------
+revision 1.106
+date: 2000-12-07 01:16:51+00;  author: mgk25;  state: Exp;  lines: +602 -2
+Added some of the terminal characters from Unicode 3.2 in Misc. Technical
+----------------------------
+revision 1.105
+date: 2000-06-19 00:45:36+01;  author: mgk25;  state: Rel;  lines: +8 -8
+minor fixes
+----------------------------
+revision 1.104
+date: 2000-01-17 09:57:55+00;  author: mgk25;  state: Rel;  lines: +2 -2
+SOFT HYPHEN now looks like HYPHEN
+----------------------------
+revision 1.103
+date: 1999-12-14 19:47:10+00;  author: mgk25;  state: Exp;  lines: +60 -80
+Error in Thai collection fixed (U+0E3F-U+0E5B were shifted)
+Thanks to Robert Brady <rwb197@ecs.soton.ac.uk> for reporting that.
+----------------------------
+revision 1.102
+date: 1999-12-01 12:54:19+00;  author: mgk25;  state: Exp;  lines: +60 -60
+base characters a and u now have consistent shape (this was already
+inconsistent in the old Latin-1 font!)
+----------------------------
+revision 1.101
+date: 1999-11-13 20:49:01+00;  author: mgk25;  state: Rel;  lines: +27 -27
+TARGET3 proofreading completed
+----------------------------
+revision 1.100
+date: 1999-11-08 15:19:20+00;  author: mgk25;  state: Exp;  lines: +1762 -2
+Thai added by Robert Brady <rwb197@ecs.soton.ac.uk> using glyphs from
+a free font mentioned in the Linux Thai HOWTO
+----------------------------
+revision 1.99
+date: 1999-11-07 20:35:21+00;  author: mgk25;  state: Exp;  lines: +18 -18
+TARGET3 proofreading completed up to U+20FF
+----------------------------
+revision 1.98
+date: 1999-11-06 17:42:43+00;  author: mgk25;  state: Exp;  lines: +413 -413
+checked left-adjustment (Tengwar fixed in U+e0XX)
+----------------------------
+revision 1.97
+date: 1999-10-31 23:51:09+00;  author: mgk25;  state: Exp;  lines: +4 -2
+added x-height and cap-height properties
+----------------------------
+revision 1.96
+date: 1999-10-31 11:16:09+00;  author: mgk25;  state: Exp;  lines: +44 -4
+New TARGET3 completed
+----------------------------
+revision 1.95
+date: 1999-10-30 19:38:14+01;  author: mgk25;  state: Exp;  lines: +2 -182
+Removed characters that are not in Unicode 3.0
+----------------------------
+revision 1.94
+date: 1999-10-20 12:13:15+01;  author: mgk25;  state: Exp;  lines: +7 -654
+ampersand lowered, DEC-C0 removed, default char relocated
+----------------------------
+revision 1.93
+date: 1999-10-11 19:01:35+01;  author: mgk25;  state: Exp;  lines: +26 -26
+Cyrillic collection revised by Serge Winitzki <S.Winitzki@damtp.cam.ac.uk>
+----------------------------
+revision 1.92
+date: 1999-10-11 12:28:41+01;  author: mgk25;  state: Exp;  lines: +9 -6
+*** empty log message ***
+----------------------------
+revision 1.91
+date: 1999-09-27 18:38:46+01;  author: mgk25;  state: Exp;  lines: +10 -10
+Some Latin consistency changes by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.90
+date: 1999-09-23 19:53:41+01;  author: mgk25;  state: Exp;  lines: +12 -12
+Reversed Robert's change to the B (has now serifs again to make it
+clearly distinguishable from the 8), and made the D rounder to clearly
+distinguish it from the O (inspired by OCR-B).
+----------------------------
+revision 1.89
+date: 1999-09-21 19:16:12+01;  author: mgk25;  state: Exp;  lines: +31 -31
+Patch by Robert Brady <rwb197@ecs.soton.ac.uk> to fix IPA glyphs and make
+the following stylistic corrections throughout the family:
+  0 never has a slash
+  3 is always flat top 3.
+  7's are slightly more consistent
+  B, D, E, F never have serifs
+  J is my preferred type of J. :)
+  9x18 S is less ugly. (possibly)
+  W is more consistent.
+  a, i, j, l, q, t, u, are more consistent
+----------------------------
+revision 1.88
+date: 1999-09-14 10:36:37+01;  author: mgk25;  state: Exp;  lines: +11 -11
+U+02A9 fixed
+----------------------------
+revision 1.87
+date: 1999-09-14 10:25:29+01;  author: mgk25;  state: Exp;  lines: +83 -3
+Unicode 3.0 version of TARGET3 completed
+----------------------------
+revision 1.86
+date: 1999-09-10 14:28:49+01;  author: mgk25;  state: Exp;  lines: +10 -10
+Robert Brady <rwb197@ecs.soton.ac.uk> found an interesting reference
+about IPA glyphs (in particular, it contains lines to show how the letters
+should be positioned.) and made a few corrections in accordance with this.
+----------------------------
+revision 1.85
+date: 1999-09-04 11:07:28+01;  author: mgk25;  state: Exp;  lines: +1188 -48
+Am. 22 (keyboard symbols) completed by M. Kuhn
+----------------------------
+revision 1.84
+date: 1999-09-01 16:34:57+01;  author: mgk25;  state: Exp;  lines: +364 -4
+some Am. 22 (keyboard symbols) added by M. Kuhn
+----------------------------
+revision 1.83
+date: 1999-08-26 23:26:06+01;  author: mgk25;  state: Rel;  lines: +803 -3
+Bopomofo added by Robert Brady <rwb197@ecs.soton.ac.uk>
+(probably not very useful though in 6x13 ...)
+----------------------------
+revision 1.82
+date: 1999-08-25 21:00:01+01;  author: mgk25;  state: Exp;  lines: +9668 -1908
+Characters from 6x13-future moved over.
+----------------------------
+revision 1.81
+date: 1999-08-23 17:22:42+01;  author: mgk25;  state: Exp;  lines: +1045 -145
+More and corrected runes by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.80
+date: 1999-08-23 09:52:24+01;  author: mgk25;  state: Exp;  lines: +1325 -5
+Ogham and Runic added.
+----------------------------
+revision 1.79
+date: 1999-08-22 23:46:03+01;  author: mgk25;  state: Exp;  lines: +665 -5
+completed MES-2 and added characters from ISO 10646-1 Amd. 18
+----------------------------
+revision 1.78
+date: 1999-08-22 23:14:53+01;  author: mgk25;  state: Exp;  lines: +210 -210
+Stylistic improvements by Birger Langkjer <birger.langkjer@image.dk>
+(lower accents on lowercase letters, smoother roundings on some
+bold glyphs, etc.)
+----------------------------
+revision 1.77
+date: 1999-08-21 16:36:29+01;  author: mgk25;  state: Exp;  lines: +25 -5
+U+05B1 (for Yiddish)
+----------------------------
+revision 1.76
+date: 1999-08-16 15:34:55+01;  author: mgk25;  state: Exp;  lines: +275 -115
+Revision of all Greek characters by
+Constantine Stathopoulos <cstath@irismedia.gr>
+----------------------------
+revision 1.75
+date: 1999-07-21 11:25:40+01;  author: mgk25;  state: Exp;  lines: +585 -5
+Hangul Jamo U+11A8 - U+11C2 copied over
+----------------------------
+revision 1.74
+date: 1999-07-21 11:06:38+01;  author: mgk25;  state: Exp;  lines: +1023 -3
+Copied HW Hangul over to U+31xx Hangul Compatibility Jamo
+----------------------------
+revision 1.73
+date: 1999-07-20 23:17:39+01;  author: mgk25;  state: Exp;  lines: +180 -180
+Halfwidth Hangul reworked by Jong-Hyeon Lee <Jong-Hyeon.Lee@cl.cam.ac.uk>
+----------------------------
+revision 1.72
+date: 1999-07-19 18:41:42+01;  author: mgk25;  state: Exp;  lines: +2 -2
+fixed U+2212 (MINUS), was too low compared to plus
+----------------------------
+revision 1.71
+date: 1999-07-19 18:34:57+01;  author: mgk25;  state: Exp;  lines: +2 -2
+fixed U+201F
+----------------------------
+revision 1.70
+date: 1999-07-19 18:26:33+01;  author: mgk25;  state: Exp;  lines: +23 -23
+Changed back U+2018 to U+2019 to the original design. The attempt
+to preserve the style of the original U+0027 APOSTROPHE (a compromise
+between acute and curly quotation mark) turned out to be too ugly,
+especially for the reverse comma and double quotation marks.
+----------------------------
+revision 1.69
+date: 1999-07-17 11:56:58+01;  author: mgk25;  state: Exp;  lines: +2 -2
+U+ffa7 fixed
+----------------------------
+revision 1.68
+date: 1999-07-17 11:51:40+01;  author: mgk25;  state: Exp;  lines: +4206 -546
+halfwidth and fullwidth forms completed by M. Kuhn
+----------------------------
+revision 1.67
+date: 1999-07-11 19:05:42+01;  author: mgk25;  state: Rel;  lines: +113 -113
+more Katakana fixes
+----------------------------
+revision 1.66
+date: 1999-07-11 17:53:04+01;  author: mgk25;  state: Exp;  lines: +4 -4
+some Katakana fixed
+----------------------------
+revision 1.65
+date: 1999-07-11 17:24:55+01;  author: mgk25;  state: Exp;  lines: +2125 -5
+Katakana (U+30A1-U+30FE) added by Shuhei Amakawa <sa264@cam.ac.uk>
+----------------------------
+revision 1.64
+date: 1999-07-10 21:22:23+01;  author: mgk25;  state: Exp;  lines: +2 -2
+U+0311 fixed
+----------------------------
+revision 1.63
+date: 1999-07-10 20:18:00+01;  author: mgk25;  state: Sta;  lines: +8658 -4178
+Unicode 2.1 subset of MES-3 completed, combining characters added,
+more Hebrew added (M. Kuhn)
+----------------------------
+revision 1.62
+date: 1999-07-10 01:21:02+01;  author: mgk25;  state: Exp;  lines: +17 -17
+more improvements to quotes and parentheses
+----------------------------
+revision 1.61
+date: 1999-07-10 00:54:20+01;  author: mgk25;  state: Exp;  lines: +2943 -2945
+various minor improvements, most notably quotation marks
+and parenthesis
+----------------------------
+revision 1.60
+date: 1999-04-18 10:32:10+01;  author: mgk25;  state: Rel;  lines: +7 -2
+added _XFREE86_GLYPH_RANGES attributes
+----------------------------
+revision 1.59
+date: 1999-04-18 09:39:48+01;  author: mgk25;  state: Exp;  lines: +5 -9
+rearranged properties according to original file
+----------------------------
+revision 1.58
+date: 1999-04-11 15:13:53+01;  author: mgk25;  state: Rel;  lines: +2 -2
+fixed U+2592 dither block
+----------------------------
+revision 1.57
+date: 1999-04-11 11:48:27+01;  author: mgk25;  state: Exp;  lines: +4 -4
+improved shape of 0xFFFE default character
+----------------------------
+revision 1.56
+date: 1999-04-11 11:30:41+01;  author: mgk25;  state: Exp;  lines: +4 -4
+moved DEFAULT_CHAR to 0xFFFE, because apparently X11 can't
+handle DEFAULT_CHAR 0xFFFF
+----------------------------
+revision 1.55
+date: 1999-04-11 10:24:22+01;  author: mgk25;  state: Exp;  lines: +25 -4
+added DEFAULT_CHAR glyph at 0xFFFF
+added comment about 0-31 being deprecated
+----------------------------
+revision 1.54
+date: 1999-04-10 18:27:08+01;  author: mgk25;  state: Exp;  lines: +64 -64
+adjusted character names
+----------------------------
+revision 1.53
+date: 1999-04-10 17:55:26+01;  author: mgk25;  state: Exp;  lines: +1262 -2
+Halfwidth Katakana by Nozomi Ytow <nozomi@biol.tsukuba.ac.jp> added.
+----------------------------
+revision 1.52
+date: 1999-04-10 11:39:07+01;  author: mgk25;  state: Exp;  lines: +3 -3
+fixed U+257E
+----------------------------
+revision 1.51
+date: 1998-11-21 12:36:51+00;  author: mgk25;  state: Rel;  lines: +70 -70
+adjusted character names
+----------------------------
+revision 1.50
+date: 1998-11-21 12:16:16+00;  author: mgk25;  state: Exp;  lines: +11 -11
+increased size of U+25AC and 25AD to fill entire cell as required
+by <ftp://kermit.columbia.edu/kermit/ucsterminal/ucsterminal.txt>
+for proper IBM 3270 screen emulation
+----------------------------
+revision 1.49
+date: 1998-11-21 10:38:18+00;  author: mgk25;  state: Exp;  lines: +2 -582
+moved all characters that are not yet in the standard to 6x13-future.bdf
+----------------------------
+revision 1.48
+date: 1998-11-18 04:50:33+00;  author: mgk25;  state: Sta;  lines: +22 -2
+added U+02EE  MODIFIER LETTER DOUBLE APOSTROPHE (for MES)
+----------------------------
+revision 1.47
+date: 1998-11-17 06:10:08+00;  author: mgk25;  state: Exp;  lines: +362 -2
+Added some new Unicode 3.0 characters as described by
+Michael Everson <everson@INDIGO.IE> in a 1998-11-02 posting to the
+ISSS-WS-MES@LISTSERV.CENORM.BE mailing list (see also
+<http://www.cl.cam.ac.uk/~mgk25/ucs/mes-additions.gif>), which
+are proposed to become part of the MES repertoire.
+----------------------------
+revision 1.46
+date: 1998-11-17 05:30:46+00;  author: mgk25;  state: Exp;  lines: +326 -6
+mkuhn: Dingbats extended and U+FB06 slightly changed
+----------------------------
+revision 1.45
+date: 1998-11-17 04:52:54+00;  author: mgk25;  state: Exp;  lines: +5 -5
+Roman Czyborra <czyborra@cs.tu-berlin.de>: fixed U+FB05 and U+FB06
+----------------------------
+revision 1.44
+date: 1998-10-31 12:31:45+00;  author: mgk25;  state: Exp;  lines: +1065 -85
+added Hebrew presentation forms in U+FBxx
+added more dingbats
+removed DEC VT100 graphics characters in private use area since
+these will soon be added at proper places to Unicode 3.0
+(see proposal by Kermit author on unicode@unicode.org)
+----------------------------
+revision 1.43
+date: 1998-10-30 15:37:21+00;  author: mgk25;  state: Exp;  lines: +2530 -290
+extended Misc Symbols and Dingbats
+----------------------------
+revision 1.42
+date: 1998-10-29 20:49:05+00;  author: mgk25;  state: Exp;  lines: +25 -25
+proofread until U+25FF
+----------------------------
+revision 1.41
+date: 1998-10-29 20:25:37+00;  author: mgk25;  state: Exp;  lines: +2605 -2605
+Changed the names of all characters to the "U+xxxx" form.
+----------------------------
+revision 1.40
+date: 1998-10-29 18:00:40+00;  author: mgk25;  state: Exp;  lines: +1013 -73
+proofreading completed up to U+24ff
+----------------------------
+revision 1.39
+date: 1998-10-29 12:26:14+00;  author: mgk25;  state: Exp;  lines: +358 -198
+finished proofreading up to U+1dff
+added yiddish ligatures, improved some coptic and a few armenian
+characters (armenian more in ISO 10646-1 font style)
+----------------------------
+revision 1.38
+date: 1998-10-26 14:11:48+00;  author: mgk25;  state: Exp;  lines: +20 -20
+Constantine Stathopoulos <cstath@irismedia.gr> fixed inconsistencies
+between the different iota variations.
+----------------------------
+revision 1.37
+date: 1998-10-25 20:50:49+00;  author: mgk25;  state: Exp;  lines: +2 -2
+fixed alignment of U+207f
+----------------------------
+revision 1.36
+date: 1998-10-25 20:30:18+00;  author: mgk25;  state: Exp;  lines: +4118 -2058
+Fixed various bugs reported by Uwe Waldmann <uwe@mpi-sb.mpg.de>
+added more symbols and cyrillics, fixed various cyrillics
+----------------------------
+revision 1.35
+date: 1998-10-25 10:02:26+00;  author: mgk25;  state: Exp;  lines: +33 -33
+final greek corrections by Constantine Stathopoulos <cstath@irismedia.gr>
+plus rightmost column cleared in U+03C3
+----------------------------
+revision 1.34
+date: 1998-10-23 19:05:59+01;  author: mgk25;  state: Exp;  lines: +11 -11
+minor math improvements
+----------------------------
+revision 1.33
+date: 1998-10-23 18:56:24+01;  author: mgk25;  state: Exp;  lines: +39 -39
+various minor fixed by Markus Kuhn (Latin Extended A, IPA, blackboard R)
+----------------------------
+revision 1.32
+date: 1998-10-23 18:38:28+01;  author: mgk25;  state: Exp;  lines: +92 -92
+Constantine Stathopoulos <cstath@irismedia.gr>:
+overall improvement of Greek+Greek Extended, especially to accented
+characters
+----------------------------
+revision 1.31
+date: 1998-10-20 17:15:31+01;  author: mgk25;  state: Exp;  lines: +8 -8
+Constantine Stathopoulos <cstath@irismedia.gr>:
+U+037A		glyph centered
+U+03C0		minor aesthetic change
+U+1F3D		missing oxia added
+U+1FDF		psili & perispomeni changed to dasia & perispomeni
+U+1FFB		ypogegrammeni removed
+----------------------------
+revision 1.30
+date: 1998-10-20 09:10:51+01;  author: mgk25;  state: Exp;  lines: +34 -34
+As suggested by Constantine Stathopoulos <cstath@irismedia.gr>:
+changed 1FBC and 1FFC based on the full-scale characters in 391 and 3A9,
+changed small lambda and pi back to the old more mathematical forms
+----------------------------
+revision 1.29
+date: 1998-10-20 08:46:01+01;  author: mgk25;  state: Exp;  lines: +1214 -114
+More Cyrillic contributed by Mark Leisher <mleisher@crl.nmsu.edu>
+----------------------------
+revision 1.28
+date: 1998-10-19 17:52:20+01;  author: mgk25;  state: Exp;  lines: +157 -77
+changed 1fb8 1fb9 1fcc for correct alignment and added 1fe8-1fec
+----------------------------
+revision 1.27
+date: 1998-10-19 16:54:18+01;  author: mgk25;  state: Exp;  lines: +5495 -635
+Characters from U+03E2 to U+03EF and U+1F00 to U+1FFF contributed
+by Constantine Stathopoulos <cstath@irismedia.gr> added.
+Other Greek characters changed as suggested by Constantine in
+the message in issues.txt.
+Changes not yet applied from this proposal: U+0060 and U+203F
+The Greek characters are now probably less suitable for mathematical
+texts (e.g., see pi and lambda), but better for Greek readers.
+----------------------------
+revision 1.26
+date: 1998-10-18 12:47:06+01;  author: mgk25;  state: Exp;  lines: +2082 -2
+row 23 misc technical completed by mkuhn
+----------------------------
+revision 1.25
+date: 1998-10-17 17:47:58+01;  author: mgk25;  state: Exp;  lines: +6872 -3932
+completed latin extended additional and mathematical operators by mkuhn
+----------------------------
+revision 1.24
+date: 1998-10-11 22:10:19+01;  author: mgk25;  state: Exp;  lines: +1476 -256
+mkuhn added more arrows and math
+----------------------------
+revision 1.23
+date: 1998-10-10 22:39:50+01;  author: mgk25;  state: Exp;  lines: +4785 -2945
+added more greek, cyrillic, armenian by mkuhn
+----------------------------
+revision 1.22
+date: 1998-10-07 19:14:18+01;  author: mgk25;  state: Exp;  lines: +123 -3
+mkuhn added 6 OCR characters
+----------------------------
+revision 1.21
+date: 1998-10-07 19:03:11+01;  author: mgk25;  state: Exp;  lines: +3 -3
+Mark Leisher <mleisher@crl.nmsu.edu> patched Gregorian letter
+U+10E0 to distinguish two Georgian letters more easily.
+----------------------------
+revision 1.20
+date: 1998-10-07 19:01:03+01;  author: mgk25;  state: Exp;  lines: +2587 -227
+Mark Leisher <mleisher@crl.nmsu.edu> added Armenian and Georgian glyphs.
+----------------------------
+revision 1.19
+date: 1998-10-02 20:08:18+01;  author: mgk25;  state: Exp;  lines: +6 -6
+Mark Leisher <mleisher@crl.nmsu.edu> changed the g-cedilla from the
+Lappish form into the more common Latvian form (U+0123)
+----------------------------
+revision 1.18
+date: 1998-10-02 20:01:37+01;  author: mgk25;  state: Exp;  lines: +444 -4
+control images completed
+----------------------------
+revision 1.17
+date: 1998-09-28 00:06:49+01;  author: mgk25;  state: Exp;  lines: +9883 -6323
+added IPA, more arrow/math by mkuhn
+----------------------------
+revision 1.16
+date: 1998-09-27 14:52:35+01;  author: mgk25;  state: Exp;  lines: +5848 -548
+1e00-1e90 (latin extended additional) added by M. Kuhn
+----------------------------
+revision 1.15
+date: 1998-09-26 23:18:29+01;  author: mgk25;  state: Exp;  lines: +2390 -10
+row 01 latin extended b added by M. Kuhn
+----------------------------
+revision 1.14
+date: 1998-09-25 20:00:19+01;  author: mgk25;  state: Exp;  lines: +3 -3
+BREVE fixed
+----------------------------
+revision 1.13
+date: 1998-09-25 19:17:52+01;  author: mgk25;  state: Exp;  lines: +1765 -265
+latin extended a completed by Mark Leisher <mleisher@crl.nmsu.edu>
+----------------------------
+revision 1.12
+date: 1998-09-25 18:17:38+01;  author: mgk25;  state: Exp;  lines: +1063 -3
+added some latin extended-a by M. Kuhn
+----------------------------
+revision 1.11
+date: 1998-09-25 17:40:22+01;  author: mgk25;  state: Exp;  lines: +1122 -2
+row 2 spacing modifier letters added by Markus Kuhn
+----------------------------
+revision 1.10
+date: 1998-09-25 15:33:45+01;  author: mgk25;  state: Exp;  lines: +913 -32
+added more WGL4 non-sense by Markus Kuhn
+----------------------------
+revision 1.9
+date: 1998-09-25 14:18:31+01;  author: mgk25;  state: Exp;  lines: +1345 -5
+row 25 geometric shape completed by Markus Kuhn
+----------------------------
+revision 1.8
+date: 1998-09-25 13:13:10+01;  author: mgk25;  state: Exp;  lines: +2011 -91
+row 25 box drawing completed and verified by Markus Kuhn
+----------------------------
+revision 1.7
+date: 1998-09-25 12:31:43+01;  author: mgk25;  state: Exp;  lines: +642 -2
+added C0 characters again to guarantee backwards compatibility
+----------------------------
+revision 1.6
+date: 1998-09-24 20:09:54+01;  author: mgk25;  state: Exp;  lines: +1546 -6
+fixedgr.pcf by Panagiotis Christias <P.Christias@ntua.gr>
+merged in with substantial edits by Markus Kuhn
+----------------------------
+revision 1.5
+date: 1998-09-24 18:58:00+01;  author: mgk25;  state: Exp;  lines: +1154 -534
+remaining Cyrillic created by Markus Kuhn
+----------------------------
+revision 1.4
+date: 1998-09-24 18:10:35+01;  author: mgk25;  state: Exp;  lines: +1297 -37
+koi6x13 by Serge Vakulenko <vak@cronyx.ru> merged in
+----------------------------
+revision 1.3
+date: 1998-09-23 20:42:50+01;  author: mgk25;  state: Exp;  lines: +6747 -2406
+many characters added by Markus Kuhn
+----------------------------
+revision 1.2
+date: 1998-09-23 13:05:52+01;  author: mgk25;  state: Exp;  lines: +585 -4
+Merged with -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso8859-8
+and added U+FFFC.
+----------------------------
+revision 1.1
+date: 1998-09-23 11:32:03+01;  author: mgk25;  state: Exp;
+Initial revision
+=============================================================================

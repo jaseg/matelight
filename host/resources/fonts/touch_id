@@ -1,0 +1,10 @@
+#!/bin/bash
+#
+# usage: touch_id file1 file2 ...
+#
+# Changes RCS's version code  $Id: ...$ into $Id:$ in the named
+# files, such that subsequent "diff -u" patch files will always indicate
+# clearly, against what old version the diff was made. This will avoid
+# confusion about how to apply patch files.
+#
+perl -p -i -e 's/\$Id:.*\$/\$Id:\$/;' $*

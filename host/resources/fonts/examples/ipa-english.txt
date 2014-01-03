@@ -1,0 +1,46 @@
+ A brief guide to IPA use for English
+/ə briːf gaıd tu aı pi eı juːs fɔ iŋglıʃ/
+
+ by Robert Brady <rwb197@ecs.soton.ac.uk>
+/baı rɒbət breıdi/
+
+Normal letters. These letters have their usual English values.
+/nɔːməl lɛtəz    ðiːz lɛtəz hæv ðeə juʒəl ıŋglıʃ væljuːz/
+
+  m p b n t d k g f v s z h w l r 
+ 
+ Other letters. These letters either do not exist usually, or have different values
+/əðə lɛtəz      ðiːz lɛtəz aıðə du nɒt ɛgzıst juːʒəli ɔ hæv dıfrənt valjuːz/
+
+  /θ/ - the "th" in thin                  /ð/ - the "th" in those
+  /ʃ/ - the "sh" in ship                  /ʒ/ - the "s" in measure  
+  /ŋ/ - the "ng" in king                  /j/ - the "y" in you
+  /ʧ/ - the "ch" in church                /ʤ/ - the "j" in judge
+  /ʔ/ - glottal stop                      /ɾ/ - tap
+  /ç/ - the "ch" in loch                  /ʇ/ - dental percussive
+  
+Vowels
+/vaʊlz/
+
+short vowels
+/ʃɔːt vaʊlz/
+   /æ/ - the "a" in cat                   /ɒ/ - the "o" in cot
+   /ı/ - the "i" in kit                   /ɛ/ - the "e" in get
+   /ʌ/ - the "u" in up                    /ə/ - the "a" in above
+   /ʊ/ - the "u" in pull
+
+long vowels
+/lɒŋ vaʊlz/
+   /ɑ/ - the "ar" in cart                 /ɔ/ - the "or" in cord
+   /i/ - the "ee" in keen                 /u/ - the "u" in cute
+   /ɜ/ - the "ur" in kurt
+  
+diphthongs or glides
+/dıfθɒŋz ɔ glaıdz/
+
+   /aı/  - the "i" in kite                /eı/  - the "a" in cake
+   /ɔı/  - the "oi" in coil               /aʊ/  - the "ou" in out  
+   /əʊ/  - the "o" in no                  /eə/  - the "air" in chair
+   /iə/  - the "eer" in cheer             /aıə/ - the "igher" in higher       
+   /eıə/ - the "ayer" in payer            /ɔıə/ - the "oyer" in toyer        
+   /aʊə/ - the "our" in "hour"            /əʊə/ - the "ower" in "mower"

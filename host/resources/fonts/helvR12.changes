@@ -1,0 +1,119 @@
+
+RCS file: RCS/helvR12.bdf,v
+Working file: helvR12.bdf
+head: 1.26
+branch:
+locks: strict
+access list:
+symbolic names:
+keyword substitution: kv
+total revisions: 26;	selected revisions: 26
+description:
+-Adobe-Helvetica-Medium-R-Normal--12-120-75-75-P-67-ISO10646-1
+----------------------------
+revision 1.26
+date: 2004-11-28 20:08:46+00;  author: mgk25;  state: Rel;  lines: +23 -3
+U+20AF Drachma sign
+----------------------------
+revision 1.25
+date: 2001-03-25 00:37:58+00;  author: mgk25;  state: Rel;  lines: +34 -2
+added DEC VT100 horizontal scan lines U+23BA..U+23BD (Unicode 3.2)
+----------------------------
+revision 1.24
+date: 1999-12-13 10:50:31+00;  author: mgk25;  state: Rel;  lines: +99 -25
+ISO/IEC CD 8859-16 repertoire completed (U+0218-021B added)
+----------------------------
+revision 1.23
+date: 1999-11-08 15:35:58+00;  author: mgk25;  state: Exp;  lines: +19 -3
+added characters missing from recently extended TARGET
+----------------------------
+revision 1.22
+date: 1999-11-07 15:51:24+00;  author: mgk25;  state: Exp;  lines: +22 -18
+various fixes after TARGET1 proofreading
+----------------------------
+revision 1.21
+date: 1999-10-30 19:16:01+01;  author: mgk25;  state: Exp;  lines: +1 -1
+fixed DEFAULT_CHARACTER
+----------------------------
+revision 1.20
+date: 1999-10-30 19:13:19+01;  author: mgk25;  state: Exp;  lines: +5 -174
+Removed characters that are not in Unicode 3.0
+----------------------------
+revision 1.19
+date: 1999-10-30 14:32:10+01;  author: mgk25;  state: Exp;  lines: +2348 -973
+Birger Langkjer <birger.langkjer@image.dk> started adding Katakana and
+did proofreading on Arabic
+----------------------------
+revision 1.18
+date: 1999-10-19 12:49:57+01;  author: mgk25;  state: Exp;  lines: +99 -91
+added U+0387 and fixed device width of block graphics symbols
+----------------------------
+revision 1.17
+date: 1999-10-19 12:43:35+01;  author: mgk25;  state: Exp;  lines: +1907 -136
+More cyrillic added by Birger Langkjer <birger.langkjer@image.dk>
+----------------------------
+revision 1.16
+date: 1999-10-17 10:52:51+01;  author: mgk25;  state: Exp;  lines: +1399 -1418
+'device width' values fixed by Birger Langkjer <birger.langkjer@image.dk>
+----------------------------
+revision 1.15
+date: 1999-10-16 19:16:13+01;  author: mgk25;  state: Exp;  lines: +701 -592
+Georgian fixed by Birger Langkjer <birger.langkjer@image.dk>
+----------------------------
+revision 1.14
+date: 1999-10-15 23:33:27+01;  author: mgk25;  state: Exp;  lines: +304 -141
+Cyrillic revised by Serge Winitzki <S.Winitzki@damtp.cam.ac.uk>
+----------------------------
+revision 1.13
+date: 1999-10-15 20:06:38+01;  author: mgk25;  state: Exp;  lines: +2711 -41
+Arabic added by Birger Langkjer <birger.langkjer@image.dk>
+----------------------------
+revision 1.12
+date: 1999-10-15 08:06:46+01;  author: mgk25;  state: Exp;  lines: +597 -9
+Some Greek glyphs added by Birger Langkjer <birger.langkjer@image.dk>
+----------------------------
+revision 1.11
+date: 1999-09-21 16:59:09+01;  author: mgk25;  state: Exp;  lines: +2964 -307
+more glyphs by Birger Langkjer <birger.langkjer@image.dk>
+----------------------------
+revision 1.10
+date: 1999-09-05 09:31:53+01;  author: mgk25;  state: Exp;  lines: +5763 -3
+Ethiopian by Birger Langkjer <birger.langkjer@image.dk>
+----------------------------
+revision 1.9
+date: 1999-08-06 19:27:06+01;  author: mgk25;  state: Exp;  lines: +1270 -1062
+TARGET1 completed by Birger Langkjer <birger.langkjer@image.dk>
+----------------------------
+revision 1.8
+date: 1999-08-04 08:22:26+01;  author: mgk25;  state: Exp;  lines: +28 -28
+More glyphs by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.7
+date: 1999-08-03 14:54:43+01;  author: mgk25;  state: Exp;  lines: +2940 -603
+TARGET1 minus Hebrew and DEC block graphics completed by
+Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.6
+date: 1999-08-02 23:01:04+01;  author: mgk25;  state: Exp;  lines: +1058 -1
+Cyrillic by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.5
+date: 1999-06-21 18:06:50+01;  author: mgk25;  state: Exp;  lines: +4835 -292
+Latin Extended Additional by Robert Brady
+----------------------------
+revision 1.4
+date: 1999-06-19 21:26:47+01;  author: mgk25;  state: Exp;  lines: +20 -4
+default character added (0x1F)
+----------------------------
+revision 1.3
+date: 1999-06-19 21:09:10+01;  author: mgk25;  state: Exp;  lines: +6478 -402
+Latin-A, Latin-B, and IPA added by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.2
+date: 1999-06-19 20:54:34+01;  author: mgk25;  state: Exp;  lines: +353 -297
+autoconverted existing Postscript characters to ISO10646-1
+----------------------------
+revision 1.1
+date: 1999-06-19 20:51:25+01;  author: mgk25;  state: Exp;
+Initial revision
+=============================================================================

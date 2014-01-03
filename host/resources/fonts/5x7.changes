@@ -1,0 +1,185 @@
+
+RCS file: RCS/5x7.bdf,v
+Working file: 5x7.bdf
+head: 1.38
+branch:
+locks: strict
+access list:
+symbolic names:
+keyword substitution: kv
+total revisions: 38;	selected revisions: 38
+description:
+ISO 10646 ext. of -Misc-Fixed-Medium-R-Normal--7-70-75-75-C-50-ISO8859-1
+----------------------------
+revision 1.38
+date: 2006-01-05 20:03:17+00;  author: mgk25;  state: Rel;  lines: +29 -29
+moved wide angle brackets U+2329/232A to mathematical angle brackets
+U+27E8/27E9
+----------------------------
+revision 1.37
+date: 2002-11-10 19:12:30+00;  author: mgk25;  state: Rel;  lines: +157 -3
+Completed TARGET2 (Unicode 3.2)
+----------------------------
+revision 1.36
+date: 2002-08-26 18:05:49+01;  author: mgk25;  state: Exp;  lines: +2 -2
+Replaced email with URL
+----------------------------
+revision 1.35
+date: 2001-07-19 12:09:22+01;  author: mgk25;  state: Exp;  lines: +20 -6
+Janne Veli Kujala <jvkujala@cc.jyu.fi> added U+266C and corrected shift.
+----------------------------
+revision 1.34
+date: 2001-04-03 13:22:08+01;  author: mgk25;  state: Exp;  lines: +31 -4
+removed UNDERLINE_POSITION property because of dubious value and because
+of dubious specification in XLFD spec (caused trouble with Emacs 21)
+added U+03F4 GREEK CAPITAL THETA SYMBOL and U+03F5 GREEK LUNATE EPSILON
+SYMBOL (Unicode 3.1)
+----------------------------
+revision 1.33
+date: 2001-03-25 00:11:49+00;  author: mgk25;  state: Exp;  lines: +367 -3
+added DEC VT100 horizontal scan lines U+23BA..U+23BD (Unicode 3.2)
+----------------------------
+revision 1.32
+date: 2000-09-03 02:48:54+01;  author: mgk25;  state: Exp;  lines: +9 -9
+soft hyphen (U+00AD) now has same glyph as HYPHEN (U+2010)
+----------------------------
+revision 1.31
+date: 2000-09-02 18:25:06+01;  author: mgk25;  state: Exp;  lines: +310 -2
+Robert Brady <robert@susu.org.uk> added a number of glyphs that Pablo
+Saratxaga requested. In particular -
+
+  01 A0-A1 AF-B0 B5-B6 D1-D2 E6-E7
+  04 92-93 96-97 9A-9B A2-A3 AE-B3 B6-B7 BA-BB D8-D9 E2-E3 E8-E9 EE-EF
+----------------------------
+revision 1.30
+date: 1999-11-20 17:59:07+00;  author: mgk25;  state: Rel;  lines: +73 -3
+CP1258 completed (Vietnamese)
+----------------------------
+revision 1.29
+date: 1999-11-13 09:26:45+00;  author: mgk25;  state: Exp;  lines: +310 -2
+subscripts and superscripts completed
+----------------------------
+revision 1.28
+date: 1999-11-07 18:03:32+00;  author: mgk25;  state: Exp;  lines: +5 -5
+various corrections during TARGET2 proofreading
+----------------------------
+revision 1.27
+date: 1999-11-07 15:51:24+00;  author: mgk25;  state: Exp;  lines: +16 -16
+various fixes after TARGET1 proofreading
+----------------------------
+revision 1.26
+date: 1999-11-06 18:37:07+00;  author: mgk25;  state: Exp;  lines: +117 -115
+checked left-alignment (Hebrew fixed)
+----------------------------
+revision 1.25
+date: 1999-10-30 19:38:14+01;  author: mgk25;  state: Exp;  lines: +7 -503
+Removed characters that are not in Unicode 3.0
+----------------------------
+revision 1.24
+date: 1999-10-11 12:21:36+01;  author: mgk25;  state: Exp;  lines: +16 -13
+Various fixes to collections 1-3
+----------------------------
+revision 1.23
+date: 1999-09-27 18:38:46+01;  author: mgk25;  state: Exp;  lines: +5 -5
+Some Latin consistency changes by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.22
+date: 1999-09-21 19:16:12+01;  author: mgk25;  state: Exp;  lines: +9 -9
+Patch by Robert Brady <rwb197@ecs.soton.ac.uk> to fix IPA glyphs and make
+the following stylistic corrections throughout the family:
+  0 never has a slash
+  3 is always flat top 3.
+  7's are slightly more consistent
+  B, D, E, F never have serifs
+  J is my preferred type of J. :)
+  9x18 S is less ugly. (possibly)
+  W is more consistent.
+  a, i, j, l, q, t, u, are more consistent
+----------------------------
+revision 1.21
+date: 1999-08-27 11:34:30+01;  author: mgk25;  state: Rel;  lines: +5 -5
+minor fixes
+----------------------------
+revision 1.20
+date: 1999-08-25 20:10:25+01;  author: mgk25;  state: Exp;  lines: +12752 -7040
+Braille and  Latin-B by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.19
+date: 1999-08-22 17:35:31+01;  author: mgk25;  state: Exp;  lines: +1325 -23
+New glyphs by Robert Brady <rwb197@ecs.soton.ac.uk>, mainly
+IPA and modifier letters.
+----------------------------
+revision 1.18
+date: 1999-08-18 22:00:33+01;  author: mgk25;  state: Exp;  lines: +509 -5
+Runes added by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.17
+date: 1999-08-16 15:34:55+01;  author: mgk25;  state: Exp;  lines: +3709 -138
+Revision of all Greek characters by
+Constantine Stathopoulos <cstath@irismedia.gr>
+----------------------------
+revision 1.16
+date: 1999-08-03 10:25:08+01;  author: mgk25;  state: Exp;  lines: +17 -3
+Some punctuation added
+----------------------------
+revision 1.15
+date: 1999-08-02 17:47:26+01;  author: mgk25;  state: Exp;  lines: +523 -5
+TARGET2 completed by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.14
+date: 1999-07-13 01:33:56+01;  author: mgk25;  state: Rel;  lines: +8 -8
+fixed U+2588
+----------------------------
+revision 1.13
+date: 1999-07-13 01:25:03+01;  author: mgk25;  state: Sta;  lines: +235 -11
+block graphics extension by M. Kuhn
+----------------------------
+revision 1.12
+date: 1999-07-13 01:05:43+01;  author: mgk25;  state: Exp;  lines: +1910 -846
+various fixes, proof-reading completed by M. Kuhn
+----------------------------
+revision 1.11
+date: 1999-07-12 19:18:31+01;  author: mgk25;  state: Exp;  lines: +19 -5
+minor fixes
+----------------------------
+revision 1.10
+date: 1999-07-12 19:08:39+01;  author: mgk25;  state: Exp;  lines: +3192 -1622
+remaining WGL4 and MATH characters added by
+Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.9
+date: 1999-07-05 15:55:14+01;  author: mgk25;  state: Exp;  lines: +1657 -19
+Cyrillic and miscellaneous other by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.8
+date: 1999-06-24 20:47:26+01;  author: mgk25;  state: Exp;  lines: +1005 -123
+Glyphs added by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.7
+date: 1999-06-21 19:10:56+01;  author: mgk25;  state: Exp;  lines: +2 -2
+fixed DEFAULT_CHAR
+----------------------------
+revision 1.6
+date: 1999-06-21 18:06:50+01;  author: mgk25;  state: Exp;  lines: +1857 -9
+Block drawing characters, some bugfixes by Robert Brady
+----------------------------
+revision 1.5
+date: 1999-06-19 21:16:25+01;  author: mgk25;  state: Exp;  lines: +1716 -22
+Latin-A added by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.4
+date: 1999-06-08 09:38:12+01;  author: mgk25;  state: Exp;  lines: +367 -3
+CP1252 repertoire completed by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.3
+date: 1998-12-05 19:53:55+00;  author: mgk25;  state: Exp;  lines: +1052 -2
+8859-7 characters by Constantine Stathopoulos <cstath@irismedia.gr>
+----------------------------
+revision 1.2
+date: 1998-12-05 19:43:22+00;  author: mgk25;  state: Exp;  lines: +740 -744
+converted to ISO 10646-1.
+----------------------------
+revision 1.1
+date: 1998-12-05 19:20:18+00;  author: mgk25;  state: Exp;
+Initial revision
+=============================================================================

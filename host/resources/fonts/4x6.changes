@@ -1,0 +1,35 @@
+
+RCS file: RCS/4x6.bdf,v
+Working file: 4x6.bdf
+head: 1.5
+branch:
+locks: strict
+access list:
+symbolic names:
+keyword substitution: kv
+total revisions: 5;	selected revisions: 5
+description:
+Contributed by Janne V. Kujala <jvk@iki.fi>
+----------------------------
+revision 1.5
+date: 2002-08-26 18:05:49+01;  author: mgk25;  state: Rel;  lines: +2 -2
+Replaced email with URL
+----------------------------
+revision 1.4
+date: 2001-07-26 22:50:00+01;  author: mgk25;  state: Exp;  lines: +93 -2
+completed CP437 repertoire
+----------------------------
+revision 1.3
+date: 2001-07-19 12:08:43+01;  author: mgk25;  state: Exp;  lines: +2859 -597
+Janne Veli Kujala <jvkujala@cc.jyu.fi> completed box-drawing and added
+some math and others.
+----------------------------
+revision 1.2
+date: 2001-07-18 13:48:24+01;  author: mgk25;  state: Exp;  lines: +429 -646
+removed C0 graphics, added default character, fixed box drawing alignment,
+a few minor tweaks, converted glyph names to Adobe standard
+----------------------------
+revision 1.1
+date: 2001-07-18 13:10:37+01;  author: mgk25;  state: Exp;
+Initial revision
+=============================================================================

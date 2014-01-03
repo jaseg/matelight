@@ -1,0 +1,92 @@
+Characters available in 6x13O, encoded in UTF-8 (RFC 2279):
+
+Basic Latin (U+0000-U+007F):
+
+ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_
+`abcdefghijklmnopqrstuvwxyz{|}~
+
+Latin-1 Supplement (U+0080-U+00FF):
+
+ ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞß
+àáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ
+
+Latin Extended-A (U+0100-U+017F):
+
+ĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿ
+ŀŁłŃńŅņŇňŉŊŋŌōŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞşŠšŢţŤťŦŧŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽžſ
+
+Latin Extended-B (U+0180-U+024F):
+
+ƏƑƒǺǻǼǽǾǿȀȁȂȃȄȅȆȇȈȉȊȋȌȍȎȏȐȑȒȓȔȕȖȗȘșȚț
+
+IPA Extensions (U+0250-U+02AF):
+
+ə
+
+Spacing Modifier Letters (U+02B0-U+02FF):
+
+˄˅ˆˇˉ˘˙˚˛˜˝
+
+Combining Diacritical Marks (U+0300-U+036F):
+
+◌̀◌́◌̂◌̃◌̄◌̅◌̆◌̇◌̈◌̉◌̊◌̋◌̌◌̍◌̎◌̏◌̐◌̑◌̒◌̓◌̔◌̕◌̖◌̗◌̘◌̙
+
+Greek and Coptic (U+0370-U+03FF):
+
+ʹ͵ͺ;΄΅Ά·ΈΉΊΌΎΏΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρς
+στυφχψωϊϋόύώϑϕϖϱϲϳϴϵ
+
+Cyrillic (U+0400-U+04FF):
+
+ЀЁЂЃЄЅІЇЈЉЊЋЌЍЎЏАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмноп
+рстуфхцчшщъыьэюяѐёђѓєѕіїјљњћќѝўџѠѡѢѣѤѥѦѧѨѩѪѫѬѭѮѯѰѱѲѳѴѵѶѷѸѹѺѻѼѽѾѿ
+Ґґ
+
+Latin Extended Additional (U+1E00-U+1EFF):
+
+ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḞḟṀṁṂṃṖṗṘṙṠṡṪṫẀẁẂẃẄẅẆẇẈẉẊẋẌẍẎẏẐẑẒẓẔẕẖẗẘẙẚẛỲỳ
+
+General Punctuation (U+2000-U+206F):
+
+           ‐‑‒–—―‖‗‘’‚‛“”„‟†‡•‣․‥…‧ ‰‱′″‴‵‶‷‸‹›※‼‽‾‿⁀⁁⁂⁃⁄⁅⁆⁈⁉⁊⁋⁌
+⁍
+
+Currency Symbols (U+20A0-U+20CF):
+
+€
+
+Letterlike Symbols (U+2100-U+214F):
+
+№™Ω℧
+
+Number Forms (U+2150-U+218F):
+
+⅛⅜⅝⅞
+
+Arrows (U+2190-U+21FF):
+
+←↑→↓
+
+Mathematical Operators (U+2200-U+22FF):
+
+−≠≤≥
+
+Control Pictures (U+2400-U+243F):
+
+␉␊␋␌␍␤
+
+Miscellaneous Symbols (U+2600-U+26FF):
+
+♪
+
+Alphabetic Presentation Forms (U+FB00-U+FB4F):
+
+ﬀﬁﬂﬃﬄﬅﬆ
+
+Combining Half Marks (U+FE20-U+FE2F):
+
+◌︠◌︡◌︢◌︣
+
+Specials (U+FFF0-U+FFFF):
+
+�

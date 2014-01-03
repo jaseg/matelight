@@ -1,0 +1,33 @@
+#!/bin/sh
+#
+# Generate a number of useful 8-bit fonts from the ISO 10646-1 master fonts
+# and write them into a new subdirectory derived-fonts/
+# $Id: map_fonts,v 1.9 2006-01-05 20:31:45+00 mgk25 Rel $
+#
+MAPPINGS="../MAPPINGS"
+# specify what we want
+FONTS="4x6 5x7 5x8 6x9 6x10 6x12 6x13 7x13 7x14 8x13 9x15 9x18 10x20 6x13B 6x13O 7x13B 7x13O 7x14B 8x13B 8x13O 9x15B 9x18B"
+# construct list of encodings and ucs2any.pl command line spec
+ENCODINGS=""
+SPEC=""
+for i in 8859-1 8859-2 8859-3  8859-4  8859-5  8859-7 \
+         8859-8 8859-9 8859-10 8859-13 8859-14 8859-15 8859-16 ; do
+    ENCODINGS="$ENCODINGS ISO$i"
+    SPEC="$SPEC $MAPPINGS/$i.TXT ISO$i"
+done
+ENCODINGS="$ENCODING KOI8-R"
+SPEC="$SPEC $MAPPINGS/KOI8-R.TXT KOI8-R"
+# get a fresh subdirectory and fill in mapping results
+rm -rf derived-fonts/
+mkdir derived-fonts/
+cd derived-fonts/
+for i in $FONTS ; do
+  ../ucs2any.pl +d ../$i.bdf $SPEC
+done
+for i in $FONTS ; do
+  for j in $ENCODINGS ; do
+    bdftopcf $i-$j.bdf >$i-$j.pcf
+  done
+done
+gzip -9 *.pcf
+cd ..

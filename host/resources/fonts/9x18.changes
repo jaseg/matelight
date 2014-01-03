@@ -1,0 +1,255 @@
+
+RCS file: RCS/9x18.bdf,v
+Working file: 9x18.bdf
+head: 1.53
+branch:
+locks: strict
+access list:
+symbolic names:
+keyword substitution: kv
+total revisions: 53;	selected revisions: 53
+description:
+Suitable half-width font for 18x18 CJK fonts. Similar, but not identical
+to 9x15. Many of the ASCII letters and digits are rounder than in 9x15.
+----------------------------
+revision 1.53
+date: 2009-04-06 18:50:15+01;  author: mgk25;  state: Rel;  lines: +2 -3
+removing _XMBDFED_INFO
+----------------------------
+revision 1.52
+date: 2009-04-06 18:45:37+01;  author: mgk25;  state: Exp;  lines: +454 -3
+completed Latin Extended Additional
+added some Supplemental Punctuation
+----------------------------
+revision 1.51
+date: 2006-01-05 20:24:11+00;  author: mgk25;  state: Rel;  lines: +2 -277
+removed East Asian "wide" characters
+----------------------------
+revision 1.50
+date: 2002-11-18 14:27:35+00;  author: mgk25;  state: Rel;  lines: +45 -45
+Thai fixes by Theppitak Karoonboonyanan <thep@linux.thai.net>
+----------------------------
+revision 1.49
+date: 2002-08-26 18:05:49+01;  author: mgk25;  state: Rel;  lines: +2 -2
+Replaced email with URL
+----------------------------
+revision 1.48
+date: 2002-07-24 19:06:58+01;  author: mgk25;  state: Exp;  lines: +9074 -624
+TARGET3 Unicode 3.2 completed
+----------------------------
+revision 1.47
+date: 2002-07-22 22:18:56+01;  author: mgk25;  state: Exp;  lines: +9 -9
+Ethiopian polished by Daniel Yacob <perl@geez.org>
+----------------------------
+revision 1.46
+date: 2002-04-06 19:48:26+01;  author: mgk25;  state: Exp;  lines: +1254 -29
+Extended Misc. Technical block to Unicode 3.2
+----------------------------
+revision 1.45
+date: 2001-06-18 09:45:18+01;  author: mgk25;  state: Exp;  lines: +8 -8
+corrected alignment of ordfeminine and ordmasculine (U+00AA, U+00BA)
+----------------------------
+revision 1.44
+date: 2001-04-03 13:27:23+01;  author: mgk25;  state: Exp;  lines: +52 -2
+added U+03F4 GREEK CAPITAL THETA SYMBOL and U+03F5 GREEK LUNATE EPSILON
+SYMBOL (Unicode 3.1)
+----------------------------
+revision 1.43
+date: 2001-03-25 00:31:26+00;  author: mgk25;  state: Exp;  lines: +102 -2
+added DEC VT100 horizontal scan lines U+23BA..U+23BD (Unicode 3.2)
+----------------------------
+revision 1.42
+date: 2000-03-01 00:46:07+00;  author: mgk25;  state: Rel;  lines: +102 -2
+added U+3099-309B
+----------------------------
+revision 1.41
+date: 2000-01-22 20:54:57+00;  author: mgk25;  state: Exp;  lines: +2 -2
+SHY (U+00AD) fixed to look like HYPHEN not MINUS-HYPHEN
+----------------------------
+revision 1.40
+date: 1999-11-20 11:52:26+00;  author: mgk25;  state: Rel;  lines: +6 -6
+U+2113 changed
+----------------------------
+revision 1.39
+date: 1999-11-13 20:49:01+00;  author: mgk25;  state: Exp;  lines: +13 -13
+TARGET3 proofreading completed
+----------------------------
+revision 1.38
+date: 1999-11-07 20:35:21+00;  author: mgk25;  state: Exp;  lines: +168 -168
+TARGET3 proofreading completed up to U+20FF
+----------------------------
+revision 1.37
+date: 1999-11-07 18:05:48+00;  author: mgk25;  state: Exp;  lines: +13 -13
+various corrections during TARGET2 proofreading
+----------------------------
+revision 1.36
+date: 1999-10-31 16:07:51+00;  author: mgk25;  state: Exp;  lines: +48 -321
+minor fixes
+----------------------------
+revision 1.35
+date: 1999-10-31 15:40:06+00;  author: mgk25;  state: Exp;  lines: +3933 -258
+new TARGET3 and more Canadian Syllabics by Robert Brady
+----------------------------
+revision 1.34
+date: 1999-10-30 15:21:44+01;  author: mgk25;  state: Exp;  lines: +2 -277
+Characters that are not in Unicode 3.0 removed
+----------------------------
+revision 1.33
+date: 1999-10-22 10:14:33+01;  author: mgk25;  state: Exp;  lines: +5577 -2
+Canadian Syllabics by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.32
+date: 1999-10-21 10:18:46+01;  author: mgk25;  state: Exp;  lines: +2427 -307
+Cherokee by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.31
+date: 1999-10-16 19:33:04+01;  author: mgk25;  state: Exp;  lines: +459 -334
+Georgian fixed by Birger Langkjer <birger.langkjer@image.dk>
+----------------------------
+revision 1.30
+date: 1999-10-15 00:02:30+01;  author: mgk25;  state: Exp;  lines: +511 -11
+Ethiopian digits by Birger Langkjer <birger.langkjer@image.dk>
+----------------------------
+revision 1.29
+date: 1999-10-11 12:21:36+01;  author: mgk25;  state: Exp;  lines: +11 -7
+Various fixes to collections 1-3
+----------------------------
+revision 1.28
+date: 1999-10-11 08:52:43+01;  author: mgk25;  state: Exp;  lines: +96 -98
+Cyrillic revised by Serge Winitzki <S.Winitzki@damtp.cam.ac.uk>
+----------------------------
+revision 1.27
+date: 1999-10-10 12:26:06+01;  author: mgk25;  state: Exp;  lines: +34 -34
+U+22A2 .. U+22AF made larger by M. Kuhn
+----------------------------
+revision 1.26
+date: 1999-10-07 09:07:37+01;  author: mgk25;  state: Exp;  lines: +14 -14
+Fix to iotatonos, fix to thorn (make the loop part of it x-height)
+by Robert Brady
+----------------------------
+revision 1.25
+date: 1999-09-27 18:52:29+01;  author: mgk25;  state: Exp;  lines: +20 -20
+U+0218 fixed
+----------------------------
+revision 1.24
+date: 1999-09-27 18:38:46+01;  author: mgk25;  state: Exp;  lines: +117 -117
+Some Latin consistency changes by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.23
+date: 1999-09-25 21:25:11+01;  author: mgk25;  state: Exp;  lines: +24 -24
+U+0133 and U+0134 had wrong glyphs (ij). Fixed.
+----------------------------
+revision 1.22
+date: 1999-09-23 19:42:42+01;  author: mgk25;  state: Exp;  lines: +453 -453
+Birger Langkjer <birger.langkjer@image.dk>:
+I've fixed 9x18 armenian in the same style as helvR12. I tried to
+follow Robert Brady's design ideas and removed a lot of serifs and made
+the glyphs a little wider instead. I made u+0555 'OH' extra wide to
+distinguish it from the '0'.
+These changes can be cut'n'pasted into 9x15, no changes are necessary, I
+think.
+----------------------------
+revision 1.21
+date: 1999-09-21 19:16:12+01;  author: mgk25;  state: Exp;  lines: +7 -7
+Patch by Robert Brady <rwb197@ecs.soton.ac.uk> to fix IPA glyphs and make
+the following stylistic corrections throughout the family:
+  0 never has a slash
+  3 is always flat top 3.
+  7's are slightly more consistent
+  B, D, E, F never have serifs
+  J is my preferred type of J. :)
+  9x18 S is less ugly. (possibly)
+  W is more consistent.
+  a, i, j, l, q, t, u, are more consistent
+----------------------------
+revision 1.20
+date: 1999-09-21 17:17:26+01;  author: mgk25;  state: Exp;  lines: +24 -24
+Robert Brady <rwb197@ecs.soton.ac.uk> did some research on IPA and
+patched 9x18 accordingly.
+----------------------------
+revision 1.19
+date: 1999-09-19 18:33:07+01;  author: mgk25;  state: Exp;  lines: +28 -3
+U+2183 added
+----------------------------
+revision 1.18
+date: 1999-09-16 18:56:20+01;  author: mgk25;  state: Exp;  lines: +28 -3
+U+21F3 added
+----------------------------
+revision 1.17
+date: 1999-09-16 18:17:31+01;  author: mgk25;  state: Exp;  lines: +803 -3
+extended to Unicode 3.0 version of TARGET3 by
+Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.16
+date: 1999-09-13 23:53:58+01;  author: mgk25;  state: Exp;  lines: +23911 -20810
+MES-3 completed by M. Kuhn
+----------------------------
+revision 1.15
+date: 1999-09-13 23:39:29+01;  author: mgk25;  state: Exp;  lines: +29075 -15350
+new Latin and Cyrillic plus Greek extended by
+Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.14
+date: 1999-09-05 22:52:23+01;  author: mgk25;  state: Exp;  lines: +14102 -8077
+Robert Brady <rwb197@ecs.soton.ac.uk>:
+  * Remaining Latin Extended Additional
+  * Remaining Cyrillic
+  * Armenian (copied from 9x15)
+----------------------------
+revision 1.13
+date: 1999-09-05 18:09:49+01;  author: mgk25;  state: Exp;  lines: +3602 -202
+First half of Latin Extended Additional by Robert Brady.
+----------------------------
+revision 1.12
+date: 1999-09-04 17:07:07+01;  author: mgk25;  state: Exp;  lines: +10476 -276
+Ethiopian by Birger Langkjer <birger.langkjer@image.dk>
+Some Latin characters (Ahuo) fixed by M. Kuhn
+Thai added by M.Kuhn (essentially 9x15 with top-most combining
+characters raised and below combining characters lowered by 1 pixel)
+----------------------------
+revision 1.11
+date: 1999-09-04 11:10:21+01;  author: mgk25;  state: Exp;  lines: +1594 -19
+more cyrillic by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.10
+date: 1999-09-01 15:21:47+01;  author: mgk25;  state: Exp;  lines: +144 -144
+Some modifications on Cyrillic based on advice from Sergei P. Skorobogatov
+<sans@rinet.ru>
+----------------------------
+revision 1.9
+date: 1999-09-01 15:16:15+01;  author: mgk25;  state: Exp;  lines: +3027 -77
+Latin-B and start of Thai by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.8
+date: 1999-08-31 08:52:40+01;  author: mgk25;  state: Exp;  lines: +274 -249
+Cyrillic fixed by M. Kuhn
+----------------------------
+revision 1.7
+date: 1999-08-31 08:40:44+01;  author: mgk25;  state: Exp;  lines: +7679 -4854
+Some Latin-B added by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.6
+date: 1999-08-28 15:06:27+01;  author: mgk25;  state: Rel;  lines: +7 -7
+minor fixes
+----------------------------
+revision 1.5
+date: 1999-08-27 00:24:06+01;  author: mgk25;  state: Exp;  lines: +13579 -10379
+block graphics and geometric shapes completed
+----------------------------
+revision 1.4
+date: 1999-08-26 18:22:42+01;  author: mgk25;  state: Exp;  lines: +23963 -10312
+TARGET2 completed by Robert Brady and M. Kuhn
+----------------------------
+revision 1.3
+date: 1999-08-26 17:38:33+01;  author: mgk25;  state: Exp;  lines: +4967 -117
+Latin-1/A added by Robert Brady with modifications by M. Kuhn
+----------------------------
+revision 1.2
+date: 1999-08-26 14:02:12+01;  author: mgk25;  state: Exp;  lines: +24696 -71
+added a few more characters from 9x15 that needed only little
+modification
+----------------------------
+revision 1.1
+date: 1999-08-26 11:39:27+01;  author: mgk25;  state: Exp;
+Initial revision
+=============================================================================

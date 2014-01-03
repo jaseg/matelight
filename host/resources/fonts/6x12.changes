@@ -1,0 +1,157 @@
+
+RCS file: RCS/6x12.bdf,v
+Working file: 6x12.bdf
+head: 1.32
+branch:
+locks: strict
+access list:
+symbolic names:
+keyword substitution: kv
+total revisions: 32;	selected revisions: 32
+description:
+ISO 10646-1 version of -misc-fixed-medium-r-semicondensed--12-110-75-75-c-60-iso646.1991-irv
+----------------------------
+revision 1.32
+date: 2008-06-26 12:50:43+01;  author: mgk25;  state: Rel;  lines: +2 -3935
+removing 207 wide and full-width characters (some could be moved to the half-width katakana area)
+----------------------------
+revision 1.31
+date: 2008-06-26 12:38:36+01;  author: mgk25;  state: Exp;  lines: +42053 -17885
+another 1273 glyphs added by Mikael Öhman <micketeer@gmail.com>
+----------------------------
+revision 1.30
+date: 2008-04-21 19:02:05+01;  author: mgk25;  state: Rel;  lines: +41845 -9583
+1698 glyphs added by Mikael Öhman <micketeer@gmail.com>
+----------------------------
+revision 1.29
+date: 2006-01-05 20:03:17+00;  author: mgk25;  state: Rel;  lines: +39 -39
+moved wide angle brackets U+2329/232A to mathematical angle brackets
+U+27E8/27E9
+----------------------------
+revision 1.28
+date: 2004-11-28 20:04:01+00;  author: mgk25;  state: Rel;  lines: +21 -2
+U+20AF Drachma sign
+----------------------------
+revision 1.27
+date: 2002-11-10 19:12:30+00;  author: mgk25;  state: Rel;  lines: +212 -3
+Completed TARGET2 (Unicode 3.2)
+----------------------------
+revision 1.26
+date: 2002-08-26 18:05:49+01;  author: mgk25;  state: Exp;  lines: +2 -2
+Replaced email with URL
+----------------------------
+revision 1.25
+date: 2001-04-03 13:37:48+01;  author: mgk25;  state: Exp;  lines: +40 -2
+added U+03F4 GREEK CAPITAL THETA SYMBOL and U+03F5 GREEK LUNATE EPSILON
+SYMBOL (Unicode 3.1)
+----------------------------
+revision 1.24
+date: 2001-03-25 00:11:49+00;  author: mgk25;  state: Exp;  lines: +78 -2
+added DEC VT100 horizontal scan lines U+23BA..U+23BD (Unicode 3.2)
+----------------------------
+revision 1.23
+date: 2000-09-02 18:25:06+01;  author: mgk25;  state: Exp;  lines: +420 -2
+Robert Brady <robert@susu.org.uk> added a number of glyphs that Pablo
+Saratxaga requested. In particular -
+
+  01 A0-A1 AF-B0 B5-B6 D1-D2 E6-E7
+  04 92-93 96-97 9A-9B A2-A3 AE-B3 B6-B7 BA-BB D8-D9 E2-E3 E8-E9 EE-EF
+----------------------------
+revision 1.22
+date: 1999-11-20 17:59:07+00;  author: mgk25;  state: Rel;  lines: +455 -322
+CP1258 completed (Vietnamese)
+----------------------------
+revision 1.21
+date: 1999-11-13 08:47:52+00;  author: mgk25;  state: Exp;  lines: +6242 -143
+Latin Extended B, IPA, Modifier Letters by
+Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.20
+date: 1999-11-07 18:03:32+00;  author: mgk25;  state: Exp;  lines: +88 -12
+various corrections during TARGET2 proofreading
+----------------------------
+revision 1.19
+date: 1999-11-07 15:51:24+00;  author: mgk25;  state: Exp;  lines: +3 -3
+various fixes after TARGET1 proofreading
+----------------------------
+revision 1.18
+date: 1999-11-06 20:36:37+00;  author: mgk25;  state: Exp;  lines: +55 -53
+left alignment
+----------------------------
+revision 1.17
+date: 1999-10-20 20:39:44+01;  author: mgk25;  state: Exp;  lines: +1174 -319
+TARGET2 completed by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.16
+date: 1999-10-20 20:13:30+01;  author: mgk25;  state: Exp;  lines: +2025 -106
+more glyphs by Birger Langkjer <birger.langkjer@image.dk>
+----------------------------
+revision 1.15
+date: 1999-10-20 12:13:56+01;  author: mgk25;  state: Exp;  lines: +1799 -131
+more math added
+----------------------------
+revision 1.14
+date: 1999-10-20 11:02:51+01;  author: mgk25;  state: Exp;  lines: +3395 -240
+more characters by Birger Langkjer <birger.langkjer@image.dk>
+----------------------------
+revision 1.13
+date: 1999-10-19 13:16:48+01;  author: mgk25;  state: Exp;  lines: +460 -4
+some combining characters
+----------------------------
+revision 1.12
+date: 1999-10-17 10:51:46+01;  author: mgk25;  state: Exp;  lines: +3586 -888
+TARGET1 completed by Birger Langkjer <birger.langkjer@image.dk>
+----------------------------
+revision 1.11
+date: 1999-10-16 12:31:03+01;  author: mgk25;  state: Exp;  lines: +876 -20
+MES-1 and DEC-VT completed by M. Kuhn
+----------------------------
+revision 1.10
+date: 1999-10-11 12:21:36+01;  author: mgk25;  state: Exp;  lines: +4 -4
+Various fixes to collections 1-3
+----------------------------
+revision 1.9
+date: 1999-10-07 10:02:12+01;  author: mgk25;  state: Exp;  lines: +4867 -3
+Braille by Robert Brady
+----------------------------
+revision 1.8
+date: 1999-10-07 09:06:59+01;  author: mgk25;  state: Exp;  lines: +5802 -64
+Latin Extended QA, Greek and Cyrillic (TARGET1) by Robert Brady
+----------------------------
+revision 1.7
+date: 1999-09-27 18:38:46+01;  author: mgk25;  state: Exp;  lines: +26 -26
+Some Latin consistency changes by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.6
+date: 1999-09-21 19:16:12+01;  author: mgk25;  state: Exp;  lines: +22 -22
+Patch by Robert Brady <rwb197@ecs.soton.ac.uk> to fix IPA glyphs and make
+the following stylistic corrections throughout the family:
+  0 never has a slash
+  3 is always flat top 3.
+  7's are slightly more consistent
+  B, D, E, F never have serifs
+  J is my preferred type of J. :)
+  9x18 S is less ugly. (possibly)
+  W is more consistent.
+  a, i, j, l, q, t, u, are more consistent
+----------------------------
+revision 1.5
+date: 1999-09-20 09:36:39+01;  author: mgk25;  state: Exp;  lines: +125 -30
+CP2026 added
+----------------------------
+revision 1.4
+date: 1999-09-20 09:29:43+01;  author: mgk25;  state: Exp;  lines: +2321 -22
+CP1252 completed by Robert Brady <rwb197@ecs.soton.ac.uk>
+----------------------------
+revision 1.3
+date: 1999-09-17 18:10:40+01;  author: mgk25;  state: Exp;  lines: +299 -299
+baseline lowered by 2
+----------------------------
+revision 1.2
+date: 1999-09-17 15:51:28+01;  author: mgk25;  state: Exp;  lines: +336 -826
+changed to ISO10646-1 encoding, strange C0 characters removed
+----------------------------
+revision 1.1
+date: 1999-09-16 23:43:22+01;  author: mgk25;  state: Exp;
+Initial revision
+=============================================================================
