@@ -11,7 +11,8 @@
 #include <sys/timeb.h>
 #include <unistd.h>
 
-/* CAUTION: REQUIRES INPUT TO BE \0-TERMINATED */
+// CAUTION: REQUIRES INPUT TO BE \0-TERMINATED
+// ...also, it does a hardcodes setlocale of LC_CTYPE to en_US.utf8 for... reasons.
 int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size){
 	unsigned int len = strlen(s);
 
@@ -20,6 +21,7 @@ int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size
 	unsigned int gbufheight = 0;
 	char *p = s;
 
+	// Calculate screen width of string prior to allocating memory for the frame buffer
 	wchar_t c;
 	mbstate_t ps = {0};
 	memset(&ps, 0, sizeof(mbstate_t));
@@ -92,11 +94,13 @@ int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size
 	} style = {
 		colortable[DEFAULT_FG_COLOR], colortable[DEFAULT_BG_COLOR], 0, 0, 0, 0, 0, 0
 	};
+	// Render glyphs (now with escape sequence rendering!)
 	for(;;){
 		// NOTE: This nested escape sequence parsing does not contain any unicode-awareness whatsoever
 		if(*p == '\033'){ // Escape sequence YAY
 			char *sequence_start = ++p;
 			if(*p == '['){ // This was a CSI!
+				// Disassemble the list of numbers, only accept SGR sequences (those ending with 'm')
 				long elems[MAX_CSI_ELEMENTS];
 				int nelems;
 				for(nelems = 0; nelems<MAX_CSI_ELEMENTS; nelems++){
@@ -122,6 +126,7 @@ int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size
 					fprintf(stderr, "Unsupported escape sequence: \"\\e%s\"\n", sequence_start);
 					goto error;
 				}
+				// Parse the sequence numbers
 				for(int i=0; i<nelems; i++){
 					switch(elems[i]){
 						case 0: // reset style
@@ -252,6 +257,7 @@ int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size
 			break;
 		p += inc;
 
+		// Render glyph into frame buffer
 		struct timeb time = {0};
 		ftime(&time);
 		unsigned long int t = time.time*1000 + time.millitm;
@@ -276,13 +282,15 @@ int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size
 		x += g->width;
 	}
 
+	// Render framebuffer to terminal, two pixels per character using Unicode box drawing stuff
 	color_t lastfg = {0, 0, 0}, lastbg = {0, 0, 0};
 	printf("\e[38;5;0;48;5;0m");
 	for(unsigned int y=0; y < gbufheight; y+=2){
 		for(unsigned int x=0; x < gbufwidth; x++){
-			//Da magicks: ▀█▄
+			// Da magicks: ▀█▄
 			color_t ct = *((color_t *)(gbuf + (y*gbufwidth + x)*3)); // Top pixel
 			color_t cb = *((color_t *)(gbuf + ((y+1)*gbufwidth + x)*3)); // Bottom pixel
+			// The following, rather convoluted logic tries to "save" escape sequences when rendering.
 			if(!memcmp(&ct, &lastfg, sizeof(color_t))){
 				if(!memcmp(&cb, &lastbg, sizeof(color_t))){
 					printf("▀");
