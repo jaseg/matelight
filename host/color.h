@@ -3,17 +3,25 @@
 
 #include <stdint.h>
 
+/* For easier memsetting we use an inverted alpha channel, i.e. 0 ≘ fully opaque; 255 ≘ fully transparent */
 typedef struct {
 	uint8_t r;
 	uint8_t g;
 	uint8_t b;
+	uint8_t a;
 } color_t;
+
+typedef struct {
+	color_t *data;
+	unsigned int w;
+	unsigned int h;
+} framebuffer_t;
 
 int xterm_color_index(color_t c);
 
-// gray
+/* gray */
 #define DEFAULT_FG_COLOR 7
-// black
+/* black */
 #define DEFAULT_BG_COLOR 0
 
 extern color_t colortable[256];
