@@ -27,6 +27,17 @@ int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size
 		goto error;
 	}
 	for(;;){
+		if(*p == '\033'){
+			p++;
+			// Jump over escape sequences
+			for(;;p++){
+				if(!(*p == ';' || *p == '[' || ('0' < *p && *p < '9'))){
+					p++;
+					break;
+				}
+			}
+		}
+
 		size_t inc = mbrtowc(&c, p, MB_CUR_MAX, &ps); // MB_CUR_MAX is safe since p is \0-terminated
 		if(inc == -1 || inc == -2){
 			fprintf(stderr, "Error rendering string: No valid UTF-8 input.\n");
@@ -70,19 +81,19 @@ int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size
 	struct {
 		color_t fg;
 		color_t bg;
-		int blink:4;
-		int bold:1; // TODO
-		int underline:1;
-		int strikethrough:1;
-		int fraktur:1; // TODO See: Flat10 Fraktur font
-		int invert:1;
+		unsigned int blink:4;
+		unsigned int bold:1; // TODO
+		unsigned int underline:1;
+		unsigned int strikethrough:1;
+		unsigned int fraktur:1; // TODO See: Flat10 Fraktur font
+		unsigned int invert:1;
 	} style = {
 		colortable[DEFAULT_FG_COLOR], colortable[DEFAULT_BG_COLOR], 0, 0, 0, 0, 0, 0
 	};
 	for(;;){
 		// NOTE: This nested escape sequence parsing does not contain any unicode-awareness whatsoever
 		if(*p == '\033'){ // Escape sequence YAY
-			char *sequence_start = p++;
+			char *sequence_start = ++p;
 			if(*p == '['){ // This was a CSI!
 				long elems[MAX_CSI_ELEMENTS];
 				int nelems;
@@ -91,22 +102,26 @@ int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size
 					char *endptr;
 					elems[nelems] = strtol(p, &endptr, 10);
 					if(p == endptr){
-						fprintf(stderr, "Invalid ANSI escape code: \"\\e%s\"\n", sequence_start);
+						fprintf(stderr, "Invalid escape sequence: \"\\e%s\"\n", sequence_start);
 						goto error;
 					}
+					p = endptr;
 					if(*endptr == 'm')
 						break;
 					if(*endptr != ';'){
-						fprintf(stderr, "Invalid ANSI escape code: \"\\e%s\"\n", sequence_start);
+						fprintf(stderr, "Invalid escape sequence: \"\\e%s\"\n", sequence_start);
 						goto error;
 					}
 				}
+				p++; // gobble up trailing 'm' of "\033[23;42m"
+				nelems++;
 				// By now we know it's a SGR since we error'ed out on anything else
 				if(nelems < 1){
 					fprintf(stderr, "Unsupported escape sequence: \"\\e%s\"\n", sequence_start);
 					goto error;
 				}
 				for(int i=0; i<nelems; i++){
+					printf("Processing escape sequence command code %d\n", elems[i]);
 					switch(elems[i]){
 						case 0: // reset style
 							style.fg = colortable[DEFAULT_FG_COLOR];
@@ -170,7 +185,7 @@ int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size
 								fprintf(stderr, "Invalid ANSI escape code: \"\\e%s\"\n", sequence_start);
 								goto error;
 							}
-							style.fg = colortable[elems[i++]];
+							style.fg = colortable[elems[++i]];
 							break;
 						case 39: // Reset foreground color to default
 							style.bg = colortable[DEFAULT_FG_COLOR];
@@ -191,7 +206,7 @@ int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size
 								fprintf(stderr, "Invalid ANSI escape code: \"\\e%s\"\n", sequence_start);
 								goto error;
 							}
-							style.bg = colortable[elems[i++]];
+							style.bg = colortable[elems[++i]];
 							break;
 						case 49: // Reset background color to default
 							style.bg = colortable[DEFAULT_BG_COLOR];
@@ -240,7 +255,7 @@ int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size
 		ftime(&time);
 		unsigned long int t = time.time*1000 + time.millitm;
 		int blink = style.blink && (t % (1000/style.blink) < (333/style.blink));
-		int inv = style.invert ^ blink;
+		int inv = !(style.invert ^ blink);
 		color_t fg = inv ? style.fg : style.bg;
 		color_t bg = inv ? style.bg : style.fg;
 
@@ -252,28 +267,30 @@ int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size
 				style.invert,
 				style.bold,
 				style.fraktur,
-				style.fg.r,
-				style.fg.g,
-				style.fg.b,
-				style.bg.r,
-				style.bg.g,
-				style.bg.b);
+				fg.r,
+				fg.g,
+				fg.b,
+				bg.r,
+				bg.g,
+				bg.b);
 		glyph_t *g = glyph_table[c];
 		render_glyph(g, gbuf, gbufwidth, x, 0, fg, bg);
 		if(style.strikethrough || style.underline){
 			int sty = gbufheight/2;
 			// g->y usually is a negative index of the glyph's baseline measured from the glyph's bottom
 			int uly = gbufheight + g->y;
+			printf("Generating strikethrough at y=%d, underline at y=%d\n", sty, uly);
 			for(int i=0; i<g->width; i++){
 				if(style.strikethrough)
-					*((color_t *)(gbuf + (sty*gbufwidth + i)*3)) = fg;
+					*((color_t *)(gbuf + (sty*gbufwidth + x + i)*3)) = fg;
 				if(style.underline)
-					*((color_t *)(gbuf + (uly*gbufwidth + i)*3)) = fg;
+					*((color_t *)(gbuf + (uly*gbufwidth + x + i)*3)) = fg;
 			}
 		}
 		x += g->width;
 	}
 
+	printf("Rendering buffer of size %d*%d\n", gbufwidth, gbufheight);
 	for(unsigned int y=0; y < gbufheight; y++){
 		for(unsigned int x=0; x < gbufwidth; x++){
 			color_t c = *((color_t *)(gbuf + (y*gbufwidth + x)*3));

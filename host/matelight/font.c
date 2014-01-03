@@ -14,10 +14,11 @@ void render_glyph(glyph_t *g, uint8_t *buf, unsigned int bufwidth, unsigned int 
 			data <<= 8;
 			data |= bitmap[y*bitmap_row_width+i];
 		}
-		uint8_t *p = buf + (offy+y)*bufwidth + offx;
+		uint8_t *p = buf + ((offy+y)*bufwidth + offx)*3;
 		for(unsigned int x=0; x < g->width; x++){
 			color_t c = (data&(1<<(g->width-1))) ? fg : bg;
-			*((color_t *)(p++)) = c;
+			*((color_t *)p) = c;
+			p += 3;
 			data <<= 1;
 		}
 	}
