@@ -9,6 +9,7 @@
 #include <wchar.h>
 #include <locale.h>
 #include <sys/timeb.h>
+#include <unistd.h>
 
 /* CAUTION: REQUIRES INPUT TO BE \0-TERMINATED */
 int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size){
@@ -121,7 +122,6 @@ int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size
 					goto error;
 				}
 				for(int i=0; i<nelems; i++){
-					printf("Processing escape sequence command code %d\n", elems[i]);
 					switch(elems[i]){
 						case 0: // reset style
 							style.fg = colortable[DEFAULT_FG_COLOR];
@@ -259,27 +259,12 @@ int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size
 		color_t fg = inv ? style.fg : style.bg;
 		color_t bg = inv ? style.bg : style.fg;
 
-		printf("Rendering glyph %lc: Strikethrough %d Underline %d Blink %d Inverted %d Bold %d Fraktur %d FG (%d, %d, %d) BG (%d, %d, %d)\n",
-				c,
-				style.strikethrough,
-				style.underline,
-				style.blink,
-				style.invert,
-				style.bold,
-				style.fraktur,
-				fg.r,
-				fg.g,
-				fg.b,
-				bg.r,
-				bg.g,
-				bg.b);
 		glyph_t *g = glyph_table[c];
 		render_glyph(g, gbuf, gbufwidth, x, 0, fg, bg);
 		if(style.strikethrough || style.underline){
 			int sty = gbufheight/2;
 			// g->y usually is a negative index of the glyph's baseline measured from the glyph's bottom
 			int uly = gbufheight + g->y;
-			printf("Generating strikethrough at y=%d, underline at y=%d\n", sty, uly);
 			for(int i=0; i<g->width; i++){
 				if(style.strikethrough)
 					*((color_t *)(gbuf + (sty*gbufwidth + x + i)*3)) = fg;
@@ -290,16 +275,6 @@ int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size
 		x += g->width;
 	}
 
-	printf("Rendering buffer of size %d*%d\n", gbufwidth, gbufheight);
-	for(unsigned int y=0; y < gbufheight; y++){
-		for(unsigned int x=0; x < gbufwidth; x++){
-			color_t c = *((color_t *)(gbuf + (y*gbufwidth + x)*3));
-			//printf("\033[0m%02x,%02x,%02x-%02x\033[38;5;%dm█", c.r, c.g, c.b, xterm_color_index(c), xterm_color_index(c));
-			printf("\033[38;5;%dm█", xterm_color_index(c));
-		}
-		printf("\n");
-	}
-	return 0;
 	color_t lastfg = {0, 0, 0}, lastbg = {0, 0, 0};
 	printf("\e[38;5;0;48;5;0m");
 	for(unsigned int y=0; y < gbufheight; y+=2){
@@ -358,12 +333,16 @@ int main(int argc, char **argv){
 		fprintf(stderr, "Error reading font file.\n");
 		return 1;
 	}
-	for(unsigned int i=1; i<argc; i++){
-		if(console_render(argv[i], glyph_table, BLP_SIZE)){
-			fprintf(stderr, "Error rendering text.\n");
-			return 1;
+	for(;;){
+		printf("\033[2J");
+		for(unsigned int i=1; i<argc; i++){
+			if(console_render(argv[i], glyph_table, BLP_SIZE)){
+				fprintf(stderr, "Error rendering text.\n");
+				return 1;
+			}
+			printf("\n");
 		}
-		printf("\n");
+		usleep(20000);
 	}
 	return 0;
 }
