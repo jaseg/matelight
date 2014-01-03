@@ -28,15 +28,16 @@ int console_render(char *s, glyph_t **glyph_table, unsigned int glyph_table_size
 		goto error;
 	}
 	for(;;){
-		if(*p == '\033'){
+		while(*p == '\033'){
 			p++;
 			// Jump over escape sequences
 			for(;;p++){
-				if(!(*p == ';' || *p == '[' || ('0' < *p && *p < '9'))){
+				if(!(*p == ';' || *p == '[' || ('0' <= *p && *p <= '9'))){
 					p++;
 					break;
 				}
 			}
+			memset(&ps, 0, sizeof(mbstate_t));
 		}
 
 		size_t inc = mbrtowc(&c, p, MB_CUR_MAX, &ps); // MB_CUR_MAX is safe since p is \0-terminated
