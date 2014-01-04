@@ -14,7 +14,7 @@
 
 /* CAUTION: REQUIRES INPUT TO BE \0-TERMINATED
  * ...also, it does a hardcodes setlocale of LC_CTYPE to en_US.utf8 for... reasons. */
-color_t * framebuffer_render_text(char *s, glyph_t **glyph_table, unsigned int glyph_table_size){
+framebuffer_t *framebuffer_render_text(char *s, glyph_t **glyph_table, unsigned int glyph_table_size){
 	unsigned int len = strlen(s);
 
 	color_t *gbuf = NULL;
@@ -71,10 +71,10 @@ color_t * framebuffer_render_text(char *s, glyph_t **glyph_table, unsigned int g
 	/* For easier rendering on the terminal, round up to multiples of two */
 	gbufheight += gbufheight&1;
 
-	unsigned int gbufsize = gbufwidth*gbufheight;
-	gbuf = malloc(gbufsize, sizeof(color_t));
-	if(gbuf == 0){
-		fprintf(stderr, "Cannot malloc() %d bytes.\n", gbufsize*sizeof(color_t));
+	size_t gbufsize = gbufwidth*gbufheight;
+	gbuf = calloc(gbufsize, sizeof(color_t));
+	if(!gbuf){
+		fprintf(stderr, "Cannot malloc() %lu bytes.\n", gbufsize*sizeof(color_t));
 		goto error;
 	}
 	memset(gbuf, 0, gbufsize*sizeof(color_t));
@@ -281,21 +281,32 @@ color_t * framebuffer_render_text(char *s, glyph_t **glyph_table, unsigned int g
 		}
 		x += g->width;
 	}
-	return gbuf;
-	error:
-		free(gbuf);
-		return 0;
+	framebuffer_t *fb = malloc(sizeof(framebuffer_t));
+	if(!fb){
+		fprintf(stderr, "Cannot malloc() %lu bytes.\n", sizeof(framebuffer_t));
+		goto error;
+	}
+	fb->w = gbufwidth;
+	fb->h = gbufheight;
+	fb->data = gbuf;
+	return fb;
+error:
+	free(gbuf);
+	return 0;
 }
 
-void console_render_buffer(uint8_t *gbuf, unsigned int gbufwidth, unsigned int gbufheight){
+void console_render_buffer(framebuffer_t *fb){
 	/* Render framebuffer to terminal, two pixels per character using Unicode box drawing stuff */
 	color_t lastfg = {0, 0, 0}, lastbg = {0, 0, 0};
 	printf("\e[38;5;0;48;5;0m");
-	for(unsigned int y=0; y < gbufheight; y+=2){
-		for(unsigned int x=0; x < gbufwidth; x++){
+	color_t *data = fb->data;
+	size_t w = fb->w;
+	size_t h = fb->h;
+	for(size_t y=0; y < h; y+=2){
+		for(size_t x=0; x < w; x++){
 			/* Da magicks: ▀█▄ */
-			color_t ct = *((color_t *)(gbuf + (y*gbufwidth + x)*sizeof(color_t))); /* Top pixel */
-			color_t cb = *((color_t *)(gbuf + ((y+1)*gbufwidth + x)*sizeof(color_t))); /* Bottom pixel */
+			color_t ct = data[y*w + x]; /* Top pixel */
+			color_t cb = data[(y+1)*w + x]; /* Bottom pixel */
 			/* The following, rather convoluted logic tries to "save" escape sequences when rendering. */
 			if(!memcmp(&ct, &lastfg, sizeof(color_t))){
 				if(!memcmp(&cb, &lastbg, sizeof(color_t))){
@@ -331,10 +342,14 @@ void console_render_buffer(uint8_t *gbuf, unsigned int gbufwidth, unsigned int g
 		}
 		printf("\n");
 	}
-	return 0;
 }
 
 int main(int argc, char **argv){
+	if(argc < 2){
+		fprintf(stderr, "No input text given\n");
+		return 1;
+	}
+
 	FILE *f = fopen("unifont.bdf", "r");
 	if(!f){
 		fprintf(stderr, "Error opening font file: %s\n", strerror(errno));
@@ -345,13 +360,16 @@ int main(int argc, char **argv){
 		fprintf(stderr, "Error reading font file.\n");
 		return 1;
 	}
+
 	for(;;){
 		printf("\033[2J");
 		for(unsigned int i=1; i<argc; i++){
-			if(console_render(argv[i], glyph_table, BLP_SIZE)){
+			framebuffer_t *fb = framebuffer_render_text(argv[i], glyph_table, BLP_SIZE);
+			if(!fb){
 				fprintf(stderr, "Error rendering text.\n");
 				return 1;
 			}
+			console_render_buffer(fb);
 			printf("\n");
 		}
 		usleep(20000);

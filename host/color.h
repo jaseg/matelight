@@ -2,6 +2,7 @@
 #define __COLOR_H__
 
 #include <stdint.h>
+#include <stdlib.h>
 
 /* For easier memsetting we use an inverted alpha channel, i.e. 0 ≘ fully opaque; 255 ≘ fully transparent */
 typedef struct {
@@ -13,8 +14,8 @@ typedef struct {
 
 typedef struct {
 	color_t *data;
-	unsigned int w;
-	unsigned int h;
+	size_t w;
+	size_t h;
 } framebuffer_t;
 
 int xterm_color_index(color_t c);
@@ -25,5 +26,10 @@ int xterm_color_index(color_t c);
 #define DEFAULT_BG_COLOR 0
 
 extern color_t colortable[256];
+static inline void framebuffer_free(framebuffer_t *fb){
+	if(fb)
+		free(fb->data);
+	free(fb);
+}
 
 #endif//__COLOR_H__
