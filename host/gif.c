@@ -37,7 +37,7 @@ void color_fill(color_t *dest, color_t src, size_t size){
 	memcpy(dest+i, dest, (size-i)*sizeof(color_t));
 }
 
-gifAnimationState_t *gif_read(uint8_t *buf, unsigned int buflength){
+gifAnimationState_t *gif_read(uint8_t *buf, size_t buflength){
 	gifAnimationState_t *st = malloc(sizeof(gifAnimationState_t));
 	if(!st){
 		fprintf(stderr, "Failed to allocate %lu bytes\n", sizeof(*st));
@@ -59,7 +59,7 @@ gifAnimationState_t *gif_read(uint8_t *buf, unsigned int buflength){
 	}
 	color_t *fb = calloc(framesize, sizeof(color_t));
 	if(!fb){
-		fprintf(stderr, "Failed to allocate framebuffer for GIF (%d bytes)\n", gif->SWidth*gif->SHeight);
+		fprintf(stderr, "Failed to allocate framebuffer for GIF (%lu bytes)\n", framesize*sizeof(color_t));
 		goto error;
 	}
 	if(gif->SColorMap){ /* Initially fill framebuffer with background color */
@@ -73,6 +73,11 @@ gifAnimationState_t *gif_read(uint8_t *buf, unsigned int buflength){
 
 	st->gif = gif;
 	st->idx = 0;
+	st->frame = malloc(sizeof(framebuffer_t));
+	if(!st->frame){
+		fprintf(stderr, "Failed to allocate %lu bytes\n", sizeof(framebuffer_t));
+		goto error;
+	}
 	st->frame->data = fb;
 	st->frame->w = gif->SWidth;
 	st->frame->h = gif->SHeight;
@@ -93,7 +98,7 @@ void gifAnimationState_free(gifAnimationState_t *st){
  * state ⇜ internal state, initialize as NULL
  * delay ⇜ is filled with this frame's delay value in milliseconds (if it is not NULL). -1 means "No delay given".
  * Small note: I mean, rendering a GIF in python is not quite trivial, either (about 20loc). But come on, this is just ridiculous. */
-framebuffer_t *gif_render(uint8_t *buf, unsigned int buflength, gifAnimationState_t **state, int *delay){
+framebuffer_t *framebuffer_render_gif(uint8_t *buf, size_t buflength, gifAnimationState_t **state, int *delay){
 	gifAnimationState_t *st;
 	if(*state == NULL){
 		/* On first invocation, parse gif and store it in the state struct */

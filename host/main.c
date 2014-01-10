@@ -1,7 +1,8 @@
 
 #include "main.h"
-#include "font.h"
 #include "color.h"
+#include "font.h"
+#include "gif.h"
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -345,34 +346,72 @@ void console_render_buffer(framebuffer_t *fb){
 }
 
 int main(int argc, char **argv){
-	if(argc < 2){
-		fprintf(stderr, "No input text given\n");
+	if(argc != 2){
+		fprintf(stderr, "No or too much input text given\n");
 		return 1;
 	}
 
-	FILE *f = fopen("unifont.bdf", "r");
-	if(!f){
+	FILE *fontfile = fopen("unifont.bdf", "r");
+	if(!fontfile){
 		fprintf(stderr, "Error opening font file: %s\n", strerror(errno));
 		return 1;
 	}
 	glyph_t* glyph_table[BLP_SIZE];
-	if(read_bdf(f, glyph_table, BLP_SIZE)){
+	if(read_bdf(fontfile, glyph_table, BLP_SIZE)){
 		fprintf(stderr, "Error reading font file.\n");
 		return 1;
 	}
+	fclose(fontfile);
 
-	for(;;){
-		printf("\033[2J");
-		for(unsigned int i=1; i<argc; i++){
-			framebuffer_t *fb = framebuffer_render_text(argv[i], glyph_table, BLP_SIZE);
-			if(!fb){
-				fprintf(stderr, "Error rendering text.\n");
+	int delay = 20;
+	framebuffer_t *fb;
+	gifAnimationState_t *gifstate = NULL;
+	char *p = strstr(argv[1], ".gif");
+	if(p && p[4] == '\0'){ /* Argument ends with ".gif", try to read it as a gif file */
+		FILE *f = fopen(argv[1], "r");
+		if(!f){
+			fprintf(stderr, "Error opening gif file from argument (\"%s\"): %s\n", argv[1], strerror(errno));
+			return 1;
+		}
+		uint8_t *buf = NULL;
+		size_t size = 0;
+		size_t read = 0;
+		const size_t READ_INC = 1024;
+		do{
+			size_t newsize = size+READ_INC;
+			buf = realloc(buf, newsize);
+			if(!buf){
+				fprintf(stderr, "Error opening gif file from argument (\"%s\"): Cannot allocate %lu bytes.\n", argv[1], newsize);
 				return 1;
 			}
-			console_render_buffer(fb);
-			printf("\n");
+			read += fread(buf+size, 1, newsize, f);
+			size = newsize;
+		}while(read == size);
+		fb = framebuffer_render_gif(buf, read, &gifstate, &delay);
+		free(buf);
+	}else{
+		fb = framebuffer_render_text(argv[1], glyph_table, BLP_SIZE);
+	}
+
+	for(;;){ /* Never gonna give you up, never gonna let you down! */
+		printf("\033[2J");
+
+		if(!fb){
+			fprintf(stderr, "Error rendering text.\n");
+			return 1;
 		}
-		usleep(20000);
+
+		console_render_buffer(fb);
+		printf("\n");
+		usleep(delay*1000);
+
+		if(gifstate){
+			fb = framebuffer_render_gif(NULL, 0, &gifstate, &delay);
+			if(delay == -1)
+				delay = 20;
+		}else{
+			fb = framebuffer_render_text(argv[1], glyph_table, BLP_SIZE);
+		}
 	}
 	return 0;
 }
