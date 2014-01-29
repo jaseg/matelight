@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Generate an XTerm-256 color RGB palette
 
 xterm_colors = [
 	(0x00, 0x00, 0x00),
