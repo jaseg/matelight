@@ -14,7 +14,8 @@ int gif_buffer_input (GifFileType *gif, GifByteType *dest, int n){
 	readBuffer_t *rb = gif->UserData;
 	if(rb->index+n > rb->length)
 		n = rb->length - rb->index;
-	memcpy(dest, rb->data, n);
+	memcpy(dest, rb->data + rb->index, n);
+	rb->index += n;
 	return n;
 }
 
@@ -38,6 +39,7 @@ void color_fill(color_t *dest, color_t src, size_t size){
 }
 
 gifAnimationState_t *gif_read(uint8_t *buf, size_t buflength){
+	color_t *fb = 0;
 	gifAnimationState_t *st = malloc(sizeof(gifAnimationState_t));
 	if(!st){
 		fprintf(stderr, "Failed to allocate %lu bytes\n", sizeof(*st));
@@ -48,6 +50,12 @@ gifAnimationState_t *gif_read(uint8_t *buf, size_t buflength){
 	int err = 0;
 	GifFileType *gif = DGifOpen(&readBuf, gif_buffer_input, &err);
 	if(err){
+		fprintf(stderr, "Could not open GIF: %s\n", GifErrorString(err));
+		goto error;
+	}
+
+	err = DGifSlurp(gif);
+	if(err){
 		fprintf(stderr, "Could not read GIF data: %s\n", GifErrorString(err));
 		goto error;
 	}
@@ -57,7 +65,7 @@ gifAnimationState_t *gif_read(uint8_t *buf, size_t buflength){
 		fprintf(stderr, "Invalid 0*0px gif\n");
 		goto error;
 	}
-	color_t *fb = calloc(framesize, sizeof(color_t));
+	fb = calloc(framesize, sizeof(color_t));
 	if(!fb){
 		fprintf(stderr, "Failed to allocate framebuffer for GIF (%lu bytes)\n", framesize*sizeof(color_t));
 		goto error;

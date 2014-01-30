@@ -390,7 +390,7 @@ int main(int argc, char **argv){
 				fprintf(stderr, "Error opening gif file from argument (\"%s\"): Cannot allocate %lu bytes.\n", argv[1], newsize);
 				goto error;
 			}
-			read += fread(buf+size, 1, newsize, f);
+			read += fread(buf+size, 1, READ_INC, f);
 			size = newsize;
 		}while(read == size);
 		fb = framebuffer_render_gif(buf, read, &gifstate, &delay);
@@ -401,12 +401,12 @@ int main(int argc, char **argv){
 	}
 
 	for(;;){ /* Never gonna give you up, never gonna let you down! */
-		printf("\033[2J");
-
 		if(!fb){
-			fprintf(stderr, "Error rendering text.\n");
+			fprintf(stderr, "Error rendering.\n");
 			goto error;
 		}
+
+		printf("\033[2J");
 
 		console_render_buffer(fb);
 		printf("\n");
