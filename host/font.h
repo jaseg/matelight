@@ -14,6 +14,11 @@ typedef struct {
 	int8_t y;
 } glyph_t;
 
+typedef struct {
+	glyph_t *t;
+	size_t size;
+} glyphtable_t;
+
 // Size of Unicode's basic multilingual plane
 #define BLP_SIZE	65536
 

@@ -19,9 +19,14 @@
 #include <unistd.h>
 
 
+void free_framebuffer(framebuffer_t *fb){
+	free(fb->data);
+	free(fb);
+}
+
 /* CAUTION: REQUIRES INPUT TO BE \0-TERMINATED
- * ...also, it does a hardcodes setlocale of LC_CTYPE to en_US.utf8 for... reasons. */
-framebuffer_t *framebuffer_render_text(char *s, glyph_t **glyph_table, unsigned int glyph_table_size){
+ * ...also, it does a hardcoded setlocale of LC_CTYPE to en_US.utf8 for... reasons. */
+framebuffer_t *framebuffer_render_text(char *s, glyphtable_t *glyph_table){
 	unsigned int len = strlen(s);
 
 	color_t *gbuf = NULL;
@@ -59,12 +64,12 @@ framebuffer_t *framebuffer_render_text(char *s, glyph_t **glyph_table, unsigned 
 			break;
 		p += inc;
 
-		if(c > glyph_table_size){
-			fprintf(stderr, "Error rendering string: Codepoint 0x%lx out of valid range (0-%d).\n", (long int)c, glyph_table_size);
+		if(c > glyph_table->size){
+			fprintf(stderr, "Error rendering string: Codepoint 0x%lx out of valid range (0-%d).\n", (long int)c, glyph_table->size);
 			goto error;
 		}
 
-		glyph_t *g = glyph_table[c];
+		glyph_t *g = glyph_table->data[c];
 		if(!g){
 			fprintf(stderr, "Error rendering string: Codepoint 0x%lx not in font.\n", (long int)c);
 			goto error;
@@ -273,7 +278,7 @@ framebuffer_t *framebuffer_render_text(char *s, glyph_t **glyph_table, unsigned 
 		color_t fg = inv ? style.fg : style.bg;
 		color_t bg = inv ? style.bg : style.fg;
 
-		glyph_t *g = glyph_table[c];
+		glyph_t *g = glyph_table->data[c];
 		render_glyph(g, gbuf, gbufwidth, x, 0, fg, bg);
 		if(style.strikethrough || style.underline){
 			int sty = gbufheight/2;
@@ -351,208 +356,3 @@ void console_render_buffer(framebuffer_t *fb){
 	}
 }
 
-int main(int argc, char **argv){
-	FILE *f = NULL;
-	int udpfd = 0;
-	int udp6fd = 0;
-	uint8_t *udpbuf = NULL;
-	uint8_t *fbdata = NULL;
-	framebuffer_t *fb = NULL;
-
-	if(argc != 2){
-		fprintf(stderr, "No or too much input text given\n");
-		return 1;
-	}
-
-	/* Read font file */
-	FILE *fontfile = fopen("unifont.bdf", "r");
-	if(!fontfile){
-		fprintf(stderr, "Error opening font file: %s\n", strerror(errno));
-		return 1;
-	}
-	glyph_t* glyph_table[BLP_SIZE];
-	if(read_bdf(fontfile, glyph_table, BLP_SIZE)){
-		fprintf(stderr, "Error reading font file.\n");
-		fclose(fontfile);
-		goto error;
-	}
-	fclose(fontfile);
-
-	/* Set up framebuffer */
-	fbdata = malloc(DISPLAY_WIDTH*DISPLAY_HEIGHT*sizeof(color_t));
-	if(!fbdata){
-		fprintf(stderr, "Cannot alloccate framebuffer\n");
-		goto error;
-	}
-	fb = malloc(sizeof(*fb));
-	if(!fb){
-		fprintf(stderr, "Cannot alloccate framebuffer\n");
-		goto error;
-	}
-	fb->w = DISPLAY_WIDTH;
-	fb->h = DISPLAY_HEIGHT;
-	fb->data = fbdata;
-
-	/* Set up UDP server */
-	udp4fd = socket(AF_INET, SOCK_DGRAM | SOCK_NONBLOCK, IPPROTO_UDP);
-	udp6fd = socket(AF_INET6, SOCK_DGRAM | SOCK_NONBLOCK, IPPROTO_UDP);
-	if(udp4fd < 0 || udp6fd < 0){
-		fprintf(stderr, "Cannot open UDP sockets: %s\n", strerror(errno));
-		goto error;
-	}
-	struct sockaddr_in udp_addr = {
-		AF_INET,
-		INADDR_ANY,
-		htons(UDP_PORT)
-	};
-	bind(udp4fd, &udp_addr, sizeof(udp_addr));
-	struct sockaddr_in udp6_addr = {
-		AF_INET6,
-		IN6ADDR_ANY_INIT,
-		htons(UDP_PORT)
-	};
-	bind(udp6fd, &udp_addr, sizeof(udp_addr));
-	/* Set up UDP receive buffer */
-	struct msghdr msg;
-	memset(&msg, 0, sizeof(msg));
-	udpbuf = malloc(UDP_BUF_SIZE);
-	if(!buf){
-		fprintf(stderr, "Cannot allocate UDP buffer");
-		goto error;
-	}
-	struct iovec iov[1] = {{udpbuf, sizeof(UDP_BUF_SIZE)}};
-	msg.msg_iov = iov;
-	msg.msg_iovlen = 1;
-
-	/* List of currently active UDP streams */
-	LIST_HEAD(udp_client_entry, udp_client) udp_client_head;
-	struct udp_client {
-		uint64_t last_timestamp;
-		uint64_t last_sequence_number;
-		struct sockaddr remote_addr;
-		int active:1;
-		LIST_ENTRY(udp_client) entries;
-	};
-	LIST_INIT(&udp_client_head);
-
-	LIST_HEAD(text_queue_head_t, text_queue_entry) text_queue_head;
-	struct text_queue_entry {
-		char *text;
-		int current_position;
-		unsigned int loop_count;
-		LIST_ENTRY(text_queue_entry) entries;
-	};
-	LIST_INIT(&text_queue_head);
-
-	for(;;){ /* Never gonna give you up, never gonna let you down! */
-		struct timeb time = {0};
-		ftime(&time);
-		uint64_t now = time.time*1000 + time.millitm;
-
-		int made_active = 0;
-		/* Choose next active client */
-		for(struct udp_client *p = udp_client_head.lh_first; p != NULL; p = p->entries.le_next){
-			if(now - p->last_frame_received > FRAME_TIMEOUT){ /* Connection timeout */
-				LIST_REMOVE(p, entries);
-				continue;
-			}
-			if(!made_active){
-				p->active = 1;
-				made_active = 1;
-			}else{
-				p->active = 0;
-			}
-		}
-
-		if(!made_active){ /* No active streams, render marquee */
-			text_queue_entry *entry = text_queue_head.lh_first;
-			framebuffer_t *text = framebuffer_render_text(entry, glyph_table, BLP_SIZE);
-			/* COPY TEXT DATA */
-			for(size_t line = 0; line < DISPLAY_HEIGHT; line++){
-				color_t *datarow = fb->data+(line*DISPLAY_WIDTH);
-				color_t *textrow = text->data+(line*text->w);
-				if(entry->current_position > 0)
-					memset(datarow, 0, sizeof(color_t)*entry->current_position);
-				if(entry->current_position+text->w < DISPLAY_WIDTH)
-					memset(datarow+(entry->curent_position+text->w), 0, DISPLAY_WIDTH-(entry->curent_position+text->w));
-				memcpy(datarow+(entry->current_position>0 ? entry->current_position : 0),
-						textrow+(entry->current_position>0 ? 0 : -entry->current_position),
-						//DISPLAY_WIDTH, text->w-current_position FIXME
-			}
-			entry->current_position++;
-			if(entry->current_position <= -text->w){
-				entry->loop_count++;
-				if(entry->loop_count > TEXT_LOOP_COUNT){
-					LIST_REMOVE(entry, entries);
-				}
-			}
-		}
-
-		/* Receive pending IPv4 UDP packets */
-		ssize_t received = 0;
-		while((received = recvmsg(udp4fd, &msg, 0)) > 0){
-			if(received < UDP_BUF_SIZE) /* Packet too short */
-				continue;
-			ml_packet_t *pkt = (ml_packet_t*)udpbuf;
-			if(ntohl(pkt->magic) != 0xDEADBEEF)
-				continue;
-			if(ntohs(pkt->width) != DISPLAY_WIDTH || ntohs(pkt->height) != DISPLAY_HEIGHT)
-				continue;
-			struct sockaddr_in *src = msg.msg_name;
-			struct udp_client *entry = NULL;
-			for(struct udp_client *p = udp_client_head.lh_first; p != NULL; p = p->entries.le_next){
-				if(!memcmp(&p->remote_addr, src, sizeof(sockaddr))){ /* found */
-					entry = p;
-					break;
-				}
-			}
-			if(!entry){
-				entry = malloc(sizeof(struct udp_client));
-				if(!entry){
-					fprintf(stderr, "Cannot allocate UDP connection entry\n");
-					goto error;
-				}
-				memset(entry, 0, sizeof(entry));
-				LIST_INSERT_HEAD(&udp_client_head, entry, entries);
-				memcpy(entry->remote_addr, src, sizeof(sockaddr));
-			}
-			if(entry->last_sequence_number > pkt->seq) /* Delayed packet containing old data */
-				continue;
-			entry->last_timestamp = now;
-			entry->last_sequence_number = pkt->seq;
-			if(entry->active){
-				/* Copy frame, extending RGB UDP packet data to RGBA framebuffer format */
-				color_t *p = fb->data;
-				rgb_t *q = pkt->data;
-				while(p < fb->data+fb->w*fb->h){
-					p->a = 0;
-					*(rgb_t *)p++ = *q++;
-				}
-			}
-		}
-		if(received < 0){
-			fprintf(stderr, "Error receiving UDP datagram: %s\n", strerror(errno));
-			goto error;
-		}
-
-		/* Receive pending IPv6 UDP packets */
-		/* FIXME */
-
-		/* Render frame buffer */
-		printf("\033[2J");
-		console_render_buffer(fb);
-		printf("\n");
-
-		usb_send_buffer(fb);
-		usleep(1000000/FRAMERATE);
-	}
-	return 0;
-error:
-	fclose(f);
-	close(udpfd);
-	close(udp6fd);
-	free(udpbuf);
-	free(fbdata);
-	free(fb);
-	return 1;
-}

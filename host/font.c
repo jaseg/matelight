@@ -23,7 +23,65 @@ void render_glyph(glyph_t *g, color_t *buf, unsigned int bufwidth, unsigned int 
 	}
 }
 
-int read_bdf(FILE *f, glyph_t **glyph_table, unsigned int glyph_table_size){
+glyphtable_t *read_bdf_file(char *filename){
+	FILE *fontfile = fopen("unifont.bdf", "r");
+	if(!fontfile){
+		fprintf(stderr, "Error opening font file: %s\n", strerror(errno));
+		goto error;
+	}
+
+	glyphtable_t *glyph_table = read_bdf(fontfile, glyph_table, BLP_SIZE)
+	if(!glyph_table){
+		fprintf(stderr, "Error reading font file.\n");
+		goto error;
+	}
+
+	fclose(fontfile);
+	return glyph_table;
+error:
+	fclose(fontfile);
+	return NULL;
+}
+
+#define START_GLYPHTABLE_SIZE 256
+#define MAX_GLYPHTABLE_INCREMENT 32768
+glyphtable_t *extend_glyphtable(glyphtable_t *glyph_table){
+	size_t oldlen = glyph_table->size;
+	size_t newlen = oldlen + (oldlen<MAX_GLYPHTABLE_INCREMENT ? oldlen : MAX_GLYPHTABLE_INCREMENT);
+	if(oldlen == 0)
+		newlen = START_GLYPHTABLE_SIZE;
+	glyph_t *newdata = realloc(glyph_table->data, newlen*sizeof(glyph_t));
+	if(!newdata){
+		fprintf(stderr, "Cannot allocate bdf glyph buffer\n");
+		goto error;
+	}
+	glyph_table->data = newdata;
+	// Clear newly allocated memory area
+	memset(glyph_table->data+oldlen, 0, (newlen-oldlen)*sizeof(glyph_t));
+	glyph_table->size = newlen;
+error:
+	free_glyphtable(glyph_table);
+	return NULL;
+}
+
+void free_glyphtable(glyphtable_t *glyph_table){
+	if(glyph_table){
+		for(unsigned int i=0; i<glyph_table->length; i++){
+			free(glyph_table->data[i]);
+		}
+		free(glyph_table->data);
+	}
+	free(glyph_table);
+}
+
+glyphtable_t *read_bdf(FILE *f){
+	glyphtable_t *glyph_table = malloc(sizeof(glyphtable_t));
+	if(!glyph_table){
+		printf("Cannot allocate glyph table\n");
+		goto error;
+	}
+	memset(glyph_table, 0, sizeof(*glyph_table));
+
 	char* line = 0;
 	size_t len = 0;
 
@@ -31,9 +89,6 @@ int read_bdf(FILE *f, glyph_t **glyph_table, unsigned int glyph_table_size){
 	unsigned int dwidth = -1;
 	unsigned int encoding = -1;
 	void *glyph_data = 0;
-
-	// Clear glyph table before use
-	memset(glyph_table, 0, sizeof(*glyph_table));
 
 	for(;;){
 		size_t read = getline(&line, &len, f);
@@ -64,9 +119,12 @@ int read_bdf(FILE *f, glyph_t **glyph_table, unsigned int glyph_table_size){
 				fprintf(stderr, "Invalid ENCODING line: %s %s\n", line, args);
 				goto error;
 			}
-			if(encoding > glyph_table_size){
-				fprintf(stderr, "Codepoint out of valid range (0-%d): %d", glyph_table_size, encoding);
-				goto error;
+			if(encoding > glyph_table->size){
+				glyph_table = extend_glyphtable(glyph_table);
+				if(!glyph_table){
+					fprintf(stderr, "Cannot allocate glyph table.\n");
+					goto error;
+				}
 			}
 
 		}else if(strcmp("BBX", line) == 0){
@@ -171,7 +229,7 @@ int read_bdf(FILE *f, glyph_t **glyph_table, unsigned int glyph_table_size){
 				i++;
 			}
 			memcpy(glyph_data, &current_glyph, sizeof(glyph_t));
-			glyph_table[encoding] = glyph_data;
+			glyph_table->data[encoding] = glyph_data;
 
 			// Reset things for next iteration
 			current_glyph.width = -1;
@@ -182,12 +240,10 @@ int read_bdf(FILE *f, glyph_t **glyph_table, unsigned int glyph_table_size){
 			encoding = -1;
 		}
 	}
-	return 0;
+	return glyph_table;
 error:
-	// Free malloc()ed glyphs
 	free(glyph_data);
-	for(unsigned int i=0; i<sizeof(glyph_table)/sizeof(glyph_t *); i++)
-		free(glyph_table[i]);
-	return 1;
+	free_glyphtable(glyph_table);
+	return NULL;
 }
 
