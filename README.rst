@@ -29,12 +29,12 @@ There is at least one further server implementation of CRAP in the form of an `H
 
 Related Projects
 ----------------
- * `A Python script that plays gifs over CRAP`_
- * `An HTML5 CRAP emulator`_
- * `Webcam streaming on Mate Light`_
- * `A game programming framework for Mate Light`_
- * `Snake for Mate Light`_
- * `Game of Life for Mate Light`_
+* `A Python script that plays gifs over CRAP`_
+* `An HTML5 CRAP emulator`_
+* `Webcam streaming on Mate Light`_
+* `A game programming framework for Mate Light`_
+* `Snake for Mate Light`_
+* `Game of Life for Mate Light`_
 
 .. _`A Python script that plays gifs over CRAP`: https://github.com/uwekamper/matelight-gifplayer
 .. _`An HTML5 CRAP emulator`: https://github.com/sodoku/matelightemu/blob/master/app.js
