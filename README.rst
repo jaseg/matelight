@@ -40,4 +40,5 @@ Related Projects
 .. _`Webcam streaming on Mate Light`: https://github.com/c-base/matetv
 .. _`A game programming framework for Mate Light`: https://github.com/c-base/pymlgame
 .. _`Snake for Mate Light`: https://github.com/c-base/pymlsnake
+.. -`Game of Life`: https://github.com/igorw/conway-php#mate-light
 
