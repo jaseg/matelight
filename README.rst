@@ -34,10 +34,12 @@ Related Projects
  * `Webcam streaming on Mate Light`_
  * `A game programming framework for Mate Light`_
  * `Snake for Mate Light`_
+ * `Game of Life for Mate Light`_
 
 .. _`A Python script that plays gifs over CRAP`: https://github.com/uwekamper/matelight-gifplayer
 .. _`An HTML5 CRAP emulator`: https://github.com/sodoku/matelightemu/blob/master/app.js
 .. _`Webcam streaming on Mate Light`: https://github.com/c-base/matetv
 .. _`A game programming framework for Mate Light`: https://github.com/c-base/pymlgame
 .. _`Snake for Mate Light`: https://github.com/c-base/pymlsnake
+.. _`Game of Life for Mate Light`: https://github.com/igorw/conway-php#mate-light
 
