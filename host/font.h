@@ -15,7 +15,7 @@ typedef struct {
 } glyph_t;
 
 typedef struct {
-	glyph_t *t;
+	glyph_t **data;
 	size_t size;
 } glyphtable_t;
 
@@ -25,7 +25,9 @@ typedef struct {
 #define MAX_CSI_ELEMENTS 8
 
 // We could also use some fancy hashtable here, but unifont includes about 57k glyphs so we would hardly save any memory.
-int read_bdf(FILE *f, glyph_t **glyph_table, unsigned int glyph_table_size);
+glyphtable_t *read_bdf(FILE *f);
+
+void free_glyphtable(glyphtable_t *glyph_table);
 
 // Requires buf to point to a buffer at least of size glyph->width*glyph->height.
 void render_glyph(glyph_t *glyph, color_t *buf, unsigned int bufwidth, unsigned int offx, unsigned int offy, color_t fg, color_t bg);

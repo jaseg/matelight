@@ -4,7 +4,7 @@
 #include "color.h"
 #include "font.h"
 
-framebuffer_t *framebuffer_render_text(char *s, glyph_t **glyph_table, unsigned int glyph_table_size);
+framebuffer_t *framebuffer_render_text(char *s, glyphtable_t *glyph_table);
 void console_render_buffer(framebuffer_t *fb);
 
 #endif//__MAIN_H__

@@ -65,7 +65,7 @@ framebuffer_t *framebuffer_render_text(char *s, glyphtable_t *glyph_table){
 		p += inc;
 
 		if(c > glyph_table->size){
-			fprintf(stderr, "Error rendering string: Codepoint 0x%lx out of valid range (0-%d).\n", (long int)c, glyph_table->size);
+			fprintf(stderr, "Error rendering string: Codepoint 0x%lx out of valid range (0-%ld).\n", (long int)c, glyph_table->size);
 			goto error;
 		}
 

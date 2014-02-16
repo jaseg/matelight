@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 
 void render_glyph(glyph_t *g, color_t *buf, unsigned int bufwidth, unsigned int offx, unsigned int offy, color_t fg, color_t bg){
 	unsigned int bitmap_row_width = g->width/8;
@@ -30,7 +31,7 @@ glyphtable_t *read_bdf_file(char *filename){
 		goto error;
 	}
 
-	glyphtable_t *glyph_table = read_bdf(fontfile, glyph_table, BLP_SIZE)
+	glyphtable_t *glyph_table = read_bdf(fontfile);
 	if(!glyph_table){
 		fprintf(stderr, "Error reading font file.\n");
 		goto error;
@@ -50,15 +51,16 @@ glyphtable_t *extend_glyphtable(glyphtable_t *glyph_table){
 	size_t newlen = oldlen + (oldlen<MAX_GLYPHTABLE_INCREMENT ? oldlen : MAX_GLYPHTABLE_INCREMENT);
 	if(oldlen == 0)
 		newlen = START_GLYPHTABLE_SIZE;
-	glyph_t *newdata = realloc(glyph_table->data, newlen*sizeof(glyph_t));
+	glyph_t **newdata = realloc(glyph_table->data, newlen*sizeof(glyph_t*));
 	if(!newdata){
 		fprintf(stderr, "Cannot allocate bdf glyph buffer\n");
 		goto error;
 	}
 	glyph_table->data = newdata;
 	// Clear newly allocated memory area
-	memset(glyph_table->data+oldlen, 0, (newlen-oldlen)*sizeof(glyph_t));
+	memset(glyph_table->data+oldlen, 0, (newlen-oldlen)*sizeof(glyph_t*));
 	glyph_table->size = newlen;
+	return glyph_table;
 error:
 	free_glyphtable(glyph_table);
 	return NULL;
@@ -66,7 +68,7 @@ error:
 
 void free_glyphtable(glyphtable_t *glyph_table){
 	if(glyph_table){
-		for(unsigned int i=0; i<glyph_table->length; i++){
+		for(unsigned int i=0; i<glyph_table->size; i++){
 			free(glyph_table->data[i]);
 		}
 		free(glyph_table->data);
@@ -118,13 +120,6 @@ glyphtable_t *read_bdf(FILE *f){
 			if(args == endptr || *endptr != '\0'){
 				fprintf(stderr, "Invalid ENCODING line: %s %s\n", line, args);
 				goto error;
-			}
-			if(encoding > glyph_table->size){
-				glyph_table = extend_glyphtable(glyph_table);
-				if(!glyph_table){
-					fprintf(stderr, "Cannot allocate glyph table.\n");
-					goto error;
-				}
 			}
 
 		}else if(strcmp("BBX", line) == 0){
@@ -228,6 +223,15 @@ glyphtable_t *read_bdf(FILE *f){
 				}
 				i++;
 			}
+
+			if(encoding >= glyph_table->size){
+				glyph_table = extend_glyphtable(glyph_table);
+				if(!glyph_table){
+					fprintf(stderr, "Cannot extend glyph table.\n");
+					goto error;
+				}
+			}
+
 			memcpy(glyph_data, &current_glyph, sizeof(glyph_t));
 			glyph_table->data[encoding] = glyph_data;
 
