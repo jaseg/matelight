@@ -65,8 +65,8 @@ unsigned const char const CRATE_MAP[CRATE_COUNT] = {
 
 unsigned char framebuffer1[BUS_COUNT*BUS_SIZE];
 unsigned char framebuffer2[BUS_COUNT*BUS_SIZE];
-unsigned char *framebuffer_input = framebuffer1;
-unsigned char *framebuffer_output = framebuffer2;
+volatile unsigned char *framebuffer_input = framebuffer1;
+volatile unsigned char *framebuffer_output = framebuffer2;
 
 unsigned long framebuffer_read(void *data, unsigned long len);
 /* Kick off DMA transfer from RAM to SPI interfaces */

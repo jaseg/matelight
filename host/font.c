@@ -79,7 +79,7 @@ void free_glyphtable(glyphtable_t *glyph_table){
 glyphtable_t *read_bdf(FILE *f){
 	glyphtable_t *glyph_table = malloc(sizeof(glyphtable_t));
 	if(!glyph_table){
-		printf("Cannot allocate glyph table\n");
+		fprintf(stderr, "Cannot allocate glyph table\n");
 		goto error;
 	}
 	memset(glyph_table, 0, sizeof(*glyph_table));

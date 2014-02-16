@@ -20,6 +20,7 @@
 
 
 void free_framebuffer(framebuffer_t *fb){
+	printf("Freeing %lx and %lx\n", fb->data, fb);
 	free(fb->data);
 	free(fb);
 }
@@ -77,6 +78,7 @@ framebuffer_t *framebuffer_render_text(char *s, glyphtable_t *glyph_table){
 
 		if(g->height > gbufheight)
 			gbufheight = g->height;
+
 
 		gbufwidth += g->width;
 	}
@@ -301,6 +303,7 @@ framebuffer_t *framebuffer_render_text(char *s, glyphtable_t *glyph_table){
 	fb->w = gbufwidth;
 	fb->h = gbufheight;
 	fb->data = gbuf;
+	printf("Returning buffer with w %ld h %ld memory location %lx\n", gbufwidth, gbufheight, gbuf);
 	return fb;
 error:
 	free(gbuf);
@@ -354,5 +357,6 @@ void console_render_buffer(framebuffer_t *fb){
 		}
 		printf("\n");
 	}
+	printf("\033[0m");
 }
 
