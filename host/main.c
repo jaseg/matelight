@@ -20,7 +20,6 @@
 
 
 void free_framebuffer(framebuffer_t *fb){
-	printf("Freeing %lx and %lx\n", fb->data, fb);
 	free(fb->data);
 	free(fb);
 }
@@ -303,20 +302,16 @@ framebuffer_t *framebuffer_render_text(char *s, glyphtable_t *glyph_table){
 	fb->w = gbufwidth;
 	fb->h = gbufheight;
 	fb->data = gbuf;
-	printf("Returning buffer with w %ld h %ld memory location %lx\n", gbufwidth, gbufheight, gbuf);
 	return fb;
 error:
 	free(gbuf);
 	return 0;
 }
 
-void console_render_buffer(framebuffer_t *fb){
+void console_render_buffer(color_t *data, size_t w, size_t h){
 	/* Render framebuffer to terminal, two pixels per character using Unicode box drawing stuff */
 	color_t lastfg = {0, 0, 0}, lastbg = {0, 0, 0};
 	printf("\e[38;5;0;48;5;0m");
-	color_t *data = fb->data;
-	size_t w = fb->w;
-	size_t h = fb->h;
 	for(size_t y=0; y < h; y+=2){
 		for(size_t x=0; x < w; x++){
 			/* Da magicks: ▀█▄ */
