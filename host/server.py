@@ -11,7 +11,7 @@ from ctypes import CDLL, POINTER, c_void_p, Structure, c_uint8, c_size_t, cast, 
 
 import numpy as np
 
-from matelight import sendframe, DISPLAY_WIDTH, DISPLAY_HEIGHT
+from matelight import sendframe, DISPLAY_WIDTH, DISPLAY_HEIGHT, FRAME_SIZE
 
 
 UDP_TIMEOUT = 3.0
@@ -49,7 +49,7 @@ def printframe(fb):
 	print('\0337\033[H', end='')
 	print('Rendering frame @{}'.format(time()))
 	bdf.console_render_buffer(fb.ctypes.data_as(POINTER(c_uint8)), w, h)
-	print('\033[0m\0338', end='')
+	print('\033[0mCurrently rendering', current_entry.entrytype, 'from', current_entry.remote, ':', current_entry.text, '\0338', end='')
 	printlock.release()
 
 def scroll(text):
@@ -89,9 +89,14 @@ def log(*args):
 class MateLightUDPHandler(BaseRequestHandler):
 	def handle(self):
 		try:
+			# Housekeeping - FIXME: This is *so* the wrong place for this.
+			for k,v in conns.items():
+				if time() - v.timestamp > UDP_TIMEOUT:
+					del conns[k]
+
 			global current_entry, conns
 			data = self.request[0].strip()
-			if len(data) != FRAME_SIZE+4:
+			if len(data) != FRAME_SIZE*3+4:
 				#raise ValueError('Invalid frame size: Expected {}, got {}'.format(FRAME_SIZE+4, len(data)))
 				return
 			frame = data[:-4]
@@ -103,20 +108,18 @@ class MateLightUDPHandler(BaseRequestHandler):
 			a = np.array(list(frame), dtype=np.uint8)
 			timestamp = time()
 			addr = self.client_address[0]
+			conn = QueueEntry('udp', addr, timestamp, '')
 			if addr not in conns:
-				current_entry = QueueEntry('udp', addr, timestamp, '')
-				conns[addr] = current_entry
 				log('New UDP connection from', addr)
-			else:
-				conns[addr].timestamp = timestamp
+				current_entry = conn
+			conns[addr] = current_entry
 			if current_entry.entrytype == 'udp' and current_entry.remote == addr:
+				current_entry = conn
 				frame = a.reshape((DISPLAY_HEIGHT, DISPLAY_WIDTH, 3))
 				sendframe(frame)
-				printframe(frame)
+				printframe(np.pad(frame, ((0,0),(0,0),(0,1)), 'constant', constant_values=(0,0)))
 		except Exception as e:
-			print('Error receiving UDP frame:', e)
-			ex_type, ex, tb = sys.exc_info()
-			traceback.print_tb(tb)
+			log('Error receiving UDP frame:', e)
 
 class MateLightTCPTextHandler(BaseRequestHandler):
 	def handle(self):
@@ -154,7 +157,7 @@ if __name__ == '__main__':
 					current_entry = textqueue[0]
 				else:
 					if conns:
-						current_entry = random.choice(conns.values())
+						current_entry = random.choice(list(conns.values()))
 					else:
 						current_entry = random.choice(defaulttexts)
 			if current_entry.entrytype != 'udp' and textqueue:

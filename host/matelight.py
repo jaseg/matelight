@@ -10,7 +10,8 @@ CRATES_Y = 4
 
 DISPLAY_WIDTH = CRATES_X*CRATE_WIDTH
 DISPLAY_HEIGHT = CRATES_Y*CRATE_HEIGHT
-FRAME_SIZE = CRATE_WIDTH*CRATE_HEIGHT*3
+CRATE_SIZE = CRATE_WIDTH*CRATE_HEIGHT*3
+FRAME_SIZE = DISPLAY_WIDTH*DISPLAY_HEIGHT
 
 dev = usb.core.find(idVendor=0x1cbe, idProduct=0x0003)
 
@@ -25,8 +26,8 @@ def sendframe(framedata):
 	for cx, cy in product(range(CRATES_X), range(CRATES_Y)):
 		datar = framedata[cy*CRATE_HEIGHT:(cy+1)*CRATE_HEIGHT, cx*CRATE_WIDTH:(cx+1)*CRATE_WIDTH, :3]
 		data = datar.flat
-		if len(data) != FRAME_SIZE:
-			raise ValueError('Invalid frame data. Expected {} bytes, got {}.'.format(FRAME_SIZE, len(data)))
+		if len(data) != CRATE_SIZE:
+			raise ValueError('Invalid frame data. Expected {} bytes, got {}.'.format(CRATE_SIZE, len(data)))
 		# Send framebuffer data
 		dev.write(0x01, bytes([0, cx, cy])+bytes(data))
 	# Send latch command
