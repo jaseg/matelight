@@ -141,7 +141,8 @@ if __name__ == '__main__':
 	while True:
 		if current_entry.entrytype == 'text':
 			if scroll(current_entry.text):
-				textqueue.remove(current_entry)
+				if current_entry in textqueue:
+					textqueue.remove(current_entry)
 				if textqueue:
 					current_entry = textqueue[0]
 				else:
