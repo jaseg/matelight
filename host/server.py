@@ -41,11 +41,16 @@ def render_text(text):
 	bdf.free_framebuffer(fb)
 	return buf
 
+printlock = threading.Lock()
+
 def printframe(fb):
 	h,w,_ = fb.shape
-	print('\033[s\033[H', end='')
+	printlock.acquire()
+	print('\0337\033[H', end='')
+	print('Rendering frame @{}'.format(time()))
 	bdf.console_render_buffer(fb.ctypes.data_as(POINTER(c_uint8)), w, h)
-	print('\033[0m\033[u', end='')
+	print('\033[0m\0338', end='')
+	printlock.release()
 
 def scroll(text):
 	""" Returns whether it could scroll all the text uninterrupted """
@@ -59,13 +64,13 @@ def scroll(text):
 		rightpad	= np.zeros((DISPLAY_HEIGHT, min(DISPLAY_WIDTH, max(0, i+DISPLAY_WIDTH-w)), 4), dtype=np.uint8)
 		dice = np.concatenate((leftpad, framedata, rightpad), 1)
 		sendframe(dice)
-		#printframe(dice)
+		printframe(dice)
 		fb = render_text(text);
 	return True
 
 QueueEntry = namedtuple('QueueEntry', ['entrytype', 'remote', 'timestamp', 'text'])
 defaulttexts = [QueueEntry('text', '127.0.0.1', 0, t) for t in [
-		'\x1B[92mMate Light\x1B[93m@\x1B[92mPlay store or \x1B[94;101mtcp://matelight.cbrp3.c-base.org:1337\x1B[0;91m ♥',
+		'\x1B[92mMate Light\x1B[93m@\x1B[92mPlay store or \x1B[94;101mtcp://ml.jaseg.net:1337\x1B[0;91m ♥',
 		'\x1B[92mMate Light\x1B[0;91m ♥ \x1B[92mUnicode',
 		'\x1B[92mMate Light\x1B[0m powered by \x1B[95mMicrosoft™ \x1B[96mMarquee Manager® Professional OEM',
 		'\x1B[92mMate Light\x1B[0m powered by \x1B[95mData Becker™ \x1B[96mLaufschriftstudio 2000® Platinum Edition',
@@ -77,7 +82,9 @@ conns = {}
 textqueue = []
 
 def log(*args):
+	printlock.acquire()
 	print(strftime('[%m-%d %H:%M:%S]'), *args)
+	printlock.release()
 
 class MateLightUDPHandler(BaseRequestHandler):
 	def handle(self):
@@ -105,7 +112,7 @@ class MateLightUDPHandler(BaseRequestHandler):
 			if current_entry.entrytype == 'udp' and current_entry.remote == addr:
 				frame = a.reshape((DISPLAY_HEIGHT, DISPLAY_WIDTH, 3))
 				sendframe(frame)
-				#printframe(frame)
+				printframe(frame)
 		except Exception as e:
 			print('Error receiving UDP frame:', e)
 			ex_type, ex, tb = sys.exc_info()
@@ -137,7 +144,7 @@ t.daemon = True
 t.start()
 
 if __name__ == '__main__':
-	print('\n'*7)
+	print('\033[2J'+'\n'*9)
 	while True:
 		if current_entry.entrytype == 'text':
 			if scroll(current_entry.text):
