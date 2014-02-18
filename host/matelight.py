@@ -13,6 +13,12 @@ DISPLAY_HEIGHT = CRATES_Y*CRATE_HEIGHT
 CRATE_SIZE = CRATE_WIDTH*CRATE_HEIGHT*3
 FRAME_SIZE = DISPLAY_WIDTH*DISPLAY_HEIGHT
 
+# Gamma factor
+GAMMA = 2.5
+
+# Brightness of the LEDs in percent. 1.0 means 100%.
+BRIGHTNESS = 0.2
+
 dev = usb.core.find(idVendor=0x1cbe, idProduct=0x0003)
 
 def sendframe(framedata):
@@ -22,7 +28,7 @@ def sendframe(framedata):
 	channel is ignored.
 	"""
 	# Gamma correction
-	framedata = (((framedata/255) ** 2.5) * 255).astype(np.uint8)
+	framedata = (((framedata/255) ** GAMMA) * BRIGHTNESS * 255).astype(np.uint8)
 	for cx, cy in product(range(CRATES_X), range(CRATES_Y)):
 		datar = framedata[cy*CRATE_HEIGHT:(cy+1)*CRATE_HEIGHT, cx*CRATE_WIDTH:(cx+1)*CRATE_WIDTH, :3]
 		data = datar.flat
