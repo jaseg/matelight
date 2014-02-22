@@ -31,6 +31,7 @@ Related Projects
 ----------------
 * `A Python script that plays gifs over CRAP`_
 * `An HTML5 CRAP emulator`_
+* `A CRAP client for node.js`_
 * `Webcam streaming on Mate Light`_
 * `A game programming framework for Mate Light`_
 * `Snake for Mate Light`_
@@ -40,6 +41,7 @@ Related Projects
 
 .. _`A Python script that plays gifs over CRAP`: https://github.com/uwekamper/matelight-gifplayer
 .. _`An HTML5 CRAP emulator`: https://github.com/sodoku/matelightemu
+.. _`A CRAP client for node.js`: https://github.com/sodoku/node-matelight
 .. _`Webcam streaming on Mate Light`: https://github.com/c-base/matetv
 .. _`A game programming framework for Mate Light`: https://github.com/c-base/pymlgame
 .. _`Snake for Mate Light`: https://github.com/c-base/pymlsnake
