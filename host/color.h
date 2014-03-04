@@ -6,11 +6,12 @@
 
 /* For easier memsetting we use an inverted alpha channel, i.e. 0 ≘ fully opaque; 255 ≘ fully transparent */
 typedef struct {
-	uint8_t r;
-	uint8_t g;
-	uint8_t b;
-	uint8_t a;
+	uint8_t r, g, b, a;
 } color_t;
+
+typedef struct {
+	uint8_t r, g, b;
+} rgb_t;
 
 typedef struct {
 	color_t *data;
