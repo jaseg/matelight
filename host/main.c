@@ -3,7 +3,6 @@
 #include "main.h"
 #include "color.h"
 #include "font.h"
-#include "net.h"
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -65,7 +64,7 @@ framebuffer_t *framebuffer_render_text(char *s, glyphtable_t *glyph_table){
 		p += inc;
 
 		if(c > glyph_table->size){
-			fprintf(stderr, "Error rendering string: Codepoint 0x%lx out of valid range (0-%ld).\n", (long int)c, glyph_table->size);
+			fprintf(stderr, "Error rendering string: Codepoint 0x%lx out of valid range (0-%zd).\n", (long int)c, glyph_table->size);
 			goto error;
 		}
 
@@ -87,7 +86,7 @@ framebuffer_t *framebuffer_render_text(char *s, glyphtable_t *glyph_table){
 	size_t gbufsize = gbufwidth*gbufheight;
 	gbuf = calloc(gbufsize, sizeof(color_t));
 	if(!gbuf){
-		fprintf(stderr, "Cannot malloc() %lu bytes.\n", gbufsize*sizeof(color_t));
+		fprintf(stderr, "Cannot malloc() %zu bytes.\n", gbufsize*sizeof(color_t));
 		goto error;
 	}
 	memset(gbuf, 0, gbufsize*sizeof(color_t));
@@ -296,7 +295,7 @@ framebuffer_t *framebuffer_render_text(char *s, glyphtable_t *glyph_table){
 	}
 	framebuffer_t *fb = malloc(sizeof(framebuffer_t));
 	if(!fb){
-		fprintf(stderr, "Cannot malloc() %lu bytes.\n", sizeof(framebuffer_t));
+		fprintf(stderr, "Cannot malloc() %zu bytes.\n", sizeof(framebuffer_t));
 		goto error;
 	}
 	fb->w = gbufwidth;
@@ -311,7 +310,7 @@ error:
 void console_render_buffer(color_t *data, size_t w, size_t h){
 	/* Render framebuffer to terminal, two pixels per character using Unicode box drawing stuff */
 	color_t lastfg = {0, 0, 0}, lastbg = {0, 0, 0};
-	printf("\e[38;5;0;48;5;0m");
+	printf("\e[38;5;0;48;5;0m\e[K");
 	for(size_t y=0; y < h; y+=2){
 		for(size_t x=0; x < w; x++){
 			/* Da magicks: ▀█▄ */
@@ -350,7 +349,7 @@ void console_render_buffer(color_t *data, size_t w, size_t h){
 				}
 			}
 		}
-		printf("\n");
+		printf("\n\e[K");
 	}
 	printf("\033[0m");
 }

@@ -3,7 +3,7 @@
 from socketserver import *
 from time import time, strftime, sleep
 from collections import namedtuple
-from itertools import product
+from itertools import product, cycle
 import threading
 import random
 
@@ -49,19 +49,21 @@ def printframe(fb):
 	print('\0337\033[H', end='')
 	print('Rendering frame @{}'.format(time()))
 	bdf.console_render_buffer(fb.ctypes.data_as(POINTER(c_uint8)), w, h)
-	print('\033[0mCurrently rendering', current_entry.entrytype, 'from', current_entry.remote, ':', current_entry.text, '\0338', end='')
+	print('\033[0m\033[KCurrently rendering', current_entry.entrytype, 'from', current_entry.remote, ':', current_entry.text, '\0338', end='')
 	printlock.release()
 
 def scroll(text):
 	""" Returns whether it could scroll all the text uninterrupted """
+	log('Scrolling', text)
 	fb = render_text(text);
 	h,w,_ = fb.shape
 	for i in range(-DISPLAY_WIDTH,w+1):
-		if current_entry.entrytype == 'udp' or (current_entry in defaulttexts and textqueue):
-			return False
-		leftpad		= np.zeros((DISPLAY_HEIGHT, max(-i, 0), 4), dtype=np.uint8)
-		framedata	= fb[:, max(0, i):min(i+DISPLAY_WIDTH, w)]
-		rightpad	= np.zeros((DISPLAY_HEIGHT, min(DISPLAY_WIDTH, max(0, i+DISPLAY_WIDTH-w)), 4), dtype=np.uint8)
+#		if current_entry.entrytype == 'udp' or (textqueue and current_entry in defaulttexts):
+#			log('Aborting rendering due to new input')
+#			return False
+		leftpad			= np.zeros((DISPLAY_HEIGHT, max(-i, 0), 4), dtype=np.uint8)
+		framedata		= fb[:, max(0, i):min(i+DISPLAY_WIDTH, w)]
+		rightpad		= np.zeros((DISPLAY_HEIGHT, min(DISPLAY_WIDTH, max(0, i+DISPLAY_WIDTH-w)), 4), dtype=np.uint8)
 		dice = np.concatenate((leftpad, framedata, rightpad), 1)
 		sendframe(dice)
 		printframe(dice)
@@ -69,21 +71,16 @@ def scroll(text):
 	return True
 
 QueueEntry = namedtuple('QueueEntry', ['entrytype', 'remote', 'timestamp', 'text'])
-defaulttexts = [QueueEntry('text', '127.0.0.1', 0, t) for t in [
-		'\x1B[92mMate Light\x1B[93m@\x1B[92mPlay store or \x1B[94;101mtcp://ml.jaseg.net:1337\x1B[0;91m ♥',
-		'\x1B[92mMate Light\x1B[0;91m ♥ \x1B[92mUnicode',
-		'\x1B[92mMate Light\x1B[0m powered by \x1B[95mMicrosoft™ \x1B[96mMarquee Manager® Professional OEM',
-		'\x1B[92mMate Light\x1B[0m powered by \x1B[95mData Becker™ \x1B[96mLaufschriftstudio 2000® Platinum Edition',
-		'\x1B[92mMate Light\x1B[0m powered by \x1B[95mApple™ \x1B[96miScroll®',
-		'\x1B[92mMate Light\x1B[0m powered by \x1B[95mSiemens™ \x1B[96mLaufschrift® v.0.1.2b fuer Intel™ Pentium®',
-		]]
-current_entry = random.choice(defaulttexts)
+defaultlines = [ QueueEntry('text', '127.0.0.1', 0, l[:-1].replace('\\x1B', '\x1B')) for l in open('default.lines').readlines() ]
+random.shuffle(defaultlines)
+defaulttexts = cycle(defaultlines)
+current_entry = next(defaulttexts)
 conns = {}
 textqueue = []
 
 def log(*args):
 	printlock.acquire()
-	print(strftime('[%m-%d %H:%M:%S]'), *args)
+	print(strftime('[%m-%d %H:%M:%S]'), ' '.join(str(arg) for arg in args), '\x1B[0m')
 	printlock.release()
 
 class MateLightUDPHandler(BaseRequestHandler):
@@ -159,12 +156,12 @@ if __name__ == '__main__':
 					if conns:
 						current_entry = random.choice(list(conns.values()))
 					else:
-						current_entry = random.choice(defaulttexts)
+						current_entry = next(defaulttexts)
 			if current_entry.entrytype != 'udp' and textqueue:
 				current_entry = textqueue[0]
 		if current_entry.entrytype == 'udp':
 			if time() - current_entry.timestamp > UDP_TIMEOUT:
-				current_entry = random.choice(defaulttexts)
+				current_entry = next(defaulttexts)
 			else:
-				sleep(0.2)
+				sleep(0.1)
 
