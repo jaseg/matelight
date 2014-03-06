@@ -6,7 +6,8 @@
 #include <string.h>
 #include <errno.h>
 
-void render_glyph(glyph_t *g, color_t *buf, unsigned int bufwidth, unsigned int offx, unsigned int offy, color_t fg, color_t bg){
+/* Clips at buffer bounds */
+void render_glyph(glyph_t *g, color_t *buf, unsigned int bufwidth, int offx, unsigned int offy, color_t fg, color_t bg){
 	unsigned int bitmap_row_width = g->width/8;
 	uint8_t *bitmap = ((uint8_t *)g) + sizeof(glyph_t);
 	for(unsigned int y=0; y < g->height; y++){
@@ -16,10 +17,13 @@ void render_glyph(glyph_t *g, color_t *buf, unsigned int bufwidth, unsigned int 
 			data |= bitmap[y*bitmap_row_width+i];
 		}
 		color_t *p = buf + (offy+y)*bufwidth + offx;
-		for(unsigned int x=0; x < g->width; x++){
-			color_t c = (data&(1<<(g->width-1))) ? fg : bg;
-			*p++ = c;
-			data <<= 1;
+		/* Take care to only render what's within the framebuffer's bounds */
+		for(unsigned int x=0; (x < g->width) && (offx+x < bufwidth); x++){
+			if(offx + x >= 0){
+				color_t c = (data&(1<<(g->width-1))) ? fg : bg;
+				*p++ = c;
+				data <<= 1;
+			}
 		}
 	}
 }

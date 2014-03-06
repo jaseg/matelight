@@ -1,6 +1,6 @@
 
 #include "config.h"
-#include "main.h"
+#include "bdf.h"
 #include "color.h"
 #include "font.h"
 #include <stdint.h>
@@ -17,20 +17,11 @@
 #include <netinet/in.h>
 #include <unistd.h>
 
-
-void free_framebuffer(framebuffer_t *fb){
-	free(fb->data);
-	free(fb);
-}
-
 /* CAUTION: REQUIRES INPUT TO BE \0-TERMINATED
  * ...also, it does a hardcoded setlocale of LC_CTYPE to en_US.utf8 for... reasons. */
-framebuffer_t *framebuffer_render_text(char *s, glyphtable_t *glyph_table){
-	unsigned int len = strlen(s);
-
-	color_t *gbuf = NULL;
-	unsigned int gbufwidth = 0;
-	unsigned int gbufheight = 0;
+int framebuffer_get_text_bounds(char *s, glyphtable_t *glyph_table, size_t *outw, size_t *outh){
+	size_t gbufwidth = 0;
+	size_t gbufheight = 0;
 	char *p = s;
 
 	/* Calculate screen width of string prior to allocating memory for the frame buffer */
@@ -80,19 +71,31 @@ framebuffer_t *framebuffer_render_text(char *s, glyphtable_t *glyph_table){
 
 		gbufwidth += g->width;
 	}
-	/* For easier rendering on the terminal, round up to multiples of two */
-	gbufheight += gbufheight&1;
+	*outw = gbufwidth;
+	*outh = gbufheight;
+	return 0;
+error:
+	return 1;
+}
 
-	size_t gbufsize = gbufwidth*gbufheight;
-	gbuf = calloc(gbufsize, sizeof(color_t));
-	if(!gbuf){
-		fprintf(stderr, "Cannot malloc() %zu bytes.\n", gbufsize*sizeof(color_t));
+/* CAUTION: REQUIRES INPUT TO BE \0-TERMINATED
+ * ...also, it does a hardcoded setlocale of LC_CTYPE to en_US.utf8 for... reasons. */
+/* Render the string beginning from the specified x offset (in pixels) */
+int framebuffer_render_text(char *s, glyphtable_t *glyph_table, color_t *gbuf, size_t gbufwidth, size_t gbufheight, size_t offx){
+	unsigned int len = strlen(s);
+	char *p = s;
+
+	if(!setlocale(LC_CTYPE, "en_US.utf8")){
+		fprintf(stderr, "Cannot set locale\n");
 		goto error;
 	}
-	memset(gbuf, 0, gbufsize*sizeof(color_t));
+
+	memset(gbuf, 0, gbufwidth*gbufheight*sizeof(color_t));
 
 	unsigned int x = 0;
+	wchar_t c;
 	p = s;
+	mbstate_t ps = {0};
 	memset(&ps, 0, sizeof(mbstate_t));
 	struct {
 		color_t fg;
@@ -279,32 +282,29 @@ framebuffer_t *framebuffer_render_text(char *s, glyphtable_t *glyph_table){
 		color_t bg = inv ? style.bg : style.fg;
 
 		glyph_t *g = glyph_table->data[c];
-		render_glyph(g, gbuf, gbufwidth, x, 0, fg, bg);
-		if(style.strikethrough || style.underline){
-			int sty = gbufheight/2;
-			/* g->y usually is a negative index of the glyph's baseline measured from the glyph's bottom */
-			int uly = gbufheight + g->y;
-			for(int i=0; i<g->width; i++){
-				if(style.strikethrough)
-					gbuf[sty*gbufwidth + x + i] = fg;
-				if(style.underline)
-					gbuf[uly*gbufwidth + x + i] = fg;
+		/* Is the glyph within the buffer's bounds? */
+		if(x+g->width > offx && x < offx+gbufwidth){
+			/* x-offx might be negative down to -g->width+1, but that's ok */
+			render_glyph(g, gbuf, gbufwidth, x-offx, 0, fg, bg);
+			if(style.strikethrough || style.underline){
+				int sty = gbufheight/2;
+				/* g->y usually is a negative index of the glyph's baseline measured from the glyph's bottom */
+				int uly = gbufheight + g->y;
+				for(int i=0; i<g->width; i++){
+					if(x+i >= offx){ /* Stay within the frame buffer's bounds */
+						if(style.strikethrough)
+							gbuf[sty*gbufwidth + x + i - offx] = fg;
+						if(style.underline)
+							gbuf[uly*gbufwidth + x + i - offx] = fg;
+					}
+				}
 			}
 		}
 		x += g->width;
 	}
-	framebuffer_t *fb = malloc(sizeof(framebuffer_t));
-	if(!fb){
-		fprintf(stderr, "Cannot malloc() %zu bytes.\n", sizeof(framebuffer_t));
-		goto error;
-	}
-	fb->w = gbufwidth;
-	fb->h = gbufheight;
-	fb->data = gbuf;
-	return fb;
-error:
-	free(gbuf);
 	return 0;
+error:
+	return 1;
 }
 
 void console_render_buffer(color_t *data, size_t w, size_t h){

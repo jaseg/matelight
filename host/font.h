@@ -30,6 +30,6 @@ glyphtable_t *read_bdf(FILE *f);
 void free_glyphtable(glyphtable_t *glyph_table);
 
 // Requires buf to point to a buffer at least of size glyph->width*glyph->height.
-void render_glyph(glyph_t *glyph, color_t *buf, unsigned int bufwidth, unsigned int offx, unsigned int offy, color_t fg, color_t bg);
+void render_glyph(glyph_t *g, color_t *buf, unsigned int bufwidth, int offx, unsigned int offy, color_t fg, color_t bg);
 
 #endif//__FONT_H__

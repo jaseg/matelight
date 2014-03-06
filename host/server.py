@@ -7,7 +7,7 @@ from itertools import product, cycle
 import threading
 import random
 
-from ctypes import CDLL, POINTER, c_void_p, Structure, c_uint8, c_size_t, cast, addressof
+from ctypes import *
 
 import numpy as np
 
@@ -26,20 +26,26 @@ class FRAMEBUFFER(Structure):
 bdf = CDLL('./libbdf.so')
 bdf.read_bdf_file.restype = c_void_p
 bdf.framebuffer_render_text.restype = POINTER(FRAMEBUFFER)
+bdf.framebuffer_render_text.argtypes= [c_char_p, c_void_p, c_void_p, c_size_t, c_size_t, c_size_t]
 
 unifont = bdf.read_bdf_file('unifont.bdf')
 
-def render_text(text):
+def compute_text_bounds(text):
 	assert unifont
-	fb = bdf.framebuffer_render_text(bytes(str(text), 'UTF-8'), unifont)
-	fbd = fb.contents
-	buf = np.ctypeslib.as_array(cast(fbd.data, POINTER(c_uint8)), shape=(fbd.h, fbd.w, 4))
-	# Set data pointer to NULL before freeing framebuffer struct to prevent free_framebuffer from also freeing the data
-	# buffer that is now used by numpy
-	#bdf.console_render_buffer(fb)
-	fbd.data = cast(c_void_p(), POINTER(COLOR))
-	bdf.free_framebuffer(fb)
-	return buf
+	textbytes = bytes(str(text), 'UTF-8')
+	textw, texth = c_size_t(0), c_size_t(0)
+	res = bdf.framebuffer_get_text_bounds(textbytes, unifont, byref(textw), byref(texth))
+	if res:
+		raise ValueError('Invalid text')
+	return textw.value, texth.value
+
+def render_text(text, offset):
+	cbuf = create_string_buffer(FRAME_SIZE*sizeof(COLOR))
+	textbytes = bytes(str(text), 'UTF-8')
+	res = bdf.framebuffer_render_text(textbytes, unifont, cbuf, DISPLAY_WIDTH, DISPLAY_HEIGHT, offset)
+	if res:
+		raise ValueError('Invalid text')
+	return np.ctypeslib.as_array(cast(cbuf, POINTER(c_uint8)), shape=(DISPLAY_WIDTH, DISPLAY_HEIGHT, 4))
 
 printlock = threading.Lock()
 
@@ -55,19 +61,11 @@ def printframe(fb):
 def scroll(text):
 	""" Returns whether it could scroll all the text uninterrupted """
 	log('Scrolling', text)
-	fb = render_text(text);
-	h,w,_ = fb.shape
+	w,h = compute_text_bounds(text)
 	for i in range(-DISPLAY_WIDTH,w+1):
-#		if current_entry.entrytype == 'udp' or (textqueue and current_entry in defaulttexts):
-#			log('Aborting rendering due to new input')
-#			return False
-		leftpad			= np.zeros((DISPLAY_HEIGHT, max(-i, 0), 4), dtype=np.uint8)
-		framedata		= fb[:, max(0, i):min(i+DISPLAY_WIDTH, w)]
-		rightpad		= np.zeros((DISPLAY_HEIGHT, min(DISPLAY_WIDTH, max(0, i+DISPLAY_WIDTH-w)), 4), dtype=np.uint8)
-		dice = np.concatenate((leftpad, framedata, rightpad), 1)
-		sendframe(dice)
-		printframe(dice)
-		fb = render_text(text);
+		fb = render_text(text, i);
+		sendframe(fb)
+		printframe(fb)
 	return True
 
 QueueEntry = namedtuple('QueueEntry', ['entrytype', 'remote', 'timestamp', 'text'])
@@ -80,7 +78,7 @@ textqueue = []
 
 def log(*args):
 	printlock.acquire()
-	print(strftime('[%m-%d %H:%M:%S]'), ' '.join(str(arg) for arg in args), '\x1B[0m')
+	print(strftime('\x1B[93m[%m-%d %H:%M:%S]\x1B[0m'), ' '.join(str(arg) for arg in args), '\x1B[0m')
 	printlock.release()
 
 class MateLightUDPHandler(BaseRequestHandler):
@@ -107,7 +105,7 @@ class MateLightUDPHandler(BaseRequestHandler):
 			addr = self.client_address[0]
 			conn = QueueEntry('udp', addr, timestamp, '')
 			if addr not in conns:
-				log('New UDP connection from', addr)
+				log('\x1B[91mNew UDP connection from\x1B[0m', addr)
 				current_entry = conn
 			conns[addr] = current_entry
 			if current_entry.entrytype == 'udp' and current_entry.remote == addr:
@@ -127,7 +125,7 @@ class MateLightTCPTextHandler(BaseRequestHandler):
 		if len(data) > 140:
 			self.request.sendall('TOO MUCH INFORMATION!\n')
 			return
-		log('Text from {}: {}\x1B[0m'.format(addr, data))
+		log('\x1B[95mText from\x1B[0m {}: {}\x1B[0m'.format(addr, data))
 		textqueue.append(QueueEntry('text', addr, timestamp, data))
 		self.request.sendall(b'KTHXBYE!\n')
 
@@ -159,6 +157,7 @@ if __name__ == '__main__':
 						current_entry = next(defaulttexts)
 			if current_entry.entrytype != 'udp' and textqueue:
 				current_entry = textqueue[0]
+				log('\x1B[92mScrolling\x1B[0m', current_entry.text)
 		if current_entry.entrytype == 'udp':
 			if time() - current_entry.timestamp > UDP_TIMEOUT:
 				current_entry = next(defaulttexts)
