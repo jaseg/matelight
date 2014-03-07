@@ -36,8 +36,9 @@ def sendframe(framedata):
 	channel is ignored.
 	"""
 	# just use the first Mate Light available
+	w,h,c = framedata.shape
 	buf = framedata.ctypes.data_as(POINTER(c_uint8))
-	ml.matelight_send_frame(matelights, buf, c_size_t(CRATES_X), c_size_t(CRATES_Y), c_float(BRIGHTNESS), True)
+	ml.matelight_send_frame(matelights, buf, c_size_t(CRATES_X), c_size_t(CRATES_Y), c_float(BRIGHTNESS), c == 4)
 
 if __name__ == '__main__':
 	#foo = np.array([[(0, 0, 0, 0)]*DISPLAY_WIDTH]*DISPLAY_HEIGHT)

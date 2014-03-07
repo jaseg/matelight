@@ -116,7 +116,12 @@ int matelight_send_frame(matelight_handle *ml, void *buf, size_t w, size_t h, fl
 				for(size_t y=0; y<CRATE_HEIGHT; y++){
 					size_t dpos = y*CRATE_WIDTH + x;
 					size_t spos = w*CRATE_WIDTH*(cy*CRATE_HEIGHT+y) + cx*CRATE_WIDTH+x;
-					color_t *src = (((color_t*)buf)+spos);
+					color_t *src;
+					if(alpha){
+						src = (((color_t*)buf)+spos);
+					}else{
+						src = (color_t*)(((rgb_t*)buf)+spos);
+					}
 					rgb_t *dst = frame.buf+dpos;
 					/* Gamma correction */
 #define GAMMA_APPLY(c) ((uint8_t)roundf(powf((c/255.0F), GAMMA) * brightness * 255))
