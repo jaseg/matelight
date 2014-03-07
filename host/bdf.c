@@ -283,7 +283,7 @@ int framebuffer_render_text(char *s, glyphtable_t *glyph_table, color_t *gbuf, s
 
 		glyph_t *g = glyph_table->data[c];
 		/* Is the glyph within the buffer's bounds? */
-		if(x+g->width > offx && x < offx+gbufwidth){
+		//if(x+g->width > offx && x < offx+gbufwidth){
 			/* x-offx might be negative down to -g->width+1, but that's ok */
 			render_glyph(g, gbuf, gbufwidth, x-offx, 0, fg, bg);
 			if(style.strikethrough || style.underline){
@@ -291,7 +291,7 @@ int framebuffer_render_text(char *s, glyphtable_t *glyph_table, color_t *gbuf, s
 				/* g->y usually is a negative index of the glyph's baseline measured from the glyph's bottom */
 				int uly = gbufheight + g->y;
 				for(int i=0; i<g->width; i++){
-					if(x+i >= offx){ /* Stay within the frame buffer's bounds */
+					if(x+i >= offx && x+i-offx < gbufwidth){ /* Stay within the frame buffer's bounds */
 						if(style.strikethrough)
 							gbuf[sty*gbufwidth + x + i - offx] = fg;
 						if(style.underline)
@@ -299,7 +299,7 @@ int framebuffer_render_text(char *s, glyphtable_t *glyph_table, color_t *gbuf, s
 					}
 				}
 			}
-		}
+		//}
 		x += g->width;
 	}
 	return 0;

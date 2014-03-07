@@ -50,7 +50,7 @@ def render_text(text, offset):
 printlock = threading.Lock()
 
 def printframe(fb):
-	h,w,_ = fb.shape
+	w,h,_ = fb.shape
 	printlock.acquire()
 	print('\0337\033[H', end='')
 	print('Rendering frame @{}'.format(time()))
@@ -60,7 +60,7 @@ def printframe(fb):
 
 def scroll(text):
 	""" Returns whether it could scroll all the text uninterrupted """
-	log('Scrolling', text)
+	#log('Scrolling', text)
 	w,h = compute_text_bounds(text)
 	for i in range(-DISPLAY_WIDTH,w+1):
 		fb = render_text(text, i);
