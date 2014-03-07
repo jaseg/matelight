@@ -1,0 +1,10 @@
+[Unit]
+Description=MateLight Server
+
+[Service]
+WorkingDirectory=/root/matelight/host
+ExecStart=/root/matelight/host/server.py 
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
