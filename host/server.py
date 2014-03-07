@@ -83,7 +83,29 @@ def log(*args):
 	print(strftime('[%m-%d %H:%M:%S]'), ' '.join(str(arg) for arg in args), '\x1B[0m')
 	printlock.release()
 
+
+class MateLightUDPServer(UDPServer):
+    """
+    The server class for the SocketServer interface.
+    """
+    def __init__(self, *args, **kwargs):
+        """
+        Setup the deque for the frame
+        """
+        super(MateLightUDPServer, self).__init__(*args, **kwargs)
+        self.frame_deque = collections.deque(maxlen=30)
+        
+    def get_next_frame(self):
+        try:
+            return self.frame_deque.popleft()
+        except IndexError:
+            return None
+
+
 class MateLightUDPHandler(BaseRequestHandler):
+    """
+    Handles one UDP connection to the matelight
+    """
 	def handle(self):
 		try:
 			# Housekeeping - FIXME: This is *so* the wrong place for this.
@@ -113,8 +135,9 @@ class MateLightUDPHandler(BaseRequestHandler):
 			if current_entry.entrytype == 'udp' and current_entry.remote == addr:
 				current_entry = conn
 				frame = a.reshape((DISPLAY_HEIGHT, DISPLAY_WIDTH, 3))
-				sendframe(frame)
-				printframe(np.pad(frame, ((0,0),(0,0),(0,1)), 'constant', constant_values=(0,0)))
+                self.server.frame_deque.append(frame)
+				#sendframe(frame)
+                #printframe(np.pad(frame, ((0,0),(0,0),(0,1)), 'constant', constant_values=(0,0)))
 		except Exception as e:
 			log('Error receiving UDP frame:', e)
 
@@ -131,19 +154,25 @@ class MateLightTCPTextHandler(BaseRequestHandler):
 		textqueue.append(QueueEntry('text', addr, timestamp, data))
 		self.request.sendall(b'KTHXBYE!\n')
 
-TCPServer.allow_reuse_address = True
-server = TCPServer(('', 1337), MateLightTCPTextHandler)
-t = threading.Thread(target=server.serve_forever)
-t.daemon = True
-t.start()
+#TCPServer.allow_reuse_address = True
+#server = TCPServer(('', 1337), MateLightTCPTextHandler)
+#t = threading.Thread(target=server.serve_forever)
+#t.daemon = True
+#t.start()
 
 UDPServer.allow_reuse_address = True
-userver = UDPServer(('', 1337), MateLightUDPHandler)
+userver = MateLightUDPServer(('', 1337), MateLightUDPHandler)
 t = threading.Thread(target=userver.serve_forever)
 t.daemon = True
 t.start()
 
 if __name__ == '__main__':
+    while True:
+        next_frame = userver.get_next_frame()
+        if next_frame:
+            sendframe(next_frame)
+    
+def bla():
 	print('\033[2J'+'\n'*9)
 	while True:
 		if current_entry.entrytype == 'text':
