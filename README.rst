@@ -31,13 +31,19 @@ Related Projects
 ----------------
 * `A Python script that plays gifs over CRAP`_
 * `An HTML5 CRAP emulator`_
+* `A CRAP client for node.js`_
 * `Webcam streaming on Mate Light`_
 * `A game programming framework for Mate Light`_
 * `Snake for Mate Light`_
 * `Game of Life for Mate Light`_
+* `Mate Light Android App`_
+* `Blinkenlights for Mate Light`_
+* `Postillon Newsticker for Matelight`_
 
 .. _`A Python script that plays gifs over CRAP`: https://github.com/uwekamper/matelight-gifplayer
 .. _`An HTML5 CRAP emulator`: https://github.com/sodoku/matelightemu
+.. _`A CRAP client for node.js`: https://github.com/sodoku/node-matelight
+.. _`Postillon Newsticker for Matelight`: https://gist.github.com/XenGi/9168633
 .. _`Webcam streaming on Mate Light`: https://github.com/c-base/matetv
 .. _`A game programming framework for Mate Light`: https://github.com/c-base/pymlgame
 .. _`Snake for Mate Light`: https://github.com/c-base/pymlsnake
