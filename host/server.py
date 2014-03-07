@@ -13,9 +13,7 @@ import numpy as np
 
 from matelight import sendframe, DISPLAY_WIDTH, DISPLAY_HEIGHT, FRAME_SIZE
 
-
 UDP_TIMEOUT = 3.0
-
 
 class COLOR(Structure):
 		_fields_ = [('r', c_uint8), ('g', c_uint8), ('b', c_uint8), ('a', c_uint8)]
@@ -193,6 +191,10 @@ def udp_sub_loop():
 			break
 
 def tcp_sub_loop():
+	"""
+	Send as many frames as there are texts in the buffer until the text deque
+	is empty.
+	"""
 	while True:
 		next_frame = tserver.get_next_frame()
 		if next_frame is not None:
@@ -200,14 +202,33 @@ def tcp_sub_loop():
 		else:
 			break
 
+class MateLightDefaultScroller():
+	def __init__(self, *args, **kwargs):
+		# A deque for the texts, contains a tuple of the form (text, width, height)
+		self.text_deque = deque(maxlen=32)
+		self.current_text = None
+
+	def get_next_frame(self):
+		if self.current_text is None or self.i > self.current_text[1][0]:
+			self.current_text = None
+			text = next(defaulttexts).text
+			self.current_text = (text, compute_text_bounds(text))
+			self.i = -DISPLAY_WIDTH
+
+		frame = render_text(self.current_text[0], self.i)
+		self.i += 1
+		return frame
+
+
 if __name__ == '__main__':
+	print('\033[?1049h'+'\n'*9)
+	default_scroller = MateLightDefaultScroller()
 	while True:
 		udp_sub_loop()
 		tcp_sub_loop()
+		sendframe(default_scroller.get_next_frame())
 		
-
 def bla():
-	print('\033[2J'+'\n'*9)
 	while True:
 		if current_entry.entrytype == 'text':
 			if scroll(current_entry.text):
