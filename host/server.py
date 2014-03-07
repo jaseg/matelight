@@ -168,9 +168,16 @@ t.start()
 
 if __name__ == '__main__':
     while True:
+        millis = int(round(time.time() * 1000))
+        
         next_frame = userver.get_next_frame()
         if next_frame:
             sendframe(next_frame)
+            
+        while int(round(time.time() * 1000)) - millis < 50:
+            // do nothing
+            pass
+        
     
 def bla():
 	print('\033[2J'+'\n'*9)
