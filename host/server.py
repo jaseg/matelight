@@ -41,12 +41,13 @@ def compute_text_bounds(text):
 	return textw.value, texth.value
 
 def render_text(text, offset):
-	cbuf = create_string_buffer(FRAME_SIZE*sizeof(COLOR))
+	frame = np.ndarray(shape=(DISPLAY_WIDTH, DISPLAY_HEIGHT, 4), dtype=np.uint8)
+	cbuf = frame.ctypes.data_as(POINTER(c_uint8))
 	textbytes = bytes(str(text), 'UTF-8')
 	res = bdf.framebuffer_render_text(textbytes, unifont, cbuf, DISPLAY_WIDTH, DISPLAY_HEIGHT, offset)
 	if res:
 		raise ValueError('Invalid text')
-	return np.ctypeslib.as_array(cast(cbuf, POINTER(c_uint8)), shape=(DISPLAY_WIDTH, DISPLAY_HEIGHT, 4))
+	return frame
 
 printlock = threading.Lock()
 
@@ -160,6 +161,7 @@ if __name__ == '__main__':
 			renderer = userver
 		else:
 			sendframe(next(defaulttexts))
+			#printframe(next(defaulttexts))
 			continue
 		for frame in renderer:
 			sendframe(frame)
