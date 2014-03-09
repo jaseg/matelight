@@ -18,7 +18,7 @@ FRAME_SIZE = DISPLAY_WIDTH*DISPLAY_HEIGHT
 GAMMA = 2.5
 
 # Brightness of the LEDs in percent. 1.0 means 100%.
-BRIGHTNESS = 0.2
+BRIGHTNESS = 1.0
 
 ml = CDLL('./libml.so')
 ml.matelight_open.restype = c_void_p
