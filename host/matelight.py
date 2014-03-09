@@ -1,7 +1,7 @@
 import colorsys
-import numpy as np
 from itertools import product
 from ctypes import c_size_t, c_uint8, c_void_p, c_float, CDLL, Structure, POINTER
+import numpy as np
 import time
 
 CRATE_WIDTH = 5
@@ -29,6 +29,7 @@ matelights = ml.matelight_open()
 if matelights is None:
 	raise ImportError('Cannot open any Mate Light devices')
 
+dbuf = np.zeros(DISPLAY_WIDTH*DISPLAY_HEIGHT*4, dtype=np.uint8)
 def sendframe(framedata):
 	""" Send a frame to the display
 
@@ -36,7 +37,8 @@ def sendframe(framedata):
 	channel is ignored.
 	"""
 	# just use the first Mate Light available
-	w,h,c = framedata.shape
-	buf = framedata.ctypes.data_as(POINTER(c_uint8))
-	ml.matelight_send_frame(matelights, buf, c_size_t(CRATES_X), c_size_t(CRATES_Y), c_float(BRIGHTNESS), c == 4)
+	rgba = len(framedata) == DISPLAY_WIDTH*DISPLAY_HEIGHT*4
+	global dbuf
+	np.copyto(dbuf, np.frombuffer(framedata, dtype=np.uint8))
+	ml.matelight_send_frame(matelights, dbuf.ctypes.data_as(POINTER(c_uint8)), c_size_t(CRATES_X), c_size_t(CRATES_Y), c_float(BRIGHTNESS), rgba)
 

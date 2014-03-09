@@ -12,8 +12,6 @@ import random
 
 from ctypes import *
 
-import numpy as np
-
 from matelight import sendframe, DISPLAY_WIDTH, DISPLAY_HEIGHT, FRAME_SIZE
 
 UDP_TIMEOUT = 3.0
@@ -40,23 +38,25 @@ def compute_text_bounds(text):
 		raise ValueError('Invalid text')
 	return textw.value, texth.value
 
+cbuf = create_string_buffer(FRAME_SIZE*sizeof(COLOR))
+cbuflock = threading.Lock()
 def render_text(text, offset):
-	frame = np.ndarray(shape=(DISPLAY_WIDTH, DISPLAY_HEIGHT, 4), dtype=np.uint8)
-	cbuf = frame.ctypes.data_as(POINTER(c_uint8))
+	global cbuf
+	cbuflock.acquire()
 	textbytes = bytes(str(text), 'UTF-8')
 	res = bdf.framebuffer_render_text(textbytes, unifont, cbuf, DISPLAY_WIDTH, DISPLAY_HEIGHT, offset)
 	if res:
 		raise ValueError('Invalid text')
-	return frame
+	cbuflock.release()
+	return cbuf
 
 printlock = threading.Lock()
 
 def printframe(fb):
-	w,h,_ = fb.shape
 	printlock.acquire()
 	print('\0337\033[H', end='')
 	print('Rendering frame @{}'.format(time()))
-	bdf.console_render_buffer(fb.ctypes.data_as(POINTER(c_uint8)), w, h)
+	bdf.console_render_buffer(fb, DISPLAY_WIDTH, DISPLAY_HEIGHT)
 	#print('\033[0m\033[KCurrently rendering', current_entry.entrytype, 'from', current_entry.remote, ':', current_entry.text, '\0338', end='')
 	printlock.release()
 
@@ -120,7 +120,7 @@ class MateLightUDPServer:
 						raise ValueError('Invalid frame size: {}'.format(len(data)))
 					self.last_timestamp = timestamp
 					with self.frame_condition:
-						self.frame = np.frombuffer(frame, dtype=np.uint8).reshape((DISPLAY_WIDTH, DISPLAY_HEIGHT, 3))
+						self.frame = frame
 						self.frame_condition.notify()
 			except Exception as e:
 				log('Error receiving UDP frame:', e)
@@ -156,7 +156,7 @@ if __name__ == '__main__':
 	#print('\033[?1049h'+'\n'*9)
 	while True:
 		if renderqueue:
-			renderer = renderqueue.pop_front()
+			renderer = renderqueue.popleft()
 		elif userver.frame_da():
 			renderer = userver
 		else:
