@@ -40,21 +40,3 @@ def sendframe(framedata):
 	buf = framedata.ctypes.data_as(POINTER(c_uint8))
 	ml.matelight_send_frame(matelights, buf, c_size_t(CRATES_X), c_size_t(CRATES_Y), c_float(BRIGHTNESS), c == 4)
 
-if __name__ == '__main__':
-	#foo = np.array([[(0, 0, 0, 0)]*DISPLAY_WIDTH]*DISPLAY_HEIGHT)
-	#bar = np.array([[(255, 0, 255, 0)]*DISPLAY_WIDTH]*DISPLAY_HEIGHT)
-	x,y = 0,0
-	while True:
-		x += 1
-		if x == DISPLAY_WIDTH:
-			x = 0
-			y += 1
-			if y == DISPLAY_HEIGHT:
-				y = 0
-		foo = np.array([[(64, 0, 0, 255)]*DISPLAY_WIDTH]*DISPLAY_HEIGHT, dtype=np.uint8)
-		foo[y,x,:] = (0,64,0,255)
-		#from terminal import printframe
-		sendframe(foo)
-		#printframe(foo)
-		#sendframe(bar)
-		time.sleep(0.1)
