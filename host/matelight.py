@@ -39,6 +39,6 @@ def sendframe(framedata):
 	# just use the first Mate Light available
 	rgba = len(framedata) == DISPLAY_WIDTH*DISPLAY_HEIGHT*4
 	global dbuf
-	np.copyto(dbuf, np.frombuffer(framedata, dtype=np.uint8))
+	np.copyto(dbuf[:640*(3+rgba)], np.frombuffer(framedata, dtype=np.uint8))
 	ml.matelight_send_frame(matelights, dbuf.ctypes.data_as(POINTER(c_uint8)), c_size_t(CRATES_X), c_size_t(CRATES_Y), c_float(BRIGHTNESS), rgba)
 

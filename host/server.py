@@ -9,6 +9,7 @@ from collections import namedtuple, deque
 import itertools
 import threading
 import random
+import os
 
 from ctypes import *
 
@@ -160,7 +161,13 @@ if __name__ == '__main__':
 		elif userver.frame_da():
 			renderer = userver
 		else:
-			sendframe(next(defaulttexts))
+			static_noise = time() % 300 < 60
+			if static_noise:
+				foo = os.urandom(640)
+				frame = bytes([v for c in zip(list(foo), list(foo), list(foo)) for v in c ])
+			else:
+				frame = next(defaulttexts)
+			sendframe(frame)
 			#printframe(next(defaulttexts))
 			continue
 		for frame in renderer:
