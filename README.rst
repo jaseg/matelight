@@ -41,7 +41,7 @@ Related Projects
 * `Postillon Newsticker for Matelight`_
 
 .. _`A Python script that plays gifs over CRAP`: https://github.com/uwekamper/matelight-gifplayer
-.. _`An HTML5 CRAP emulator`: https://github.com/sodoku/matelightemu
+.. _`HTML5 CRAP emulator`: https://github.com/sodoku/matelightemu
 .. _`A CRAP client for node.js`: https://github.com/sodoku/node-matelight
 .. _`Postillon Newsticker for Matelight`: https://gist.github.com/XenGi/9168633
 .. _`Webcam streaming on Mate Light`: https://github.com/c-base/matetv
