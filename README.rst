@@ -23,14 +23,14 @@ The control software is a Python script accepting framebuffer data via UDP and t
 
 Architecture
 ~~~~~~~~~~~~
-The server listens on TCP and UDP ports 1337. Any GIF data coming in over TCP is displayed, text is first rendered interpreting ANSI escape sequences (colors, blink etc.) and rendered as a marquee. The UDP port accepts CRAP, our Custom advanced video stReAming Protocol. A CRAP packet contains three bytes of RGB data per pixel in 40 rows of 40 columns (i.e. ``[R0,0 G0,0 B0,0 R0,1 G0,1 B0,1 ... R0,39 G0,39 B0,39 R1,0 G1,0 B1,0 ... R15,39 G15,39 B15,39]``).
+The server listens on TCP and UDP ports 1337. Any text arriving through TCP is rendered as a marquee, interpreting ANSI escape sequences (colors, blink etc.). The UDP port accepts CRAP, our Custom advanced video stReAming Protocol. A CRAP packet contains three bytes of RGB data per pixel in 40 rows of 40 columns (i.e. ``[R0,0 G0,0 B0,0 R0,1 G0,1 B0,1 ... R0,39 G0,39 B0,39 R1,0 G1,0 B1,0 ... R15,39 G15,39 B15,39]``) and an optional trailing CRC32 checksum.
 
 There is at least one further server implementation of CRAP in the form of an `HTML5 CRAP emulator`_. There is `a Python script that plays gifs over CRAP`_.
 
 Related Projects
 ----------------
 * `A Python script that plays gifs over CRAP`_
-* `An HTML5 CRAP emulator`_
+* An `HTML5 CRAP emulator`_
 * `A CRAP client for node.js`_
 * `Webcam streaming on Mate Light`_
 * `A game programming framework for Mate Light`_
