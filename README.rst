@@ -51,3 +51,4 @@ Related Projects
 .. _`Blinkenlights for Mate Light`: https://github.com/igorw/matelight-blm
 .. _`Mate Light Android App`: https://github.com/cketti/MateLightAndroid
 .. _`Movie Streaming and Live 3D Raytracing for Mate-Light in Javascript`_: https://github.com/MichaelKreil/matelight-playground
+.. -`Audio Spectrum Analyzer`_: (work in progress)
