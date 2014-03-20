@@ -19,7 +19,7 @@ Each bottle contains a LED with a WS2801 driver. Each crate contains a chain of 
 
 Software
 --------
-Currently, there are two versions of the control software around. The terribly slow legacy Python script and the WIP C implementation. The C implementation is about 10.000 times faster than the python script which is why we are working on it.
+The control software is a Python script accepting framebuffer data via UDP and text via TCP. Since it is run on a 900MHz Pentium 3, the two most time-critical pieces, pixel font rendering for scrolling text and USB communication are written in C and called from the Python script via ctypes.
 
 Architecture
 ~~~~~~~~~~~~
