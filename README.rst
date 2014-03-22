@@ -40,7 +40,7 @@ Related Projects
 * `Blinkenlights for Mate Light`_
 * `Postillon Newsticker for Matelight`_
 * `Movie Streaming and Live 3D Raytracing for Mate-Light in Javascript`_
-*  An Audio Spectrum Analyzer is still work in progress
+* `An audio spectrum analyzer`_
 
 .. _`A Python script that plays gifs over CRAP`: https://github.com/uwekamper/matelight-gifplayer
 .. _`HTML5 CRAP emulator`: https://github.com/sodoku/matelightemu
@@ -53,3 +53,5 @@ Related Projects
 .. _`Blinkenlights for Mate Light`: https://github.com/igorw/matelight-blm
 .. _`Mate Light Android App`: https://github.com/cketti/MateLightAndroid
 .. _`Movie Streaming and Live 3D Raytracing for Mate-Light in Javascript`: https://github.com/MichaelKreil/matelight-playground
+.. _`An audio spectrum analyzer`: https://github.com/c-base/mlaudiospectrum
+
