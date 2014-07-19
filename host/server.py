@@ -161,7 +161,7 @@ if __name__ == '__main__':
 		elif userver.frame_da():
 			renderer = userver
 		else:
-			static_noise = time() % 300 < 60
+			static_noise = False #time() % 300 < 60
 			if static_noise:
 				foo = os.urandom(640)
 				frame = bytes([v for c in zip(list(foo), list(foo), list(foo)) for v in c ])
