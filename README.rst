@@ -3,7 +3,7 @@ Mate Light
 
 .. image:: http://cbag3.c-base.org/media/cache/artefact_show/uploads/assets/52f6c9c16c72d.jpeg
 
-Transform a bunch of empty mate crates to a huge display using a 10 year old laptop, a 13US$ microcontroller board and a couple of cheap chinese christmas lights.
+Transform a bunch of empty mate crates to a huge display using a 14 year old laptop, a 13US$ microcontroller board and a couple of cheap chinese christmas lights.
 
 Hardware Setup
 --------------
