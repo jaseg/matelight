@@ -40,17 +40,17 @@
 #define CRATE_SIZE		(CRATE_WIDTH*CRATE_HEIGHT)
 #define BUS_SIZE		(CRATES_PER_BUS*CRATE_SIZE*BYTES_PER_PIXEL)
 unsigned const char const BOTTLE_MAP[CRATE_SIZE] = {
-	17, 16, 15, 14, 13,
-	18,  9, 10, 11, 12,
-	19,  8,  7,  6,  5,
-	 0,  1,  2,  3,  4
+	  4,  3,  2, 1, 0, 
+	  5,  6,  7, 8,19, 
+	 12, 11, 10, 9,18, 
+	 13, 14, 15,16,17 
 };
 
 unsigned const char const FUCKED_UP_BOTTLE_MAP[CRATE_SIZE] = {
-	3,  4,  5,  6,  7,
-	2, 11, 10,  9,  8,
-	1, 12, 13, 14, 15,
-	0, 19, 18, 17, 16
+	 16,17,  18,19, 0,
+	 15,14,  13,12, 1,
+	  8, 9,  10,11, 2,
+	  7, 6,   5, 4, 3
 };
 
 unsigned const char const CRATE_MAP[CRATE_COUNT] = {
