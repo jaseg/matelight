@@ -162,15 +162,18 @@ if __name__ == '__main__':
 			renderer = userver
 		else:
 			static_noise = time() % 300 < 60
-			if static_noise:
+			if False:
 				foo = os.urandom(640)
 				frame = bytes([v for c in zip(list(foo), list(foo), list(foo)) for v in c ])
+				sleep(0.05)
 			else:
 				frame = next(defaulttexts)
+				sleep(0.05)
 			sendframe(frame)
 			#printframe(next(defaulttexts))
 			continue
 		for frame in renderer:
 			sendframe(frame)
+			sleep(0.05)
 			#printframe(frame)
 
