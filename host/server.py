@@ -10,6 +10,7 @@ import itertools
 import threading
 import random
 import os
+import sys
 
 from ctypes import *
 
@@ -64,6 +65,7 @@ def printframe(fb):
 def log(*args):
 	printlock.acquire()
 	print(strftime('\x1B[93m[%m-%d %H:%M:%S]\x1B[0m'), ' '.join(str(arg) for arg in args), '\x1B[0m')
+	sys.stdout.flush()
 	printlock.release()
 
 class TextRenderer:
@@ -73,6 +75,7 @@ class TextRenderer:
 
 	def __iter__(self):
 		for i in range(-DISPLAY_WIDTH, self.width):
+			#print('Rendering text @ pos {}'.format(i))
 			yield render_text(self.text, i)
 
 class MateLightUDPServer:
@@ -134,7 +137,7 @@ class MateLightTCPTextHandler(BaseRequestHandler):
 		data = str(self.request.recv(1024).strip(), 'UTF-8')
 		addr = self.client_address[0]
 		if len(data) > 140:
-			self.request.sendall('TOO MUCH INFORMATION!\n')
+			self.request.sendall(b'TOO MUCH INFORMATION!\n')
 			return
 		log('\x1B[95mText from\x1B[0m {}: {}\x1B[0m'.format(addr, data))
 		renderqueue.append(TextRenderer(data))
@@ -150,11 +153,11 @@ userver = MateLightUDPServer()
 userver.start()
 
 defaultlines = [ TextRenderer(l[:-1].replace('\\x1B', '\x1B')) for l in open('default.lines').readlines() ]
-random.shuffle(defaultlines)
-defaulttexts = itertools.cycle(itertools.chain(*defaultlines))
+#random.shuffle(defaultlines)
+defaulttexts = itertools.chain(*defaultlines)
 
 if __name__ == '__main__':
-	#print('\033[?1049h'+'\n'*9)
+	print('\033[?1049h'+'\n'*9)
 	while True:
 		if renderqueue:
 			renderer = renderqueue.popleft()
@@ -167,13 +170,18 @@ if __name__ == '__main__':
 				frame = bytes([v for c in zip(list(foo), list(foo), list(foo)) for v in c ])
 				sleep(0.05)
 			else:
-				frame = next(defaulttexts)
-				sleep(0.05)
+				try:
+					frame = next(defaulttexts)
+				except StopIteration:
+					defaultlines = [ TextRenderer(l[:-1].replace('\\x1B', '\x1B')) for l in open('default.lines').readlines() ]
+					#random.shuffle(defaultlines)
+					defaulttexts = itertools.chain(*defaultlines)
 			sendframe(frame)
-			#printframe(next(defaulttexts))
+#			printframe(frame)
 			continue
+#		sleep(0.1)
 		for frame in renderer:
 			sendframe(frame)
-			sleep(0.05)
-			#printframe(frame)
+#			printframe(frame)
+#			sleep(0.1)
 
