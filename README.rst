@@ -3,7 +3,7 @@ Mate Light
 
 .. image:: http://cbag3.c-base.org/media/cache/artefact_show/uploads/assets/52f6c9c16c72d.jpeg
 
-Transform a bunch of empty mate crates to a huge display using a 14 year old laptop, a 13US$ microcontroller board and a couple of cheap chinese christmas lights.
+Transform a bunch of empty mate crates to a huge display using a 15 year old laptop, a 13US$ microcontroller board and a couple of cheap chinese christmas lights.
 
 Hardware Setup
 --------------
@@ -26,7 +26,7 @@ The control software is a Python script accepting framebuffer data via UDP and t
 
 Architecture
 ~~~~~~~~~~~~
-The server listens on TCP and UDP ports 1337. Any text arriving through TCP is rendered as a marquee, interpreting ANSI escape sequences (colors, blink etc.). The UDP port accepts CRAP, our Custom advanced video stReAming Protocol. A CRAP packet contains three bytes of RGB data per pixel in 16 rows of 40 columns (i.e. ``[R0,0 G0,0 B0,0 R0,1 G0,1 B0,1 ... R0,39 G0,39 B0,39 R1,0 G1,0 B1,0 ... R15,39 G15,39 B15,39]``) and an optional trailing CRC32 checksum.
+The server listens on TCP and UDP ports 1337. Any text arriving through TCP is rendered as a marquee, interpreting ANSI escape sequences (colors, blink etc.). The UDP port accepts CRAP, our Custom advanced video stReAming Protocol. A CRAP packet contains three bytes of RGB data per pixel in 16 rows of 40 columns (i.e. ``[R0,0 G0,0 B0,0 R0,1 G0,1 B0,1 ... R0,39 G0,39 B0,39 R1,0 G1,0 B1,0 ... R15,39 G15,39 B15,39]``).
 
 There is at least one further server implementation of CRAP in the form of an `HTML5 CRAP emulator`_. There is `a Python script that plays gifs over CRAP`_.
 
