@@ -1,7 +1,7 @@
 Mate Light
 ==========
 
-.. image:: http://cbag3.c-base.org/media/cache/artefact_show/uploads/assets/52f6c9c16c72d.jpeg
+.. image:: http://i.imgur.com/SzVinml.jpg
 
 Transform a bunch of empty mate crates to a huge display using a 15 year old laptop, a 13US$ microcontroller board and a couple of cheap chinese christmas lights.
 
@@ -45,6 +45,11 @@ Related Projects
 * `Movie Streaming and Live 3D Raytracing for Mate-Light in Javascript`_
 * `An audio spectrum analyzer`_
 
+As featured on…
+---------------
+* Heise_
+
+.. _Heise: http://www.heise.de/newsticker/meldung/Code-Red-Aktivisten-schlagen-gegen-das-Ueberwachungsimperium-zurueck-2614513.html
 .. _`A Python script that plays gifs over CRAP`: https://github.com/uwekamper/matelight-gifplayer
 .. _`HTML5 CRAP emulator`: https://github.com/sodoku/matelightemu
 .. _`A CRAP client for node.js`: https://github.com/sodoku/node-matelight
