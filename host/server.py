@@ -17,6 +17,7 @@ from ctypes import *
 from matelight import sendframe, DISPLAY_WIDTH, DISPLAY_HEIGHT, FRAME_SIZE
 
 UDP_TIMEOUT = 3.0
+UDP_SWITCH_INTERVAL = 30.0
 
 class COLOR(Structure):
 		_fields_ = [('r', c_uint8), ('g', c_uint8), ('b', c_uint8), ('a', c_uint8)]
@@ -82,6 +83,7 @@ class MateLightUDPServer:
 	def __init__(self, port=1337, ip=''):
 		self.current_client = None
 		self.last_timestamp = 0
+		self.begin_timestamp = 0
 		self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 		self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 		self.socket.bind((ip, port))
@@ -107,8 +109,10 @@ class MateLightUDPServer:
 			try:
 				data, (addr, sport) = self.socket.recvfrom(FRAME_SIZE*3+4)
 				timestamp = time()
-				if timestamp - self.last_timestamp > UDP_TIMEOUT:
+				if timestamp - self.last_timestamp > UDP_TIMEOUT \
+					or timestamp - self.begin_timestamp > UDP_SWITCH_INTERVAL:
 					self.current_client = addr
+					self.begin_timestamp = timestamp
 					log('\x1B[91mAccepting UDP data from\x1B[0m', addr)
 				if addr == self.current_client:
 					if len(data) == FRAME_SIZE*3+4:
