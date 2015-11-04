@@ -49,8 +49,10 @@ Related Projects
 As featured on…
 ---------------
 * Heise_
+* Hackaday_
 
 .. _Heise: http://www.heise.de/newsticker/meldung/Code-Red-Aktivisten-schlagen-gegen-das-Ueberwachungsimperium-zurueck-2614513.html
+.. _Hackaday: http://hackaday.com/2014/03/19/massive-led-display-makes-use-of-reused-soda-bottles/
 .. _`A Python script that plays gifs over CRAP`: https://github.com/uwekamper/matelight-gifplayer
 .. _`HTML5 CRAP emulator`: https://github.com/sodoku/matelightemu
 .. _`A CRAP client for node.js`: https://github.com/sodoku/node-matelight
