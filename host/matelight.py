@@ -4,21 +4,7 @@ from ctypes import c_size_t, c_uint8, c_void_p, c_float, CDLL, Structure, POINTE
 import numpy as np
 import time
 
-CRATE_WIDTH = 5
-CRATE_HEIGHT = 4
-CRATES_X = 8
-CRATES_Y = 4
-
-DISPLAY_WIDTH = CRATES_X*CRATE_WIDTH
-DISPLAY_HEIGHT = CRATES_Y*CRATE_HEIGHT
-CRATE_SIZE = CRATE_WIDTH*CRATE_HEIGHT*3
-FRAME_SIZE = DISPLAY_WIDTH*DISPLAY_HEIGHT
-
-# Gamma factor
-GAMMA = 2.5
-
-# Brightness of the LEDs in percent. 1.0 means 100%.
-BRIGHTNESS = 1.0
+from config import *
 
 ml = CDLL('./libml.so')
 ml.matelight_open.restype = c_void_p

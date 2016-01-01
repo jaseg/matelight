@@ -1,13 +1,4 @@
 
-# Hard timeout in seconds after which (approximately) the rendering of a single item will be cut off
-RENDERER_TIMEOUT = 20.0
-# How long to show an image by default
-DEFAULT_IMAGE_DURATION = 10.0
-# Default scrolling speed in pixels/second
-DEFAULT_SCROLL_SPEED = 4
-# Pixels to leave blank between two letters
-LETTER_SPACING = 0
-
 # Display geometry
 # ┌─────────┐ ┌───┬───┬  ⋯  ┬───┬───┐
 # │1 o o o 5│ │ 1 │   │     │   │ 8│
@@ -19,13 +10,34 @@ LETTER_SPACING = 0
 #             │25 │   │     │   │32 │
 #             └───┴───┴  ⋯  ┴───┴───┘
 
-CRATE_WIDTH = 5
-CRATE_HEIGHT = 4
-CRATES_X = 8
-CRATES_Y = 4
+# Physical display dimensions
+crate_width = 5
+crate_height = 4
+crates_x = 8
+crates_y = 4
 
 # Computed values
-DISPLAY_WIDTH = CRATES_X * CRATE_WIDTH
-DISPLAY_HEIGHT = CRATES_Y * CRATE_HEIGHT
-FRAME_SIZE = DISPLAY_WIDTH*DISPLAY_HEIGHT*3
+display_width = crates_x * crate_width
+display_height = crates_y * crate_height
+crate_size = crate_width*crate_height
+frame_size = display_width*display_height
+
+# Display gamma factor
+gamma = 2.5
+
+# Brightness of the display. 0 to 1.0
+brightness = 1.0
+
+# Frame timeout for UDP clients
+udp_timeout = 3.0
+
+# Interval for rotation of multiple concurrent UDP clients
+udp_switch_interval = 30.0
+
+# Listening addr/port for UDP and TCP servers
+udp_addr = tcp_addr = ''
+udp_port = tcp_port = 1337
+
+# Forward addr/port
+crap_fw_addr, crap_fw_port = '127.0.0.1', 1338
 
