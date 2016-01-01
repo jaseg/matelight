@@ -32,10 +32,12 @@ static int matelight_cmp_str_desc(libusb_device_handle *dev, uint8_t index, char
 	return strcmp(data, value) == 0;
 }
 
-matelight_handle *matelight_open(){
+matelight_handle *matelight_open(char *match_serial){
 	matelight_handle *out = NULL;
+    libusb_device_handle *handle = NULL;
 	libusb_device** device_list;
 	struct libusb_device_descriptor desc;
+
 	ssize_t res = libusb_get_device_list(NULL, &device_list);
 	if(res == 0){
 		fprintf(stderr, "LIBML: Cannot find any connected matelight\n");
@@ -44,56 +46,49 @@ matelight_handle *matelight_open(){
 		fprintf(stderr, "LIBML: Error enumerating connected USB devices\n");
 		goto error;
 	}else{
-		out = calloc(res+1, sizeof(matelight_handle));
+		out = calloc(1, sizeof(matelight_handle));
 		if(!out){
 			fprintf(stderr, "LIBML: Cannot allocate memory\n");
 			goto error;
 		}
-		memset(out, 0, (res+1)*sizeof(matelight_handle));
-		unsigned int found = 0;
 		for(ssize_t i=0; i<res; i++){
 			libusb_get_device_descriptor(device_list[i], &desc);
 			if(desc.idVendor == MATELIGHT_VID && desc.idProduct == MATELIGHT_PID){
-				libusb_device_handle *handle;
-				if(libusb_open(device_list[i], &(handle))){
+				if(libusb_open(device_list[i], &handle)){
 					fprintf(stderr, "LIBML: Cannot open Mate Light USB device\n");
 					goto error;
 				}
-				out[found].handle = handle;
+				out->handle = handle;
 				if(matelight_cmp_str_desc(handle, desc.iManufacturer, "Gold & Apple"))
-				if(matelight_cmp_str_desc(handle, desc.iProduct, "Mate Light")){
+				if(matelight_cmp_str_desc(handle, desc.iProduct, "Mate Light"))
+				if(!match_serial || matelight_cmp_str_desc(handle, desc.iSerialNumber, match_serial)){
 #define BUF_SIZE 256
-					char *serial = malloc(BUF_SIZE);
-					if(!serial){
-						fprintf(stderr, "LIBML: Cannot allocate memory\n");
+					out->serial = malloc(BUF_SIZE);
+					if(!out->serial){ fprintf(stderr, "LIBML: Cannot allocate memory\n");
 						goto error;
 					}
-					if(libusb_get_string_descriptor_ascii(out[found].handle, desc.iSerialNumber, (unsigned char*)serial, BUF_SIZE) < 0){
+					if(libusb_get_string_descriptor_ascii(handle, desc.iSerialNumber, (unsigned char*)&out->serial, BUF_SIZE) < 0){
 						fprintf(stderr, "LIBML: Cannot read device string descriptor\n");
 						goto error;
 					}
 #undef BUF_SIZE
-					out[found].serial = serial;
-					found++;
+                    return out;
 				}
 			}
 		}
-		out[found].handle = NULL;
-		out[found].serial = NULL;
 	}
 	libusb_free_device_list(device_list, 1);
-	return out;
+	return NULL;
 error:
-	if(res>0 && out){
-		for(ssize_t i=0; i<res; i++){
-			if(out[i].handle)
-				libusb_close(out[i].handle);
-			free(out[i].serial);
-		}
-	}
-	free(out);
+	if(out){
+        if(out->serial)
+            free(out->serial);
+        free(out);
+    }
+    if(handle)
+        libusb_close(handle);
 	libusb_free_device_list(device_list, 1);
-	return 0;
+	return NULL;
 }
 
 typedef struct{
@@ -140,7 +135,7 @@ int matelight_send_frame(matelight_handle *ml, void *buf, size_t w, size_t h, fl
 				return 1;
 			}
 			if(transferred != sizeof(frame)){
-				fprintf(stderr, "LIBML: Could not transfer all frame data. Only transferred %d out of %d bytes.\n", transferred, sizeof(frame));
+				fprintf(stderr, "LIBML: Could not transfer all frame data. Only transferred %d out of %zu bytes.\n", transferred, sizeof(frame));
 				return 1;
 			}
 		}
@@ -153,7 +148,7 @@ int matelight_send_frame(matelight_handle *ml, void *buf, size_t w, size_t h, fl
 		return 1;
 	}
 	if(transferred != sizeof(uint8_t)){
-		fprintf(stderr, "LIBML: Could not transfer all frame data. Only transferred %d out of %d bytes.\n", transferred, sizeof(uint8_t));
+		fprintf(stderr, "LIBML: Could not transfer all frame data. Only transferred %d out of %zu bytes.\n", transferred, sizeof(uint8_t));
 		return 1;
 	}
 	return 0;

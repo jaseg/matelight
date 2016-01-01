@@ -41,3 +41,6 @@ udp_port = tcp_port = 1337
 # Forward addr/port
 crap_fw_addr, crap_fw_port = '127.0.0.1', 1338
 
+# USB Serial number of matelight to control as byte string (None for first matelight connected)
+ml_usb_serial_match = None
+

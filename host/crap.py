@@ -4,17 +4,20 @@ import struct
 import zlib
 import io
 from time import time
+import numpy
 
 import config
 
 class CRAPClient:
 	def __init__(self, ip='127.0.0.1', port=1337):
 		self.ip, self.port = ip, port
-		self.sock = socket.Socket(socket.AF_INET, socket.SOCK_DGRAM)
+		self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 		self.close = self.sock.close
 
 	def sendframe(self, frame):
-		self.sock.sendto(frame, (self.ip, self.port))
+		fb = numpy.frombuffer(frame, dtype=numpy.uint8)
+		fb.shape = config.frame_size, len(frame)/config.frame_size
+		self.sock.sendto(fb[:,:3].tobytes(), (self.ip, self.port))
 
 
 def _timestamped_recv(sock):
@@ -22,6 +25,8 @@ def _timestamped_recv(sock):
 		try:
 			data, addr = sock.recvfrom(config.frame_size*3+4)
 		except io.BlockingIOError as e:
+			raise StopIteration()
+		except socket.timeout:
 			raise StopIteration()
 		else:
 			yield time(), data, addr
@@ -34,6 +39,7 @@ class CRAPServer:
 		self.sock.setblocking(blocking)
 		self.sock.bind((ip, port))
 
+		self.blocking = blocking
 		self.current_client = None
 		self.last_timestamp = 0
 		self.begin_timestamp = 0
@@ -45,13 +51,14 @@ class CRAPServer:
 	def __iter__(self):
 		for timestamp, data, (addr, sport) in _timestamped_recv(self.sock):
 			if data is None:
-				yield None
+				yield None, None
 
-			if timestamp - self.last_timestamp > config.udp_timeout\
+			if timestamp - self.last_timestamp >= config.udp_timeout\
 					or timestamp - self.begin_timestamp > config.udp_switch_interval:
 				self.current_client = addr
 				self.begin_timestamp = timestamp
 				self.log('\x1B[91mAccepting UDP data from\x1B[0m', addr)
+				self.sock.settimeout(config.udp_timeout)
 
 			if addr == self.current_client:
 				if len(data) == config.frame_size*3+4:
@@ -63,6 +70,8 @@ class CRAPServer:
 				elif len(data) != config.frame_size*3:
 					self.log('Error receiving UDP frame: Invalid frame size: {}'.format(len(data)))
 				self.last_timestamp = timestamp
-				yield data
+				yield 'udp:'+addr, data
+		self.current_client = None
+		self.sock.settimeout(None if self.blocking else 0)
 
 

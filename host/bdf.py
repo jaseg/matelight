@@ -27,7 +27,6 @@ def printframe(fb):
 		numpy.copyto(dbuf[2::4], ip[2::3+rgba])
 		lib.console_render_buffer(dbuf.ctypes.data_as(POINTER(c_uint8)), config.display_width, config.display_height)
 
-
 class Font:
 	def __init__(self, fontfile='unifont.bdf'):
 		self.font = lib.read_bdf_file(fontfile)
@@ -36,16 +35,16 @@ class Font:
 		self.cbuf = create_string_buffer(config.frame_size*sizeof(COLOR))
 		self.cbuflock = threading.Lock()
 
-	def compute_text_bounds(text):
+	def compute_text_bounds(self, text):
 		textbytes = text.encode()
 		textw, texth = c_size_t(0), c_size_t(0)
-		res = lib.framebuffer_get_text_bounds(textbytes, unifont, byref(textw), byref(texth))
+		res = lib.framebuffer_get_text_bounds(textbytes, self.font, byref(textw), byref(texth))
 		if res:
 			raise ValueError('Invalid text')
 		return textw.value, texth.value
 
-	def render_text(text, offset):
-		with cbuflock:
+	def render_text(self, text, offset):
+		with self.cbuflock:
 			textbytes = bytes(str(text), 'UTF-8')
 			res = lib.framebuffer_render_text(textbytes, self.font, self.cbuf,
 					config.display_width, config.display_height, offset)
@@ -53,4 +52,4 @@ class Font:
 				raise ValueError('Invalid text')
 			return self.cbuf
 
-
+unifont = Font()
