@@ -52,9 +52,13 @@ As featured on…
 ---------------
 * Heise_
 * Hackaday_
+* `Heise again`_
+* `Deutschlandfunk`_
 
 .. _Heise: http://www.heise.de/newsticker/meldung/Code-Red-Aktivisten-schlagen-gegen-das-Ueberwachungsimperium-zurueck-2614513.html
 .. _Hackaday: http://hackaday.com/2014/03/19/massive-led-display-makes-use-of-reused-soda-bottles/
+.. _`Heise again`: http://www.heise.de/newsticker/meldung/32C3-Diese-Maker-Projekte-gab-es-auf-dem-Chaos-Communication-Congress-zu-sehen-3057100.html
+.. _`Deutschlandfunk`: https://youtu.be/ffvNsbZeuaw
 .. _`A Python script that plays gifs over CRAP`: https://github.com/uwekamper/matelight-gifplayer
 .. _`HTML5 CRAP emulator`: https://github.com/sodoku/matelightemu
 .. _`A CRAP client for node.js`: https://github.com/sodoku/node-matelight
