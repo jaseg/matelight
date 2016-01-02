@@ -1,13 +1,7 @@
 #!/usr/bin/env python
 
-import socket
-from time import time
-import sys
-from contextlib import suppress
 import argparse
 import atexit
-
-import config
 
 import bdf
 import crap
