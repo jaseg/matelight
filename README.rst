@@ -46,7 +46,11 @@ If you try this utility and don't see any colors or reduced on your terminal, ha
 
 ``gifstream.py``
 ''''''''''''''''
-This utility reads a bunch of CRAP, e.g. from a running matelight server's monitoring port and converts it to a GIF stream (yes, you read that correctly) that is served over a built-in HTTP server by default running on port 5000. This GIF stream can be viewed with most browsers.
+This utility reads a bunch of CRAP, e.g. from a running matelight server's monitoring port and converts it to a GIF stream (yes, you read that correctly) that is served over a built-in HTTP server (by default running on port 5000). This GIF stream can be viewed with most browsers.
+
+``gifserver.py``
+''''''''''''''''
+This utility launches a local webserver (by default running on port 5000) presenting an upload form where one may upload a GIF file. An uploaded GIF file is read and streamed to a matelight via CRAP. If a GIF is uploaded while another is already being played, the currently played one is interrupted and replaced by the new one. To prevent a very easy DOS attack, GIF frame durations are capped at 10s.
 
 Build your own
 ''''''''''''''
