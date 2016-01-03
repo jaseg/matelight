@@ -2,6 +2,7 @@
 
 import argparse
 import atexit
+from contextlib import suppress
 
 import bdf
 import crap
@@ -18,7 +19,8 @@ if __name__ == '__main__':
 	udp_server = crap.CRAPServer(args.addr, args.port, blocking=True, log=lambda *_a: None)
 
 	with suppress(KeyboardInterrupt):
-		for _title, frame in udp_server:
-			bdf.printframe(frame)
+		while True:
+			for _title, frame in udp_server:
+				bdf.printframe(frame)
 
 	udp_server.close()
