@@ -26,14 +26,40 @@ The control software is a Python script accepting framebuffer data via UDP and t
 
 Architecture
 ~~~~~~~~~~~~
-The server listens on TCP and UDP ports 1337. Any text arriving through TCP is rendered as a marquee, interpreting ANSI escape sequences (colors, blink etc.). The UDP port accepts CRAP, our Custom advanced video stReAming Protocol. A CRAP packet contains three bytes of RGB data per pixel in 16 rows of 40 columns (i.e. ``[R0,0 G0,0 B0,0 R0,1 G0,1 B0,1 ... R0,39 G0,39 B0,39 R1,0 G1,0 B1,0 ... R15,39 G15,39 B15,39]``).
+The server listens on TCP and UDP ports 1337. Any text arriving through TCP is rendered as a marquee, interpreting ANSI escape sequences (colors, blink etc.). The TCP interface accepts one line per connection queuing lines in times of high demand. If there is no more text to render, the system defaults to a list of lines to scroll that is read from the text file ``default.lines``. When the end of that list has been reached, the file is automatically reloaded enabling run-time configuration.
 
-There is at least one further server implementation of CRAP in the form of an `HTML5 CRAP emulator`_. There is `a Python script that plays gifs over CRAP`_.
+The UDP port accepts CRAP, our Custom advanced video stReAming Protocol. A CRAP packet contains three bytes of RGB data per pixel in 16 rows of 40 columns (i.e. ``[R0,0 G0,0 B0,0 R0,1 G0,1 B0,1 ... R0,39 G0,39 B0,39 R1,0 G1,0 B1,0 ... R15,39 G15,39 B15,39]``). A CRC-32 can optionally be added at the end of the packet. A CRAP connection is considered terminated when no packets are received for an interval of by default 3 seconds. CRAP has precedence over text scrolling, any text scrolling when a CRAP connection is initiated is paused and incoming text during a CRAP connection is put into a queue. When multiple CRAP clients are connected, the system by default rotates every 30 seconds to a random new client. 
+
+Utilities
+~~~~~~~~~
+As written before, some parts of these utilities have been factored out into C code. In order to run the utilities requiring these parts (which would otherwise terminate with a python ``OSError`` mentioning some ``.so`` file), you must first build the C backend libraries by running ``make`` inside the ``host`` directory.
+
+``server.py``
+'''''''''''''
+The matelight server application lives in ``server.py``. If you just run this, a matelight server including TCP and UDP/CRAP interfaces is started. The server application supports forwarding the displayed image (including not only incoming CRAP but also scrolled text) via CRAP to the network or localhost. This is configured with ``crap_fw_addr`` and ``crap_fw_port`` in the server config file. If no matelight is connected to your machine, a warning is printed, but the server is left running since this monitoring feature can be used for local testing.
+
+``viewer.py``
+'''''''''''''
+The viewer is a short python script rendering CRAP on your terminal using Unicode and the extended terminal color palette introduced by xterm. This is useful e.g. when diagnosing a running matelight server over the network (through its monitoring port) or when developing CRAP clients. This tool can be run directly with a CRAP client or with the matelight server in between (e.g. if you want to play with marquee rendering, which is done by the matelight server).
+
+If you try this utility and don't see any colors or reduced on your terminal, have a close look at anything supposed to pass through this tool's output to your terminal such as ``ssh``, ``cat`` and ``tmux``. Some of these tools will filter/downconvert these extended color sequences depending on the ``$SHELL`` environment variable they encounter.
+
+``gifstream.py``
+''''''''''''''''
+This utility reads a bunch of CRAP, e.g. from a running matelight server's monitoring port and converts it to a GIF stream (yes, you read that correctly) that is served over a built-in HTTP server by default running on port 5000. This GIF stream can be viewed with most browsers.
+
+Build your own
+''''''''''''''
+Spitting out TCP and UDP is pretty much trivial in any programming environment, still there is a bunch of examples below. In case you're using python, you can find one possible CRAP client/server implementation in ``host/crap.py``.
+
+TODO
+----
+It would be neat to have a somewhat saner config system using e.g. python's ``configparser`` module with defaults for most things. Also it would be useful to have command line switches to override some of these settings. Pull requests are appreciated!
 
 Related Projects
 ----------------
 * `A Python script that plays gifs over CRAP`_
-* An `HTML5 CRAP emulator`_
+* `An HTML5 CRAP emulator`_
 * `A CRAP client for node.js`_
 * `Webcam streaming on Mate Light`_
 * `A game programming framework for Mate Light`_
@@ -60,7 +86,7 @@ As featured on…
 .. _`Heise again`: http://www.heise.de/newsticker/meldung/32C3-Diese-Maker-Projekte-gab-es-auf-dem-Chaos-Communication-Congress-zu-sehen-3057100.html
 .. _`Deutschlandfunk`: https://youtu.be/ffvNsbZeuaw
 .. _`A Python script that plays gifs over CRAP`: https://github.com/uwekamper/matelight-gifplayer
-.. _`HTML5 CRAP emulator`: https://github.com/sodoku/matelightemu
+.. _`An HTML5 CRAP emulator`: https://github.com/sodoku/matelightemu
 .. _`A CRAP client for node.js`: https://github.com/sodoku/node-matelight
 .. _`Postillon Newsticker for Matelight`: https://gist.github.com/XenGi/9168633
 .. _`Webcam streaming on Mate Light`: https://github.com/c-base/matetv
