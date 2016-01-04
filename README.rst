@@ -1,13 +1,27 @@
 Mate Light
 ==========
 
-.. image:: http://i.imgur.com/SzVinml.jpg
+.. figure:: ./pics/heise-make-32c3-1-small.jpg
+   :target: http://www.heise.de/newsticker/meldung/32C3-Diese-Maker-Projekte-gab-es-auf-dem-Chaos-Communication-Congress-zu-sehen-3057100.html&hg=1&hgi=9&hgf=true
+   :align: center
+   :alt: A matelight at 32C3. Foto: Rebecca Husemann / Make Magazin.
+
+   Foto: Rebecca Husemann / Make Magazin. `Link`_
 
 Transform a bunch of empty mate crates to a huge display using a 15 year old laptop, a 13US$ microcontroller board and a couple of cheap chinese christmas lights.
 
 Hardware Setup
 --------------
 Each bottle contains a LED with a WS2801 driver. Each crate contains a chain of 20 LEDs with a 9 pin SUB-D connector. A wiring harness connects 8 crates in series to a TI Stellaris Launchpad. The Launchpad has four hardware SPI interfaces which can control one wiring harness each. The controller board is connected to a ThinkPad T22 running the control program via USB.
+
+.. figure:: ./pics/heise-make-32c3-2-3-small.jpg
+   :target: http://www.heise.de/newsticker/meldung/32C3-Diese-Maker-Projekte-gab-es-auf-dem-Chaos-Communication-Congress-zu-sehen-3057100.html&hg=1&hgi=10&hgf=true
+   :align: center
+   :alt: matelight detail. Foto: Rebecca Husemann / Make Magazin.
+
+   Foto: Rebecca Husemann / Make Magazin. `Link`_
+   
+.. _`Link`: http://www.heise.de/newsticker/meldung/32C3-Diese-Maker-Projekte-gab-es-auf-dem-Chaos-Communication-Congress-zu-sehen-3057100.html
 
 1. Take a mate bottle and wrap it in aluminum foil
 2. Poke a 12mm hole in the lid
@@ -16,7 +30,7 @@ Each bottle contains a LED with a WS2801 driver. Each crate contains a chain of 
 5. Stick a loop of LEDs through the lids of the bottles
 6. Repeat from step 1
 7. Stack up a bunch of these crates and tie them together with zip ties and straps
-8. Connect the wiring harness to the LED loops and the control board
+8. Connect all the wires together (mis-)using wonderful XLR connectors
 9. ???
 10. PROFIT!!
 
@@ -104,3 +118,4 @@ As featured on…
 .. _`A Unity 3D backend`: http://firepunchd.tumblr.com/post/123631124063/every-pixel-is-sacred-on-a-40x16-display-you-have
 .. _`Advanced Conway's Game of Life`: https://github.com/vileda/golGL
 .. _`How to CRAP in bash because nc is for noobs`: https://gist.github.com/anonymous/0299b536dabd8ee59529
+
