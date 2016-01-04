@@ -44,3 +44,7 @@ crap_fw_addr, crap_fw_port = '127.0.0.1', 1338
 # USB Serial number of matelight to control as byte string (None for first matelight connected)
 ml_usb_serial_match = None
 
+# Maximum width allowed for marquee texts in px. For reference: Using GNU unifont, a normal (half-width) char such as ∀
+# is 8px wide, a full-width char such as 水 is 16px wide.
+max_marquee_width = 140*8
+

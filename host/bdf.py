@@ -40,7 +40,7 @@ class Font:
 		textw, texth = c_size_t(0), c_size_t(0)
 		res = lib.framebuffer_get_text_bounds(textbytes, self.font, byref(textw), byref(texth))
 		if res:
-			raise ValueError('Invalid text')
+			raise RuntimeError('Invalid text')
 		return textw.value, texth.value
 
 	def render_text(self, text, offset):
@@ -49,7 +49,7 @@ class Font:
 			res = lib.framebuffer_render_text(textbytes, self.font, self.cbuf,
 					config.display_width, config.display_height, offset)
 			if res:
-				raise ValueError('Invalid text')
+				raise RuntimeError('Invalid text')
 			return self.cbuf
 
 unifont = Font()
