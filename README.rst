@@ -28,16 +28,20 @@ Each bottle contains a LED with a WS2801 driver. Each crate contains a chain of 
 3. Put it in a crate
 4. Repeat from step 1
 5. Stick a loop of LEDs through the lids of the bottles like this:
+
    .. code::
-             ┏━━━━━━━━━━━━━━━━━━━┓
-     {start}→┃ ○ → ○ → ○ → ○ → ○ ┃
-             ┃                 ↓ ┃
-     {  end}←┃ ○   ○ ← ○ ← ○ ← ○ ┃
-             ┃ ↑   ↓             ┃
-             ┃ ○   ○ → ○ → ○ → ○ ┃
-             ┃ ↑               ↓ ┃
-             ┃ ○ ← ○ ← ○ ← ○ ← ○ ┃
-             ┗━━━━━━━━━━━━━━━━━━━┛
+
+           (seen from back, up↥)
+           ┏━━━━━━━━━━━━━━━━━━━┓
+      {in}→┃ ○ → ○ → ○ → ○ → ○ ┃
+           ┃                 ↓ ┃
+     {out}←┃ ○   ○ ← ○ ← ○ ← ○ ┃
+           ┃ ↑   ↓             ┃
+           ┃ ○   ○ → ○ → ○ → ○ ┃
+           ┃ ↑               ↓ ┃
+           ┃ ○ ← ○ ← ○ ← ○ ← ○ ┃
+           ┗━━━━━━━━━━━━━━━━━━━┛
+                  (down↧)
 
 6. Repeat from step 1
 7. Stack up a bunch of these crates and tie them together with zip ties and straps
