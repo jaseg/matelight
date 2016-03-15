@@ -2,7 +2,7 @@ Mate Light
 ==========
 
 .. figure:: ./pics/heise-make-32c3-1-small.jpg
-   :target: http://www.heise.de/newsticker/meldung/32C3-Diese-Maker-Projekte-gab-es-auf-dem-Chaos-Communication-Congress-zu-sehen-3057100.html&hg=1&hgi=9&hgf=true
+   :target: http://www.heise.de/newsticker/meldung/32C3-Diese-Maker-Projekte-gab-es-auf-dem-Chaos-Communication-Congress-zu-sehen-3057100.html?hg=1&hgi=9&hgf=true
    :align: center
    :alt: A matelight at 32C3. Foto: Rebecca Husemann / Make Magazin.
 
@@ -15,7 +15,7 @@ Hardware Setup
 Each bottle contains a LED with a WS2801 driver. Each crate contains a chain of 20 LEDs with a 9 pin SUB-D connector. A wiring harness connects 8 crates in series to a TI Stellaris Launchpad. The Launchpad has four hardware SPI interfaces which can control one wiring harness each. The controller board is connected to a ThinkPad T22 running the control program via USB.
 
 .. figure:: ./pics/heise-make-32c3-2-3-small.jpg
-   :target: http://www.heise.de/newsticker/meldung/32C3-Diese-Maker-Projekte-gab-es-auf-dem-Chaos-Communication-Congress-zu-sehen-3057100.html&hg=1&hgi=10&hgf=true
+   :target: http://www.heise.de/newsticker/meldung/32C3-Diese-Maker-Projekte-gab-es-auf-dem-Chaos-Communication-Congress-zu-sehen-3057100.html?hg=1&hgi=10&hgf=true
    :align: center
    :alt: matelight detail. Foto: Rebecca Husemann / Make Magazin.
 
