@@ -107,6 +107,7 @@ Related Projects
 * `Advanced Conway's Game of Life`_
 * `How to CRAP in bash because nc is for noobs`_
 * `Noisebridge's ripoff matelight :D`_
+* `A Haskell CRAP client library`_
 
 As featured on…
 ---------------
@@ -135,4 +136,4 @@ As featured on…
 .. _`Advanced Conway's Game of Life`: https://github.com/vileda/golGL
 .. _`How to CRAP in bash because nc is for noobs`: https://gist.github.com/anonymous/0299b536dabd8ee59529
 .. _`Noisebridge's ripoff matelight :D`: http://blog.noisebridge.net/post/139304835544/i-walked-into-noisebridge-yesterday-and-was
-
+.. _`A Haskell CRAP client library`: https://github.com/bigmac2k/HSMateLight
