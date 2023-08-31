@@ -91,6 +91,7 @@ It would be neat to have a somewhat saner config system using e.g. python's ``co
 
 Related Projects
 ----------------
+* `"Green Screen" by Hito Steyerl uses a Matelight`_
 * `A Python script that plays gifs over CRAP`_
 * `An HTML5 CRAP emulator`_
 * `A CRAP client for node.js`_
@@ -116,6 +117,7 @@ As featured on…
 * `Heise again`_
 * `Deutschlandfunk`_
 
+.. _`"Green Screen" by Hito Steyerl uses a Matelight`: https://www.theguardian.com/artanddesign/2023/jun/13/post-internet-artist-hito-steyerl-refusing-honours-big-tech
 .. _Heise: http://www.heise.de/newsticker/meldung/Code-Red-Aktivisten-schlagen-gegen-das-Ueberwachungsimperium-zurueck-2614513.html
 .. _Hackaday: http://hackaday.com/2014/03/19/massive-led-display-makes-use-of-reused-soda-bottles/
 .. _`Heise again`: http://www.heise.de/newsticker/meldung/32C3-Diese-Maker-Projekte-gab-es-auf-dem-Chaos-Communication-Congress-zu-sehen-3057100.html
