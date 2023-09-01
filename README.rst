@@ -92,6 +92,7 @@ It would be neat to have a somewhat saner config system using e.g. python's ``co
 Related Projects
 ----------------
 * `"Green Screen" by Hito Steyerl uses a Matelight`_
+* `TUHH STS-FRITZ-Light-Wall used for teaching students game  programming`_
 * `A Python script that plays gifs over CRAP`_
 * `An HTML5 CRAP emulator`_
 * `A CRAP client for node.js`_
@@ -117,6 +118,7 @@ As featured on…
 * `Heise again`_
 * `Deutschlandfunk`_
 
+.. _`TUHH STS-FRITZ-Light-Wall used for teaching students game  programming`: https://www.tuhh.de/sts/institute/people/thomas-sidow/die-sts-fritz-light-wall
 .. _`"Green Screen" by Hito Steyerl uses a Matelight`: https://www.theguardian.com/artanddesign/2023/jun/13/post-internet-artist-hito-steyerl-refusing-honours-big-tech
 .. _Heise: http://www.heise.de/newsticker/meldung/Code-Red-Aktivisten-schlagen-gegen-das-Ueberwachungsimperium-zurueck-2614513.html
 .. _Hackaday: http://hackaday.com/2014/03/19/massive-led-display-makes-use-of-reused-soda-bottles/
