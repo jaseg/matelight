@@ -92,6 +92,7 @@ It would be neat to have a somewhat saner config system using e.g. python's ``co
 Related Projects
 ----------------
 * `"Green Screen" by Hito Steyerl uses a Matelight`_
+* There is one at `Temporärhaus in Ulm`_
 * `TUHH STS-FRITZ-Light-Wall used for teaching students game  programming`_
 * `A Python script that plays gifs over CRAP`_
 * `An HTML5 CRAP emulator`_
@@ -141,3 +142,4 @@ As featured on…
 .. _`How to CRAP in bash because nc is for noobs`: https://gist.github.com/anonymous/0299b536dabd8ee59529
 .. _`Noisebridge's ripoff matelight :D`: https://github.com/hzeller/flaschen-taschen
 .. _`A Haskell CRAP client library`: https://github.com/bigmac2k/HSMateLight
+.. _`Temporärhaus in Ulm`: https://temporaerhaus.de/kulturnacht-2023/
