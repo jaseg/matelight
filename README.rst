@@ -92,7 +92,7 @@ It would be neat to have a somewhat saner config system using e.g. python's ``co
 Related Projects
 ----------------
 * `"Green Screen" by Hito Steyerl uses a Matelight`_
-* There is one at `Temporärhaus in Ulm`_
+* There is one at `Temporärhaus in Ulm`_ (`archived <https://web.archive.org/web/20230906105218/https://temporaerhaus.de/kulturnacht-2023/>`__)
 * `TUHH STS-FRITZ-Light-Wall used for teaching students game  programming`_
 * `A Python script that plays gifs over CRAP`_
 * `An HTML5 CRAP emulator`_
